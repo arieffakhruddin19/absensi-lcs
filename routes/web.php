@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\PostingController;
 use App\Http\Controllers\TugasController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
