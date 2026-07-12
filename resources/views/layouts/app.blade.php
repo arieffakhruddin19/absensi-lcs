@@ -58,9 +58,15 @@
             <div class="flex items-center pr-4" style="margin-right: 2rem;">
                   <div class="flex items-center ms-3">
                     <div>
-                      <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user">
+                      <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" aria-expanded="false" data-dropdown-toggle="dropdown-user" data-dropdown-placement="bottom-end">
                         <span class="sr-only">Buka menu profil</span>
-                        <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D8ABC&color=fff" alt="user photo">
+                        @if (Auth::user()->avatar)
+                            <img class="w-8 h-8 rounded-full object-cover" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="user photo">
+                        @else
+                            <div class="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                <svg class="absolute w-10 h-10 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            </div>
+                        @endif
                       </button>
                     </div>
                     <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown-user">
@@ -69,7 +75,7 @@
                           {{ Auth::user()->name }}
                         </p>
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                          {{ Auth::user()->nip }} ({{ Auth::user()->role }})
+                          {{ Auth::user()->nip }}
                         </p>
                       </div>
                       <ul class="py-1" role="none">

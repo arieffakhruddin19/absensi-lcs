@@ -11,8 +11,27 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Public Routes
+Route::get('rekap-laporan-lcs', [\App\Http\Controllers\PublicRekapController::class, 'index'])->name('public.rekap-laporan');
+Route::get('rekap-laporan-lcs/export', [\App\Http\Controllers\PublicRekapController::class, 'export'])->name('public.rekap-laporan.export');
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    if (auth()->user()->role == 'admin') {
+        $today = \Carbon\Carbon::now()->format('Y-m-d');
+        
+        $totalPegawai = \App\Models\Pegawai::count();
+        $pegawaiAktif = \App\Models\Pegawai::where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        })->count();
+        $pegawaiPensiun = $totalPegawai - $pegawaiAktif;
+        
+        $totalTugas = \App\Models\Posting::count();
+
+        return view('dashboard', compact('totalPegawai', 'pegawaiAktif', 'pegawaiPensiun', 'totalTugas'));
+    } else {
+        return redirect()->route('tugas.index');
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -22,9 +41,11 @@ Route::middleware('auth')->group(function () {
     
     // Admin Routes
     Route::resource('admin/pegawai', PegawaiController::class)->names('admin.pegawai');
+    Route::post('admin/pegawai/{pegawai}/reset-password', [PegawaiController::class, 'resetPassword'])->name('admin.pegawai.reset-password');
     Route::resource('admin/posting', PostingController::class)->names('admin.posting');
     Route::get('admin/posting/{posting}/laporan', [PostingController::class, 'laporan'])->name('admin.posting.laporan');
     Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');
+    Route::get('admin/rekap-laporan/export', [RekapLaporanController::class, 'export'])->name('admin.rekap-laporan.export');
     
     // Pegawai Routes
     Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');

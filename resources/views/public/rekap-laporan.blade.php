@@ -1,15 +1,9 @@
-<x-app-layout>
+<x-public-layout>
     <x-slot name="header">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <div class="flex justify-between items-center w-full">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Rekap Laporan Tugas LCS') }}
-            </h2>
-            <a href="{{ route('public.rekap-laporan') }}" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md font-medium text-xs text-white hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                Tampilan Publik
-            </a>
-        </div>
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Rekap Laporan Tugas LCS') }}
+        </h2>
     </x-slot>
 
     <div class="py-0">
@@ -18,14 +12,14 @@
                 
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Rekapitulasi Semua Postingan dan Media Sosial</h3>
-                    <a id="export-excel-btn" href="{{ route('admin.rekap-laporan.export', request()->query()) }}" class="flex items-center text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition ease-in-out duration-150">
+                    <a id="export-excel-btn" href="{{ route('public.rekap-laporan.export', request()->query()) }}" class="flex items-center text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition ease-in-out duration-150">
                         <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Excel
                     </a>
                 </div>
 
                 <div class="mb-4" style="display: flex; justify-content: flex-end;">
-                    <form method="GET" action="{{ route('admin.rekap-laporan') }}" class="flex gap-2 w-full sm:w-auto">
+                    <form method="GET" action="{{ route('public.rekap-laporan') }}" class="flex gap-2 w-full sm:w-auto">
                         
                         <div style="position: relative; display: flex; align-items: center; width: 180px;">
                             <input type="text" id="filter-tanggal" name="tanggal" value="{{ request('tanggal') }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal..." title="Filter Tanggal">
@@ -169,7 +163,7 @@
                 
                 window.history.pushState({}, '', url);
                 
-                const exportUrl = new URL('{{ route("admin.rekap-laporan.export") }}', window.location.origin);
+                const exportUrl = new URL('{{ route("public.rekap-laporan.export") }}', window.location.origin);
                 exportUrl.search = url.search;
                 const exportBtn = document.getElementById('export-excel-btn');
                 if (exportBtn) {
@@ -215,4 +209,4 @@
     </script>
     
     <x-realtime-sync type="laporan" />
-</x-app-layout>
+</x-public-layout>

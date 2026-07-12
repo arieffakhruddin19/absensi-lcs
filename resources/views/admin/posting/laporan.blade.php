@@ -18,14 +18,23 @@
                     <div class="flex gap-2 mt-2">
                         @if($posting->link_instagram) <a href="{{ $posting->link_instagram }}" target="_blank" class="bg-pink-100 text-pink-800 text-xs font-medium px-2 py-0.5 rounded hover:bg-pink-200">IG</a> @endif
                         @if($posting->link_facebook) <a href="{{ $posting->link_facebook }}" target="_blank" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded hover:bg-blue-200">FB</a> @endif
-                        @if($posting->link_twitter) <a href="{{ $posting->link_twitter }}" target="_blank" class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-0.5 rounded hover:bg-gray-200">X</a> @endif
+                        @if($posting->link_twitter) <a href="{{ $posting->link_twitter }}" target="_blank" class="bg-sky-200 text-sky-900 text-xs font-medium px-2 py-0.5 rounded hover:bg-sky-300">X</a> @endif
                         @if($posting->link_tiktok) <a href="{{ $posting->link_tiktok }}" target="_blank" class="bg-black text-white text-xs font-medium px-2 py-0.5 rounded hover:bg-gray-800">TikTok</a> @endif
                         @if($posting->link_youtube) <a href="{{ $posting->link_youtube }}" target="_blank" class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded hover:bg-red-200">YT</a> @endif
                     </div>
                 </div>
 
-                <!-- Live Search Form -->
-                <div class="mb-4" style="display: flex; justify-content: flex-end;">
+                <!-- Live Search & Filter Form -->
+                <div class="mb-4" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                    <!-- Status Filter -->
+                    <div style="width: 150px;">
+                        <select id="status-filter" name="status" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="semua" {{ request('status') == 'semua' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah Selesai</option>
+                            <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Selesai</option>
+                        </select>
+                    </div>
+
                     <div style="position: relative; width: 320px;">
                         <div style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); pointer-events: none;">
                             <svg style="width: 16px; height: 16px; color: #9ca3af;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -50,7 +59,7 @@
                                 @if($posting->link_twitter)<th scope="col" class="px-6 py-3 text-center">X</th>@endif
                                 @if($posting->link_tiktok)<th scope="col" class="px-6 py-3 text-center">TikTok</th>@endif
                                 @if($posting->link_youtube)<th scope="col" class="px-6 py-3 text-center">YT</th>@endif
-                                <th scope="col" class="px-6 py-3 text-center">Semua Selesai</th>
+                                <th scope="col" class="px-6 py-3 text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,48 +133,91 @@
         </div>
     </div>
 
-    <!-- Live Search Script -->
+    <!-- Live Search & Pagination Script -->
     <script>
+        let typingTimer;
+        const doneTypingInterval = 500;
+        
+        window.triggerSearch = function(targetUrl = null) {
+            const searchInput = document.getElementById('livesearch-input');
+            const statusFilter = document.getElementById('status-filter');
+            let url;
+            
+            if (targetUrl) {
+                url = new URL(targetUrl);
+            } else {
+                url = new URL(window.location.href);
+                if (searchInput && searchInput.value.trim() !== '') {
+                    url.searchParams.set('search', searchInput.value);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                
+                if (statusFilter && statusFilter.value && statusFilter.value !== 'semua') {
+                    url.searchParams.set('status', statusFilter.value);
+                } else {
+                    url.searchParams.delete('status');
+                }
+                
+                url.searchParams.delete('page');
+            }
+            
+            window.history.pushState({}, '', url);
+            
+            const contentDiv = document.querySelector('#realtime-content');
+            if (contentDiv) {
+                contentDiv.style.transition = 'opacity 0.2s ease-in-out';
+                contentDiv.style.opacity = '0.4';
+                contentDiv.style.pointerEvents = 'none';
+            }
+            
+            fetch(url.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#realtime-content');
+                if (newContent && contentDiv) {
+                    contentDiv.innerHTML = newContent.innerHTML;
+                    contentDiv.style.opacity = '1';
+                    contentDiv.style.pointerEvents = 'auto';
+                    
+                    if (typeof initFlowbite === 'function') {
+                        initFlowbite();
+                    }
+                }
+            })
+            .catch(err => {
+                console.error('Live search error:', err);
+                if (contentDiv) {
+                    contentDiv.style.opacity = '1';
+                    contentDiv.style.pointerEvents = 'auto';
+                }
+            });
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('livesearch-input');
-            let typingTimer;
-            const doneTypingInterval = 500; // 500ms debounce
-            
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     clearTimeout(typingTimer);
-                    typingTimer = setTimeout(function() {
-                        const url = new URL(window.location.href);
-                        if (searchInput.value.trim() !== '') {
-                            url.searchParams.set('search', searchInput.value);
-                            url.searchParams.delete('page'); // Reset to page 1 on new search
-                        } else {
-                            url.searchParams.delete('search');
-                        }
-                        
-                        // Update URL without reload
-                        window.history.pushState({}, '', url);
-                        
-                        // Fetch new table content
-                        fetch(url.href, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Cache-Control': 'no-cache',
-                                'Pragma': 'no-cache'
-                            }
-                        })
-                        .then(res => res.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const newContent = doc.querySelector('#realtime-content');
-                            if (newContent) {
-                                document.querySelector('#realtime-content').innerHTML = newContent.innerHTML;
-                            }
-                        })
-                        .catch(err => console.error('Live search error:', err));
-                    }, doneTypingInterval);
+                    typingTimer = setTimeout(() => window.triggerSearch(), doneTypingInterval);
                 });
+            }
+        });
+
+        // Intercept Pagination Clicks
+        document.addEventListener('click', function(e) {
+            const paginationLink = e.target.closest('#realtime-content nav[role="navigation"] a');
+            if (paginationLink && paginationLink.href) {
+                e.preventDefault();
+                window.triggerSearch(paginationLink.href);
             }
         });
     </script>

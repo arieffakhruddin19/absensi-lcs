@@ -87,8 +87,20 @@ class PostingController extends Controller
         if ($request->has('search') && $request->search != '') {
             $query->where('nama_pegawai', 'like', '%' . $request->search . '%');
         }
+
+        if ($request->has('status') && $request->status != 'semua') {
+            $finishedPegawaiIds = \App\Models\AbsensiPosting::where('posting_id', $id)
+                ->where('status_selesai', true)
+                ->pluck('pegawai_id');
+                
+            if ($request->status == 'sudah') {
+                $query->whereIn('id', $finishedPegawaiIds);
+            } elseif ($request->status == 'belum') {
+                $query->whereNotIn('id', $finishedPegawaiIds);
+            }
+        }
         
-        $pegawais = $query->orderBy('nama_pegawai', 'asc')->paginate(15);
+        $pegawais = $query->orderByRaw('LENGTH(nip) DESC')->orderBy('id', 'asc')->paginate(15);
         
         $absensiRecords = \App\Models\AbsensiPosting::where('posting_id', $id)
                         ->whereIn('pegawai_id', $pegawais->pluck('id'))

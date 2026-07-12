@@ -11,26 +11,12 @@
         <div class="w-full">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
-                @if (session('success'))
-                    <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                      <span class="font-medium">Sukses!</span> {{ session('success') }}
-                    </div>
-                @endif
-                @if ($errors->any())
-                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                        <ul class="list-disc pl-5">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                <!-- SweetAlert handles success and error messages now -->
 
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Daftar Link Postingan</h3>
                     
-                    <!-- Modal toggle -->
-                    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+                    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition ease-in-out duration-150" type="button">
                       + Tambah Tugas
                     </button>
                 </div>
@@ -43,7 +29,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                             </svg>
                         </div>
-                        <input type="text" id="livesearch-input" name="search" value="{{ request('search') }}" placeholder="Cari judul tugas..." style="padding-left: 36px;" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <input type="text" id="livesearch-input" name="search" value="{{ request('search') }}" placeholder="Cari judul postingan..." style="padding-left: 36px;" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     </div>
                 </div>
 
@@ -52,11 +38,11 @@
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-6 py-3 w-16">No</th>
-                                <th scope="col" class="px-6 py-3">Judul Tugas</th>
-                                <th scope="col" class="px-6 py-3">Tanggal</th>
-                                <th scope="col" class="px-6 py-3">Link Medsos</th>
-                                <th scope="col" class="px-6 py-3">Aksi</th>
+                                <th scope="col" class="px-6 py-3 text-center w-16">No</th>
+                                <th scope="col" class="px-6 py-3">Judul Postingan</th>
+                                <th scope="col" class="px-6 py-3 text-center">Tanggal</th>
+                                <th scope="col" class="px-6 py-3 text-center">Link Medsos</th>
+                                <th scope="col" class="px-6 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,25 +52,25 @@
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
                                     {{ $post->judul_tugas }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
                                     {{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->locale('id')->translatedFormat('d F Y') : $post->created_at->locale('id')->translatedFormat('d F Y') }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex flex-wrap gap-1">
+                                    <div class="flex flex-wrap justify-center gap-1">
                                         @if($post->link_instagram) <a href="{{ $post->link_instagram }}" target="_blank" class="bg-pink-100 text-pink-800 text-xs font-medium px-2 py-0.5 rounded">IG</a> @endif
                                         @if($post->link_facebook) <a href="{{ $post->link_facebook }}" target="_blank" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">FB</a> @endif
-                                        @if($post->link_twitter) <a href="{{ $post->link_twitter }}" target="_blank" class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-0.5 rounded">X</a> @endif
+                                        @if($post->link_twitter) <a href="{{ $post->link_twitter }}" target="_blank" class="bg-sky-200 text-sky-900 text-xs font-medium px-2 py-0.5 rounded">X</a> @endif
                                         @if($post->link_tiktok) <a href="{{ $post->link_tiktok }}" target="_blank" class="bg-black text-white text-xs font-medium px-2 py-0.5 rounded">TikTok</a> @endif
                                         @if($post->link_youtube) <a href="{{ $post->link_youtube }}" target="_blank" class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">YT</a> @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 flex items-center space-x-2">
-                                    <a href="{{ route('admin.posting.laporan', $post->id) }}" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-xs px-3 py-2 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800">Laporan</a>
-                                    <button data-modal-target="edit-modal-{{ $post->id }}" data-modal-toggle="edit-modal-{{ $post->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800" type="button">Edit</button>
+                                <td class="px-6 py-4 flex items-center justify-center space-x-2">
+                                    <a href="{{ route('admin.posting.laporan', $post->id) }}" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition">Laporan</a>
+                                    <button data-modal-target="edit-modal-{{ $post->id }}" data-modal-toggle="edit-modal-{{ $post->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition" type="button">Edit</button>
                                     <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" class="inline m-0">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-2 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900" onclick="return confirm('Yakin ingin menghapus tugas ini?')">Hapus</button>
+                                        <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900 transition" onclick="confirmDelete(this, 'Yakin ingin menghapus tugas ini?')">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
@@ -133,7 +119,7 @@
                         </div>
                         <div class="col-span-2">
                             <label for="tanggal_tugas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
-                            <input type="text" name="tanggal_tugas" id="tanggal_tugas" value="{{ date('Y-m-d') }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <input type="text" name="tanggal_tugas" id="tanggal_tugas" class="datepicker-today bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         </div>
                         <div class="col-span-2 hidden">
                             <label for="batas_waktu" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Batas Waktu (Deadline)</label>
@@ -251,6 +237,14 @@
                 altFormat: "d/m/Y", // Tampilan untuk user
                 allowInput: true
             });
+            
+            flatpickr(".datepicker-today", {
+                dateFormat: "Y-m-d", 
+                altInput: true,
+                altFormat: "d/m/Y", 
+                allowInput: true,
+                defaultDate: "today"
+            });
         });
     </script>
 
@@ -287,49 +281,133 @@
         })();
     </script>
 
-    <!-- Live Search Script -->
+    <x-realtime-sync type="posting" />
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // SweetAlert for Session Success
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: {!! json_encode(session('success')) !!},
+                showConfirmButton: false,
+                timer: 2000
+            });
+        @endif
+
+        // SweetAlert for Session Errors
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                html: '<ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        @endif
+
+        // SweetAlert for Delete Confirmation
+        function confirmDelete(button, message) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest('form').submit();
+                }
+            });
+        }
+    </script>
+
+    <!-- Live Search & Pagination Script -->
+    <script>
+        let typingTimer;
+        const doneTypingInterval = 500;
+        
+        window.triggerSearch = function(targetUrl = null) {
+            const searchInput = document.getElementById('livesearch-input');
+            let url;
+            
+            if (targetUrl) {
+                url = new URL(targetUrl);
+            } else {
+                url = new URL(window.location.href);
+                if (searchInput && searchInput.value.trim() !== '') {
+                    url.searchParams.set('search', searchInput.value);
+                } else {
+                    url.searchParams.delete('search');
+                }
+                
+                url.searchParams.delete('page');
+            }
+            
+            window.history.pushState({}, '', url);
+            
+            const contentDiv = document.querySelector('#realtime-content');
+            if (contentDiv) {
+                contentDiv.style.transition = 'opacity 0.2s ease-in-out';
+                contentDiv.style.opacity = '0.4';
+                contentDiv.style.pointerEvents = 'none';
+            }
+            
+            fetch(url.href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#realtime-content');
+                if (newContent && contentDiv) {
+                    contentDiv.innerHTML = newContent.innerHTML;
+                    contentDiv.style.opacity = '1';
+                    contentDiv.style.pointerEvents = 'auto';
+                    
+                    if (typeof initFlowbite === 'function') {
+                        initFlowbite();
+                    } else if (typeof initModals === 'function') {
+                        initModals();
+                    }
+                }
+            })
+            .catch(err => {
+                console.error('Live search error:', err);
+                if (contentDiv) {
+                    contentDiv.style.opacity = '1';
+                    contentDiv.style.pointerEvents = 'auto';
+                }
+            });
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('livesearch-input');
-            let typingTimer;
-            const doneTypingInterval = 500;
-            
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     clearTimeout(typingTimer);
-                    typingTimer = setTimeout(function() {
-                        const url = new URL(window.location.href);
-                        if (searchInput.value.trim() !== '') {
-                            url.searchParams.set('search', searchInput.value);
-                            url.searchParams.delete('page');
-                        } else {
-                            url.searchParams.delete('search');
-                        }
-                        
-                        window.history.pushState({}, '', url);
-                        
-                        fetch(url.href, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Cache-Control': 'no-cache',
-                                'Pragma': 'no-cache'
-                            }
-                        })
-                        .then(res => res.text())
-                        .then(html => {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(html, 'text/html');
-                            const newContent = doc.querySelector('#realtime-content');
-                            if (newContent) {
-                                document.querySelector('#realtime-content').innerHTML = newContent.innerHTML;
-                            }
-                        })
-                        .catch(err => console.error('Live search error:', err));
-                    }, doneTypingInterval);
+                    typingTimer = setTimeout(() => window.triggerSearch(), doneTypingInterval);
                 });
             }
         });
-    </script>
 
-    <x-realtime-sync type="posting" />
+        // Intercept Pagination Clicks
+        document.addEventListener('click', function(e) {
+            const paginationLink = e.target.closest('#realtime-content nav[role="navigation"] a');
+            if (paginationLink && paginationLink.href) {
+                e.preventDefault();
+                window.triggerSearch(paginationLink.href);
+            }
+        });
+    </script>
 </x-app-layout>

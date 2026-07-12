@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Posting;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapLaporanExport;
 
-class RekapLaporanController extends Controller
+class PublicRekapController extends Controller
 {
     private function getRekapData(Request $request)
     {
@@ -133,11 +132,17 @@ class RekapLaporanController extends Controller
             $q->where('tanggal_pensiun', '>=', $today)
               ->orWhereNull('tanggal_pensiun');
         })->count();
-        
         $totalPegawaiAktif = $totalPegawaiAktif > 0 ? $totalPegawaiAktif : 1;
 
-        return view('admin.rekap-laporan.index', [
-            'rekap' => $paginatedRekap, 
+        if ($request->ajax()) {
+            return view('public.rekap-laporan', [
+                'rekap' => $paginatedRekap,
+                'totalPegawaiAktif' => $totalPegawaiAktif
+            ])->render();
+        }
+
+        return view('public.rekap-laporan', [
+            'rekap' => $paginatedRekap,
             'totalPegawaiAktif' => $totalPegawaiAktif
         ]);
     }

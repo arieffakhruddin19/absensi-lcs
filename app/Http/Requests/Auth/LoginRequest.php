@@ -58,6 +58,19 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+        if ($user && $user->role === 'pegawai' && $user->pegawai) {
+            $today = \Carbon\Carbon::now()->startOfDay();
+            $pensiunDate = $user->pegawai->tanggal_pensiun ? \Carbon\Carbon::parse($user->pegawai->tanggal_pensiun)->startOfDay() : null;
+            
+            if ($pensiunDate && $today->gt($pensiunDate)) {
+                Auth::logout();
+                throw ValidationException::withMessages([
+                    'email' => 'Akun Anda berstatus Pensiun dan tidak dapat digunakan untuk login.',
+                ]);
+            }
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

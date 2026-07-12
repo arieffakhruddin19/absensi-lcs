@@ -32,7 +32,8 @@ class DatabaseSeeder extends Seeder
         $pegawai = \App\Models\Pegawai::create([
             'nip' => '199001012020121001',
             'nama_pegawai' => 'Ahmad Pegawai',
-            'divisi' => 'Pusvetma'
+            'tmt' => '2020-12-01',
+            'tanggal_pensiun' => '2050-01-01'
         ]);
 
         User::factory()->create([

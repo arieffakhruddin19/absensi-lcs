@@ -18,16 +18,16 @@
                             $sudahSelesai = $abs && $abs->status_selesai;
                         @endphp
                         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative text-center">
-                            <span class="absolute top-0 left-0 bg-gray-100 text-gray-600 text-xs font-medium px-2.5 py-0.5 rounded-br-lg dark:bg-gray-700 dark:text-gray-300">
+                            <span class="absolute top-0 left-0 bg-gray-100 text-gray-600 text-xs font-medium px-2.5 py-0.5 rounded-br-lg rounded-tl-lg dark:bg-gray-700 dark:text-gray-300">
                                 {{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->locale('id')->translatedFormat('d F Y') : $post->created_at->locale('id')->translatedFormat('d F Y') }}
                             </span>
 
                             @if($sudahSelesai)
-                                <span class="absolute top-0 right-0 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-bl-lg dark:bg-green-900 dark:text-green-300">
+                                <span class="absolute top-0 right-0 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-bl-lg rounded-tr-lg dark:bg-green-900 dark:text-green-300">
                                     Selesai
                                 </span>
                             @else
-                                <span class="absolute top-0 right-0 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-bl-lg dark:bg-red-900 dark:text-red-300">
+                                <span class="absolute top-0 right-0 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-bl-lg rounded-tr-lg dark:bg-red-900 dark:text-red-300">
                                     Belum Selesai
                                 </span>
                             @endif
@@ -89,6 +89,7 @@
     </div>
 
     <!-- Script for AJAX -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Set global untuk menyimpan platform yang sudah dibuka kuncinya
         // Format: 'postId-platform' misalnya '7-ig'
@@ -136,7 +137,13 @@
 
         function handleCheckboxClick(e, checkbox) {
             if (checkbox.getAttribute('data-locked') === 'true') {
-                alert('Terkunci: Silakan buka link medsos terlebih dahulu dan lakukan LCS!');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Terkunci!',
+                    text: 'Silakan buka link medsos terlebih dahulu dan lakukan LCS!',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
                 e.preventDefault();
                 return false;
             }
@@ -220,13 +227,13 @@
                 } else {
                     checkbox.checked = !isChecked;
                     checkbox.disabled = false;
-                    alert('Gagal: ' + data.message);
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: data.message });
                 }
             })
             .catch(e => {
                 checkbox.checked = !isChecked;
                 checkbox.disabled = false;
-                alert('Terjadi kesalahan sistem: ' + e.message);
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan sistem: ' + e.message });
                 console.error(e);
             });
         }
@@ -246,59 +253,65 @@
         });
 
         function tandaiSelesai(targetUrl, btnElement) {
-            if(!confirm('Apakah Anda yakin sudah melakukan Like, Comment, dan Share pada postingan ini?')) {
-                return;
-            }
+            Swal.fire({
+                title: 'Konfirmasi LCS',
+                text: 'Apakah Anda yakin sudah melakukan Like, Comment, dan Share pada postingan ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Sudah!',
+                cancelButtonText: 'Belum'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Ganti state tombol jadi loading
+                    const originalText = btnElement.innerHTML;
+                    btnElement.innerHTML = 'Memproses...';
+                    btnElement.disabled = true;
 
-            // Ambil post ID dari tombol
-            const postId = btnElement.id.replace('btn-selesai-', '');
-
-            // Ganti state tombol jadi loading
-            const originalText = btnElement.innerHTML;
-            btnElement.innerHTML = 'Memproses...';
-            btnElement.disabled = true;
-
-            fetch(targetUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({})
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    const card = btnElement.closest('.relative');
-                    
-                    // Animasi menghilang (fade out & shrink)
-                    card.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.9)';
-                    
-                    // Hapus elemen dari DOM setelah animasi selesai
-                    setTimeout(() => {
-                        card.remove();
-                        
-                        // Cek apakah tidak ada lagi tugas yang tersisa di dalam container grid
-                        const container = document.querySelector('.grid');
-                        if (container && container.children.length === 0) {
-                            container.innerHTML = `<div class="col-span-full p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                              <span class="font-medium">Hore!</span> Semua tugas telah diselesaikan.
-                            </div>`;
+                    fetch(targetUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            const card = btnElement.closest('.relative');
+                            
+                            // Animasi menghilang (fade out & shrink)
+                            card.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.9)';
+                            
+                            // Hapus elemen dari DOM setelah animasi selesai
+                            setTimeout(() => {
+                                card.remove();
+                                
+                                // Cek apakah tidak ada lagi tugas yang tersisa di dalam container grid
+                                const container = document.querySelector('.grid');
+                                if (container && container.children.length === 0) {
+                                    container.innerHTML = `<div class="col-span-full p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                                      <span class="font-medium">Hore!</span> Semua tugas telah diselesaikan.
+                                    </div>`;
+                                }
+                            }, 500);
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Gagal', text: data.message });
+                            btnElement.innerHTML = originalText;
+                            btnElement.disabled = false;
                         }
-                    }, 500);
-                } else {
-                    alert('Gagal: ' + data.message);
-                    btnElement.innerHTML = originalText;
-                    btnElement.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan jaringan.' });
+                        btnElement.innerHTML = originalText;
+                        btnElement.disabled = false;
+                    });
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan jaringan.');
-                btnElement.innerHTML = originalText;
-                btnElement.disabled = false;
             });
         }
     </script>
