@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     // Pegawai Routes
     Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');
     Route::get('tugas/riwayat', [TugasController::class, 'riwayat'])->name('tugas.riwayat');
+    Route::post('tugas/{id}/medsos', [TugasController::class, 'tandaiMedsos'])->name('tugas.medsos');
     Route::post('tugas/{id}/selesai', [TugasController::class, 'selesaikan'])->name('tugas.selesai');
 });
 

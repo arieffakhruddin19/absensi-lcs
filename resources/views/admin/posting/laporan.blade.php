@@ -8,9 +8,9 @@
         </div>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-0">
         <div class="w-full">
-            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 <!-- Info Postingan -->
                 <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
@@ -24,56 +24,151 @@
                     </div>
                 </div>
 
-                <!-- Tabel Laporan Pegawai -->
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <!-- Live Search Form -->
+                <div class="mb-4" style="display: flex; justify-content: flex-end;">
+                    <div style="position: relative; width: 320px;">
+                        <div style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); pointer-events: none;">
+                            <svg style="width: 16px; height: 16px; color: #9ca3af;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input type="text" id="livesearch-input" name="search" value="{{ request('search') }}" placeholder="Ketik nama untuk mencari..." style="padding-left: 36px;" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Area yang akan di-update oleh Live Search & Realtime Sync -->
+                <div id="realtime-content">
+                    <!-- Tabel Laporan Pegawai -->
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">No</th>
                                 <th scope="col" class="px-6 py-3">Nama Pegawai</th>
-                                <th scope="col" class="px-6 py-3">Divisi</th>
-                                <th scope="col" class="px-6 py-3 text-center">Status Pengerjaan</th>
-                                <th scope="col" class="px-6 py-3 text-center">Waktu Dikerjakan</th>
+                                @if($posting->link_instagram)<th scope="col" class="px-6 py-3 text-center">IG</th>@endif
+                                @if($posting->link_facebook)<th scope="col" class="px-6 py-3 text-center">FB</th>@endif
+                                @if($posting->link_twitter)<th scope="col" class="px-6 py-3 text-center">X</th>@endif
+                                @if($posting->link_tiktok)<th scope="col" class="px-6 py-3 text-center">TikTok</th>@endif
+                                @if($posting->link_youtube)<th scope="col" class="px-6 py-3 text-center">YT</th>@endif
+                                <th scope="col" class="px-6 py-3 text-center">Semua Selesai</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($pegawais as $index => $pegawai)
                                 @php
-                                    $isSelesai = isset($absensi[$pegawai->id]) && $absensi[$pegawai->id] == 1;
-                                    $waktu = isset($waktuSelesai[$pegawai->id]) ? \Carbon\Carbon::parse($waktuSelesai[$pegawai->id])->format('d M Y, H:i') : '-';
+                                    $abs = $absensiRecords[$pegawai->id] ?? null;
+                                    $isSelesai = $abs && $abs->status_selesai;
+                                    $waktu = $abs && $abs->waktu_dikerjakan ? \Carbon\Carbon::parse($abs->waktu_dikerjakan)->format('d M Y, H:i') : '-';
                                 @endphp
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                     <td class="px-6 py-4">{{ $index + 1 }}</td>
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $pegawai->nama_pegawai }}
                                     </th>
-                                    <td class="px-6 py-4">{{ $pegawai->divisi }}</td>
+                                    @foreach(['ig' => $posting->link_instagram, 'fb' => $posting->link_facebook, 'tw' => $posting->link_twitter, 'tt' => $posting->link_tiktok, 'yt' => $posting->link_youtube] as $platKey => $hasPlat)
+                                        @if($hasPlat)
+                                            @php
+                                                $waktuMap = ['ig' => 'instagram', 'fb' => 'facebook', 'tw' => 'twitter', 'tt' => 'tiktok', 'yt' => 'youtube'];
+                                                $waktuField = 'waktu_' . $waktuMap[$platKey];
+                                                $hasWaktu = $abs && $abs->$waktuField;
+                                            @endphp
+                                            <td class="px-6 py-4 text-center">
+                                                <div class="flex gap-4 justify-center items-center" title="{{ $hasWaktu ? \Carbon\Carbon::parse($abs->$waktuField)->format('d M Y, H:i') : 'Belum' }}">
+                                                    @foreach(['like' => 'L', 'comment' => 'C', 'share' => 'S'] as $action => $label)
+                                                        @php
+                                                            $field = $platKey . '_' . $action;
+                                                            $isChecked = $abs && $abs->$field;
+                                                        @endphp
+                                                        <div class="flex items-center gap-1">
+                                                            <span class="font-bold text-sm {{ $isChecked ? 'text-green-600' : 'text-gray-500' }}" style="{{ $isChecked ? 'color: #16a34a;' : 'color: #6b7280;' }}">{{ $label }}</span>
+                                                            @if($isChecked)
+                                                                <svg class="w-4 h-4" fill="#16a34a" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                                            @else
+                                                                <svg class="w-4 h-4" fill="#dc2626" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                        @endif
+                                    @endforeach
                                     <td class="px-6 py-4 text-center">
                                         @if($isSelesai)
                                             <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                                 Selesai
                                             </span>
+                                            <div class="text-xs text-gray-500 mt-1">{{ $waktu }}</div>
                                         @else
                                             <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
                                                 Belum
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 text-center">
-                                        {{ $waktu }}
-                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">Belum ada data pegawai terdaftar.</td>
+                                    <td colspan="10" class="px-6 py-4 text-center text-gray-500">Belum ada data pegawai terdaftar.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
 
+                <!-- Pagination -->
+                <div class="mt-4">
+                    {{ $pegawais->appends(request()->query())->links() }}
+                </div>
+                </div> <!-- End of #realtime-content -->
+
             </div>
         </div>
     </div>
+
+    <!-- Live Search Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('livesearch-input');
+            let typingTimer;
+            const doneTypingInterval = 500; // 500ms debounce
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(function() {
+                        const url = new URL(window.location.href);
+                        if (searchInput.value.trim() !== '') {
+                            url.searchParams.set('search', searchInput.value);
+                            url.searchParams.delete('page'); // Reset to page 1 on new search
+                        } else {
+                            url.searchParams.delete('search');
+                        }
+                        
+                        // Update URL without reload
+                        window.history.pushState({}, '', url);
+                        
+                        // Fetch new table content
+                        fetch(url.href, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Cache-Control': 'no-cache',
+                                'Pragma': 'no-cache'
+                            }
+                        })
+                        .then(res => res.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newContent = doc.querySelector('#realtime-content');
+                            if (newContent) {
+                                document.querySelector('#realtime-content').innerHTML = newContent.innerHTML;
+                            }
+                        })
+                        .catch(err => console.error('Live search error:', err));
+                    }, doneTypingInterval);
+                });
+            }
+        });
+    </script>
+
     <x-realtime-sync type="laporan" />
 </x-app-layout>

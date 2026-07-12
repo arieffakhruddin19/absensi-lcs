@@ -48,6 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (typeof restoreEnabledButtons === 'function') {
                 restoreEnabledButtons();
             }
+            
+            // Restore state checkbox yang sudah di-unlock via klik medsos
+            if (typeof restoreUnlockedCheckboxes === 'function') {
+                restoreUnlockedCheckboxes();
+            }
         }
     }
 

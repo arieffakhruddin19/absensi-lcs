@@ -119,7 +119,7 @@
                  <li>
                     <a href="{{ route('admin.posting.index') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.posting.*') ? 'bg-blue-800' : '' }}">
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('admin.posting.*') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z"/>
+                          <path fill-rule="evenodd" d="M10 2a2 2 0 00-2 2H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2-2H10zm2 2a1 1 0 10-2 0h2zm-3.707 5.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L10 10.586 8.293 8.879z" clip-rule="evenodd"/>
                        </svg>
                        <span class="flex-1 ms-3 whitespace-nowrap">Tugas LCS</span>
                     </a>
@@ -133,7 +133,7 @@
                  <li>
                     <a href="{{ route('tugas.index') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('tugas.index') ? 'bg-blue-800' : '' }}">
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('tugas.index') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm1 11H9v-2h2v2Zm0-4H9V5h2v4Z"/>
+                          <path fill-rule="evenodd" d="M10 2a2 2 0 00-2 2H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2-2H10zm2 2a1 1 0 10-2 0h2zm-3.707 5.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L10 10.586 8.293 8.879z" clip-rule="evenodd"/>
                        </svg>
                        <span class="flex-1 ms-3 whitespace-nowrap">Daftar Tugas LCS</span>
                     </a>

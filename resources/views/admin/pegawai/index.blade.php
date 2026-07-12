@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-0">
         <div class="w-full">
             <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 

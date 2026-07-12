@@ -7,9 +7,9 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-0">
         <div class="w-full">
-            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 @if (session('success'))
                     <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
@@ -35,14 +35,27 @@
                     </button>
                 </div>
 
+                <!-- Live Search Form -->
+                <div class="mb-4" style="display: flex; justify-content: flex-end;">
+                    <div style="position: relative; width: 320px;">
+                        <div style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); pointer-events: none;">
+                            <svg style="width: 16px; height: 16px; color: #9ca3af;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input type="text" id="livesearch-input" name="search" value="{{ request('search') }}" placeholder="Cari judul tugas..." style="padding-left: 36px;" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div id="realtime-content">
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-16">No</th>
                                 <th scope="col" class="px-6 py-3">Judul Tugas</th>
-                                <th scope="col" class="px-6 py-3">Tanggal Dibuat</th>
-                                <th scope="col" class="px-6 py-3">Link Medsos Terpasang</th>
+                                <th scope="col" class="px-6 py-3">Tanggal</th>
+                                <th scope="col" class="px-6 py-3">Link Medsos</th>
                                 <th scope="col" class="px-6 py-3">Aksi</th>
                             </tr>
                         </thead>
@@ -85,8 +98,9 @@
                 </div>
                 
                 <div class="mt-4">
-                    {{ $postings->links() }}
+                    {{ $postings->appends(request()->query())->links() }}
                 </div>
+                </div> <!-- End of #realtime-content -->
 
             </div>
         </div>
@@ -272,5 +286,50 @@
             });
         })();
     </script>
+
+    <!-- Live Search Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('livesearch-input');
+            let typingTimer;
+            const doneTypingInterval = 500;
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(function() {
+                        const url = new URL(window.location.href);
+                        if (searchInput.value.trim() !== '') {
+                            url.searchParams.set('search', searchInput.value);
+                            url.searchParams.delete('page');
+                        } else {
+                            url.searchParams.delete('search');
+                        }
+                        
+                        window.history.pushState({}, '', url);
+                        
+                        fetch(url.href, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Cache-Control': 'no-cache',
+                                'Pragma': 'no-cache'
+                            }
+                        })
+                        .then(res => res.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newContent = doc.querySelector('#realtime-content');
+                            if (newContent) {
+                                document.querySelector('#realtime-content').innerHTML = newContent.innerHTML;
+                            }
+                        })
+                        .catch(err => console.error('Live search error:', err));
+                    }, doneTypingInterval);
+                });
+            }
+        });
+    </script>
+
     <x-realtime-sync type="posting" />
 </x-app-layout>

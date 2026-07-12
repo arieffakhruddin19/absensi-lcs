@@ -9,9 +9,13 @@ use App\Events\AdminDataUpdated;
 
 class PostingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $postings = Posting::latest()->paginate(10);
+        $query = Posting::query();
+        if ($request->has('search') && $request->search != '') {
+            $query->where('judul_tugas', 'like', '%' . $request->search . '%');
+        }
+        $postings = $query->latest()->paginate(10);
         return view('admin.posting.index', compact('postings'));
     }
 
@@ -75,19 +79,22 @@ class PostingController extends Controller
         return redirect()->route('admin.posting.index')->with('success', 'Postingan berhasil dihapus.');
     }
 
-    public function laporan($id)
+    public function laporan(Request $request, $id)
     {
         $posting = Posting::findOrFail($id);
-        $pegawais = \App\Models\Pegawai::orderBy('nama_pegawai', 'asc')->get();
         
-        $absensi = \App\Models\AbsensiPosting::where('posting_id', $id)
-                        ->pluck('status_selesai', 'pegawai_id')
-                        ->toArray();
-                        
-        $waktuSelesai = \App\Models\AbsensiPosting::where('posting_id', $id)
-                        ->pluck('waktu_dikerjakan', 'pegawai_id')
-                        ->toArray();
+        $query = \App\Models\Pegawai::query();
+        if ($request->has('search') && $request->search != '') {
+            $query->where('nama_pegawai', 'like', '%' . $request->search . '%');
+        }
+        
+        $pegawais = $query->orderBy('nama_pegawai', 'asc')->paginate(15);
+        
+        $absensiRecords = \App\Models\AbsensiPosting::where('posting_id', $id)
+                        ->whereIn('pegawai_id', $pegawais->pluck('id'))
+                        ->get()
+                        ->keyBy('pegawai_id');
 
-        return view('admin.posting.laporan', compact('posting', 'pegawais', 'absensi', 'waktuSelesai'));
+        return view('admin.posting.laporan', compact('posting', 'pegawais', 'absensiRecords'));
     }
 }
