@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="w-full">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 @if (session('success'))
                     <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
@@ -57,7 +57,7 @@
                                     <form action="{{ route('admin.pegawai.destroy', $pegawai->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="font-medium text-red-600 dark:text-red-500 hover:underline" onclick="return confirm('Yakin ingin menghapus pegawai ini beserta akun login-nya?')">Hapus</button>
+                                        <button type="submit" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-2 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900" onclick="return confirm('Yakin ingin menghapus pegawai ini beserta akun login-nya?')">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
@@ -124,4 +124,5 @@
             </div>
         </div>
     </div>
+    <x-realtime-sync type="pegawai" />
 </x-app-layout>

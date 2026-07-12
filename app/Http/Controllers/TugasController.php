@@ -7,6 +7,7 @@ use App\Models\Posting;
 use App\Models\AbsensiPosting;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Events\PegawaiDataUpdated;
 
 class TugasController extends Controller
 {
@@ -84,6 +85,9 @@ class TugasController extends Controller
                 'waktu_dikerjakan' => Carbon::now(),
             ]
         );
+
+        event(new PegawaiDataUpdated('tugas', $user->pegawai_id));
+        event(new \App\Events\AdminDataUpdated('laporan'));
 
         return response()->json([
             'success' => true,

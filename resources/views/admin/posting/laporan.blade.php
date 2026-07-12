@@ -10,7 +10,7 @@
 
     <div class="py-6">
         <div class="w-full">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 <!-- Info Postingan -->
                 <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
@@ -75,4 +75,5 @@
             </div>
         </div>
     </div>
+    <x-realtime-sync type="laporan" />
 </x-app-layout>

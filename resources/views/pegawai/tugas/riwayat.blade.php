@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="w-full">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Tugas yang sudah diselesaikan</h3>
 
@@ -76,4 +76,5 @@
         </div>
     </div>
 
+    <x-realtime-sync type="tugas" channel="pegawai-notifications-{{ auth()->user()->pegawai_id ?? '0' }}" event="PegawaiDataUpdated" />
 </x-app-layout>

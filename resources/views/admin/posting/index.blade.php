@@ -9,7 +9,7 @@
 
     <div class="py-6">
         <div class="w-full">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 @if (session('success'))
                     <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
@@ -110,7 +110,7 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form action="{{ route('admin.posting.store') }}" method="POST" class="p-4 md:p-5">
+                <form action="{{ route('admin.posting.store') }}" method="POST" class="p-4 md:p-5" onsubmit="this.querySelector('button[type=submit]').disabled=true;this.querySelector('button[type=submit]').innerHTML='Menyimpan...'">
                     @csrf
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
@@ -175,7 +175,7 @@
                         <span class="sr-only">Tutup</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.posting.update', $post->id) }}" method="POST" class="p-4 md:p-5">
+                <form action="{{ route('admin.posting.update', $post->id) }}" method="POST" class="p-4 md:p-5" onsubmit="this.querySelector('button[type=submit]').disabled=true;this.querySelector('button[type=submit]').innerHTML='Menyimpan...'">
                     @csrf
                     @method('PUT')
                     <div class="grid gap-4 mb-4 grid-cols-2">
@@ -239,4 +239,38 @@
             });
         });
     </script>
+
+    <script>
+        // Manual backdrop karena Flowbite tidak auto-generate
+        (function() {
+            function createBackdrop() {
+                if (document.getElementById('custom-modal-backdrop')) return;
+                const backdrop = document.createElement('div');
+                backdrop.id = 'custom-modal-backdrop';
+                backdrop.style.cssText = 'position:fixed;inset:0;z-index:40;background:rgba(17,24,39,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.2s;';
+                document.body.appendChild(backdrop);
+            }
+            function removeBackdrop() {
+                const backdrop = document.getElementById('custom-modal-backdrop');
+                if (backdrop) backdrop.remove();
+            }
+            // Observe semua modal (crud-modal & edit-modal-*) untuk perubahan class
+            const observer = new MutationObserver(function() {
+                const anyModalOpen = document.querySelectorAll('[id$="-modal"]:not(.hidden)[tabindex="-1"], [id^="edit-modal-"]:not(.hidden)[tabindex="-1"]');
+                let found = false;
+                anyModalOpen.forEach(el => {
+                    if (!el.classList.contains('hidden')) found = true;
+                });
+                if (found) {
+                    createBackdrop();
+                } else {
+                    removeBackdrop();
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+            });
+        })();
+    </script>
+    <x-realtime-sync type="posting" />
 </x-app-layout>

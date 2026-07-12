@@ -7,7 +7,7 @@
 
     <div class="py-6">
         <div class="w-full">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Tugas yang perlu diselesaikan</h3>
 
@@ -79,20 +79,66 @@
 
     <!-- Script for AJAX -->
     <script>
+        // Simpan post ID yang sudah diklik "Buka IG/FB/dll" di sessionStorage
+        // agar tetap aktif walau DOM di-refresh oleh realtime-sync
+        function getOpenedPosts() {
+            try {
+                return JSON.parse(sessionStorage.getItem('openedPosts') || '[]');
+            } catch(e) {
+                return [];
+            }
+        }
+
+        function saveOpenedPost(postId) {
+            const opened = getOpenedPosts();
+            if (!opened.includes(postId)) {
+                opened.push(postId);
+                sessionStorage.setItem('openedPosts', JSON.stringify(opened));
+            }
+        }
+
+        function removeOpenedPost(postId) {
+            let opened = getOpenedPosts();
+            opened = opened.filter(id => id !== postId);
+            sessionStorage.setItem('openedPosts', JSON.stringify(opened));
+        }
+
+        function activateButton(btn) {
+            btn.disabled = false;
+            btn.removeAttribute('title');
+            btn.className = 'inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800 transition-all';
+        }
+
         function enableBtnSelesai(postId) {
             const btn = document.getElementById('btn-selesai-' + postId);
             if (btn && btn.disabled) {
-                btn.disabled = false;
-                btn.removeAttribute('title');
-                // Kembalikan ke warna hijau ala tombol aktif
-                btn.className = 'inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800 transition-all';
+                activateButton(btn);
             }
+            // Simpan ke sessionStorage agar survive DOM refresh
+            saveOpenedPost(postId);
         }
+
+        // Re-enable semua tombol yang sudah pernah diklik setelah DOM di-refresh
+        function restoreEnabledButtons() {
+            const opened = getOpenedPosts();
+            opened.forEach(postId => {
+                const btn = document.getElementById('btn-selesai-' + postId);
+                if (btn && btn.disabled) {
+                    activateButton(btn);
+                }
+            });
+        }
+
+        // Jalankan restore saat halaman pertama kali dimuat
+        document.addEventListener('DOMContentLoaded', restoreEnabledButtons);
 
         function tandaiSelesai(targetUrl, btnElement) {
             if(!confirm('Apakah Anda yakin sudah melakukan Like, Comment, dan Share pada postingan ini?')) {
                 return;
             }
+
+            // Ambil post ID dari tombol
+            const postId = btnElement.id.replace('btn-selesai-', '');
 
             // Ganti state tombol jadi loading
             const originalText = btnElement.innerHTML;
@@ -110,17 +156,28 @@
             .then(response => response.json())
             .then(data => {
                 if(data.success) {
-                    // Berubah jadi tombol disabled hijau/abu
-                    btnElement.innerHTML = 'Sudah Dikerjakan';
-                    btnElement.className = 'inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-center text-gray-500 bg-gray-200 rounded-lg cursor-not-allowed dark:bg-gray-700 dark:text-gray-400 mt-2';
-                    
-                    // Ubah label merah jadi hijau
+                    // Hapus dari sessionStorage karena sudah selesai
+                    removeOpenedPost(postId);
+
                     const card = btnElement.closest('.relative');
-                    const badge = card.querySelector('.bg-red-100');
-                    if(badge) {
-                        badge.className = 'absolute top-0 right-0 bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-bl-lg dark:bg-green-900 dark:text-green-300';
-                        badge.innerHTML = 'Selesai';
-                    }
+                    
+                    // Animasi menghilang (fade out & shrink)
+                    card.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.9)';
+                    
+                    // Hapus elemen dari DOM setelah animasi selesai
+                    setTimeout(() => {
+                        card.remove();
+                        
+                        // Cek apakah tidak ada lagi tugas yang tersisa di dalam container grid
+                        const container = document.querySelector('.grid');
+                        if (container && container.children.length === 0) {
+                            container.innerHTML = `<div class="col-span-full p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
+                              <span class="font-medium">Hore!</span> Semua tugas telah diselesaikan.
+                            </div>`;
+                        }
+                    }, 500);
                 } else {
                     alert('Gagal: ' + data.message);
                     btnElement.innerHTML = originalText;
@@ -135,4 +192,5 @@
             });
         }
     </script>
+    <x-realtime-sync type="tugas" channel="pegawai-notifications-{{ auth()->user()->pegawai_id ?? '0' }}" event="PegawaiDataUpdated" />
 </x-app-layout>

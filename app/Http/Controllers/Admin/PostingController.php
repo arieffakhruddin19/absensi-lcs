@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Posting;
+use App\Events\AdminDataUpdated;
 
 class PostingController extends Controller
 {
@@ -31,6 +32,8 @@ class PostingController extends Controller
             'judul_tugas', 'tanggal_tugas', 'batas_waktu', 
             'link_instagram', 'link_facebook', 'link_twitter', 'link_tiktok', 'link_youtube'
         ));
+
+        event(new AdminDataUpdated('posting'));
 
         return redirect()->route('admin.posting.index')->with('success', 'Tugas postingan berhasil ditambahkan!');
     }
@@ -60,12 +63,15 @@ class PostingController extends Controller
             'link_instagram', 'link_facebook', 'link_twitter', 'link_tiktok', 'link_youtube'
         ));
 
+        event(new AdminDataUpdated('posting'));
+
         return redirect()->route('admin.posting.index')->with('success', 'Tugas postingan berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
         Posting::findOrFail($id)->delete();
+        event(new AdminDataUpdated('posting'));
         return redirect()->route('admin.posting.index')->with('success', 'Postingan berhasil dihapus.');
     }
 

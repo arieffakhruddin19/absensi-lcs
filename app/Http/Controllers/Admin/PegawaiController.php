@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Pegawai;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Events\AdminDataUpdated;
 
 class PegawaiController extends Controller
 {
@@ -35,6 +36,8 @@ class PegawaiController extends Controller
             'pegawai_id' => $pegawai->id,
         ]);
 
+        event(new AdminDataUpdated('pegawai'));
+
         return redirect()->route('admin.pegawai.index')->with('success', 'Pegawai berhasil ditambahkan dan akun login otomatis dibuat!');
     }
 
@@ -47,6 +50,8 @@ class PegawaiController extends Controller
         }
         $pegawai->delete();
         
+        event(new AdminDataUpdated('pegawai'));
+
         return redirect()->route('admin.pegawai.index')->with('success', 'Pegawai dan akun berhasil dihapus.');
     }
 }
