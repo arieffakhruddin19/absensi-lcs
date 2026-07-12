@@ -22,6 +22,9 @@
                     <x-nav-link :href="route('admin.posting.index')" :active="request()->routeIs('admin.posting.*')">
                         {{ __('Tugas LCS') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.rekap-laporan')" :active="request()->routeIs('admin.rekap-laporan')">
+                        {{ __('Rekap Laporan') }}
+                    </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -84,6 +87,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('admin.posting.index')" :active="request()->routeIs('admin.posting.*')">
                 {{ __('Tugas LCS') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.rekap-laporan')" :active="request()->routeIs('admin.rekap-laporan')">
+                {{ __('Rekap Laporan') }}
             </x-responsive-nav-link>
             @endif
         </div>

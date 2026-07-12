@@ -131,8 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Listener 1: Admin Channel (Selalu ada)
                 window.Echo.channel('admin-notifications')
                     .listen('.App\\\\Events\\\\AdminDataUpdated', (e) => {
-                        // Jika AdminDataUpdated(posting), maka halaman tugas pegawai juga harus ter-update
-                        if (e.type === '{{ $type }}' || (e.type === 'posting' && '{{ $type }}' === 'tugas')) {
+                        // Jika AdminDataUpdated(posting), maka halaman tugas pegawai dan rekap laporan juga harus ter-update
+                        if (e.type === '{{ $type }}' || (e.type === 'posting' && ('{{ $type }}' === 'tugas' || '{{ $type }}' === 'laporan'))) {
                             triggerUpdate();
                         }
                     });

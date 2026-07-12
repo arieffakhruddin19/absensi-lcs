@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PegawaiController;
 use App\Http\Controllers\Admin\PostingController;
+use App\Http\Controllers\Admin\RekapLaporanController;
 use App\Http\Controllers\TugasController;
 
 Route::get('/', function () {
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('admin/pegawai', PegawaiController::class)->names('admin.pegawai');
     Route::resource('admin/posting', PostingController::class)->names('admin.posting');
     Route::get('admin/posting/{posting}/laporan', [PostingController::class, 'laporan'])->name('admin.posting.laporan');
+    Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');
     
     // Pegawai Routes
     Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');
