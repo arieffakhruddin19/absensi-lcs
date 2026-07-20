@@ -20,6 +20,9 @@ class RekapLaporanController extends Controller
         if ($request->has('tanggal') && $request->tanggal != '') {
             $query->whereDate('tanggal_tugas', $request->tanggal);
         }
+        if ($request->has('sumber') && $request->sumber != '') {
+            $query->where('sumber_posting', $request->sumber);
+        }
         $postings = $query->latest()->get();
         
         $postingIds = $postings->pluck('id')->toArray();
@@ -56,6 +59,7 @@ class RekapLaporanController extends Controller
                     'link' => $posting->link_instagram,
                     'jenis_medsos' => 'Instagram',
                     'tanggal' => $posting->tanggal_tugas,
+                    'sumber' => $posting->sumber_posting,
                     'like' => $sum->ig_like ?? 0,
                     'comment' => $sum->ig_comment ?? 0,
                     'share' => $sum->ig_share ?? 0,
@@ -68,6 +72,7 @@ class RekapLaporanController extends Controller
                     'link' => $posting->link_facebook,
                     'jenis_medsos' => 'Facebook',
                     'tanggal' => $posting->tanggal_tugas,
+                    'sumber' => $posting->sumber_posting,
                     'like' => $sum->fb_like ?? 0,
                     'comment' => $sum->fb_comment ?? 0,
                     'share' => $sum->fb_share ?? 0,
@@ -80,6 +85,7 @@ class RekapLaporanController extends Controller
                     'link' => $posting->link_twitter,
                     'jenis_medsos' => 'Twitter',
                     'tanggal' => $posting->tanggal_tugas,
+                    'sumber' => $posting->sumber_posting,
                     'like' => $sum->tw_like ?? 0,
                     'comment' => $sum->tw_comment ?? 0,
                     'share' => $sum->tw_share ?? 0,
@@ -92,6 +98,7 @@ class RekapLaporanController extends Controller
                     'link' => $posting->link_tiktok,
                     'jenis_medsos' => 'TikTok',
                     'tanggal' => $posting->tanggal_tugas,
+                    'sumber' => $posting->sumber_posting,
                     'like' => $sum->tt_like ?? 0,
                     'comment' => $sum->tt_comment ?? 0,
                     'share' => $sum->tt_share ?? 0,
@@ -104,6 +111,7 @@ class RekapLaporanController extends Controller
                     'link' => $posting->link_youtube,
                     'jenis_medsos' => 'YouTube',
                     'tanggal' => $posting->tanggal_tugas,
+                    'sumber' => $posting->sumber_posting,
                     'like' => $sum->yt_like ?? 0,
                     'comment' => $sum->yt_comment ?? 0,
                     'share' => $sum->yt_share ?? 0,
@@ -118,7 +126,7 @@ class RekapLaporanController extends Controller
     {
         $rekap = $this->getRekapData($request);
 
-        $perPage = 10;
+        $perPage = $request->input('per_page', 10);
         $page = $request->get('page', 1);
         $paginatedRekap = new \Illuminate\Pagination\LengthAwarePaginator(
             $rekap->forPage($page, $perPage)->values(),

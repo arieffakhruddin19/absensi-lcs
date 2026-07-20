@@ -14,6 +14,7 @@ class Posting extends Model
         'link_twitter', 
         'link_tiktok', 
         'link_youtube', 
-        'batas_waktu'
+        'batas_waktu',
+        'sumber_posting'
     ];
 }

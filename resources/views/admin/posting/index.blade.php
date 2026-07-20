@@ -3,7 +3,7 @@
         <!-- Flatpickr CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Manajemen Tugas LCS') }}
+            {{ __('Manajemen LCS') }}
         </h2>
     </x-slot>
 
@@ -17,7 +17,7 @@
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Daftar Link Postingan</h3>
                     
                     <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition ease-in-out duration-150" type="button">
-                      + Tambah Tugas
+                      + Tambah Postingan
                     </button>
                 </div>
 
@@ -40,6 +40,7 @@
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-center w-16">No</th>
                                 <th scope="col" class="px-6 py-3">Judul Postingan</th>
+                                <th scope="col" class="px-6 py-3 text-center">Sumber</th>
                                 <th scope="col" class="px-6 py-3 text-center">Tanggal</th>
                                 <th scope="col" class="px-6 py-3 text-center">Link Medsos</th>
                                 <th scope="col" class="px-6 py-3 text-center">Aksi</th>
@@ -51,6 +52,19 @@
                                 <td class="px-6 py-4 text-center">{{ $postings->firstItem() + $index }}</td>
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
                                     {{ $post->judul_tugas }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @if($post->sumber_posting)
+                                        @if($post->sumber_posting == 'Kementan')
+                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 border border-green-400">{{ $post->sumber_posting }}</span>
+                                        @elseif($post->sumber_posting == 'Ditjen PKH')
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 border border-blue-400">{{ $post->sumber_posting }}</span>
+                                        @else
+                                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 border border-purple-400">{{ $post->sumber_posting }}</span>
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
                                     {{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->locale('id')->translatedFormat('d F Y') : $post->created_at->locale('id')->translatedFormat('d F Y') }}
@@ -70,13 +84,13 @@
                                     <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" class="inline m-0">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900 transition" onclick="confirmDelete(this, 'Yakin ingin menghapus tugas ini?')">Hapus</button>
+                                        <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900 transition" onclick="confirmDelete(this, 'Yakin ingin menghapus postingan ini?')">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-4 text-center">Belum ada tugas postingan.</td>
+                                <td colspan="7" class="px-6 py-4 text-center">Belum ada postingan.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -100,7 +114,7 @@
                 <!-- Modal header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Tambah Tugas LCS Baru
+                        Tambah Postingan Baru
                     </h3>
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -114,12 +128,21 @@
                     @csrf
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
-                            <label for="judul_tugas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul Tugas</label>
+                            <label for="judul_tugas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul Postingan</label>
                             <input type="text" name="judul_tugas" id="judul_tugas" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required="">
                         </div>
                         <div class="col-span-2">
                             <label for="tanggal_tugas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
                             <input type="text" name="tanggal_tugas" id="tanggal_tugas" class="datepicker-today bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="sumber_posting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sumber Posting <span class="text-red-500">*</span></label>
+                            <select id="sumber_posting" name="sumber_posting" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <option value="">Pilih Sumber Posting</option>
+                                <option value="Kementan">Kementan</option>
+                                <option value="Ditjen PKH">Ditjen PKH</option>
+                                <option value="Pusvetma">Pusvetma</option>
+                            </select>
                         </div>
                         <div class="col-span-2 hidden">
                             <label for="batas_waktu" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Batas Waktu (Deadline)</label>
@@ -128,7 +151,7 @@
                         
                         <div class="col-span-2 mt-2">
                             <h4 class="text-sm font-bold text-gray-900 dark:text-white border-b pb-1">Link Media Sosial (Opsional)</h4>
-                            <p class="text-xs text-gray-500">Kosongkan link jika tidak ada tugas di platform tersebut.</p>
+                            <p class="text-xs text-gray-500">Kosongkan link jika tidak ada instruksi di platform tersebut.</p>
                         </div>
 
                         <div class="col-span-2">
@@ -153,7 +176,7 @@
                         </div>
                     </div>
                     <button type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Simpan Tugas
+                        Simpan Postingan
                     </button>
                 </form>
             </div>
@@ -166,7 +189,7 @@
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                 <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        Edit Tugas LCS
+                        Edit LCS
                     </h3>
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="edit-modal-{{ $post->id }}">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -180,12 +203,21 @@
                     @method('PUT')
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul Tugas</label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Judul Postingan</label>
                             <input type="text" name="judul_tugas" value="{{ $post->judul_tugas }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
                         </div>
                         <div class="col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
                             <input type="text" name="tanggal_tugas" value="{{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->format('Y-m-d') : '' }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sumber Posting <span class="text-red-500">*</span></label>
+                            <select name="sumber_posting" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <option value="">Pilih Sumber Posting</option>
+                                <option value="Kementan" {{ $post->sumber_posting == 'Kementan' ? 'selected' : '' }}>Kementan</option>
+                                <option value="Ditjen PKH" {{ $post->sumber_posting == 'Ditjen PKH' ? 'selected' : '' }}>Ditjen PKH</option>
+                                <option value="Pusvetma" {{ $post->sumber_posting == 'Pusvetma' ? 'selected' : '' }}>Pusvetma</option>
+                            </select>
                         </div>
                         <div class="col-span-2 hidden">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Batas Waktu (Deadline)</label>
@@ -194,7 +226,7 @@
                         
                         <div class="col-span-2 mt-2">
                             <h4 class="text-sm font-bold text-gray-900 dark:text-white border-b pb-1">Link Media Sosial (Opsional)</h4>
-                            <p class="text-xs text-gray-500">Kosongkan link jika tidak ada tugas di platform tersebut.</p>
+                            <p class="text-xs text-gray-500">Kosongkan link jika tidak ada instruksi di platform tersebut.</p>
                         </div>
 
                         <div class="col-span-2">

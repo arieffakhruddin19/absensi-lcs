@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Laporan Absensi Tugas LCS') }}
+                {{ __('Laporan Absensi LCS') }}
             </h2>
             <a href="{{ route('admin.posting.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">← Kembali ke Daftar</a>
         </div>
@@ -26,6 +26,17 @@
 
                 <!-- Live Search & Filter Form -->
                 <div class="mb-4" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
+                    <!-- Per Page Filter -->
+                    <div style="width: 80px;">
+                        <select id="perpage-filter" name="per_page" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                            <option value="15" {{ request('per_page', 15) == '15' ? 'selected' : '' }}>15</option>
+                            <option value="25" {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
+                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                        </select>
+                    </div>
+
                     <!-- Status Filter -->
                     <div style="width: 150px;">
                         <select id="status-filter" name="status" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -70,7 +81,7 @@
                                     $waktu = $abs && $abs->waktu_dikerjakan ? \Carbon\Carbon::parse($abs->waktu_dikerjakan)->format('d M Y, H:i') : '-';
                                 @endphp
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                    <td class="px-6 py-4">{{ $index + 1 }}</td>
+                                    <td class="px-6 py-4">{{ $pegawais->firstItem() + $index }}</td>
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ $pegawai->nama_pegawai }}
                                     </th>
@@ -141,6 +152,7 @@
         window.triggerSearch = function(targetUrl = null) {
             const searchInput = document.getElementById('livesearch-input');
             const statusFilter = document.getElementById('status-filter');
+            const perPageFilter = document.getElementById('perpage-filter');
             let url;
             
             if (targetUrl) {
@@ -157,6 +169,10 @@
                     url.searchParams.set('status', statusFilter.value);
                 } else {
                     url.searchParams.delete('status');
+                }
+
+                if (perPageFilter && perPageFilter.value) {
+                    url.searchParams.set('per_page', perPageFilter.value);
                 }
                 
                 url.searchParams.delete('page');

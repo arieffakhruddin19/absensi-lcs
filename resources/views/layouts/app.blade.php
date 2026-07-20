@@ -100,6 +100,7 @@
         <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-blue-900 border-r border-blue-900 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
            <div class="h-full px-3 pb-4 overflow-y-auto bg-blue-900 dark:bg-gray-800 text-white">
               <ul class="space-y-2 font-medium text-sm">
+                 @if (Auth::user()->role === 'admin')
                  <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('dashboard') ? 'bg-blue-800' : '' }}">
                        <svg class="w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('dashboard') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -109,6 +110,7 @@
                        <span class="ms-3">Dashboard</span>
                     </a>
                  </li>
+                 @endif
                  
                  @if (Auth::user()->role === 'admin')
                  <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
@@ -127,7 +129,7 @@
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('admin.posting.*') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                           <path fill-rule="evenodd" d="M10 2a2 2 0 00-2 2H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2-2H10zm2 2a1 1 0 10-2 0h2zm-3.707 5.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L10 10.586 8.293 8.879z" clip-rule="evenodd"/>
                        </svg>
-                       <span class="flex-1 ms-3 whitespace-nowrap">Tugas LCS</span>
+                       <span class="flex-1 ms-3 whitespace-nowrap">Daftar LCS</span>
                     </a>
                  </li>
                  <li>
@@ -141,7 +143,7 @@
                  @endif
                  
                  @if (Auth::user()->role === 'pegawai')
-                 <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
+                 <li class="mb-2 space-y-2">
                     <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">MENU PEGAWAI</span>
                  </li>
                  <li>
@@ -149,7 +151,7 @@
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('tugas.index') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                           <path fill-rule="evenodd" d="M10 2a2 2 0 00-2 2H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2-2H10zm2 2a1 1 0 10-2 0h2zm-3.707 5.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L10 10.586 8.293 8.879z" clip-rule="evenodd"/>
                        </svg>
-                       <span class="flex-1 ms-3 whitespace-nowrap">Daftar Tugas LCS</span>
+                       <span class="flex-1 ms-3 whitespace-nowrap">Daftar LCS</span>
                     </a>
                  </li>
                  <li>

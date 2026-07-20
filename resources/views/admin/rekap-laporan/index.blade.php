@@ -27,6 +27,24 @@
                 <div class="mb-4" style="display: flex; justify-content: flex-end;">
                     <form method="GET" action="{{ route('admin.rekap-laporan') }}" class="flex gap-2 w-full sm:w-auto">
                         
+                        <div>
+                            <select id="filter-perpage" name="per_page" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="10" {{ request('per_page', '10') == '10' ? 'selected' : '' }}>10</option>
+                                <option value="25" {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <select id="filter-sumber" name="sumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Semua Sumber</option>
+                                <option value="Kementan" {{ request('sumber') == 'Kementan' ? 'selected' : '' }}>Kementan</option>
+                                <option value="Ditjen PKH" {{ request('sumber') == 'Ditjen PKH' ? 'selected' : '' }}>Ditjen PKH</option>
+                                <option value="Pusvetma" {{ request('sumber') == 'Pusvetma' ? 'selected' : '' }}>Pusvetma</option>
+                            </select>
+                        </div>
+
                         <div style="position: relative; display: flex; align-items: center; width: 180px;">
                             <input type="text" id="filter-tanggal" name="tanggal" value="{{ request('tanggal') }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal..." title="Filter Tanggal">
                             <button type="button" onclick="document.getElementById('filter-tanggal')._flatpickr.clear();" class="text-gray-400 hover:text-gray-800 dark:hover:text-gray-200" title="Bersihkan tanggal" style="position: absolute; right: 10px;">
@@ -66,6 +84,7 @@
                                 <th scope="col" class="px-6 py-3 w-16">No</th>
                                 <th scope="col" class="px-6 py-3">Tanggal</th>
                                 <th scope="col" class="px-6 py-3">Judul Postingan</th>
+                                <th scope="col" class="px-6 py-3">Sumber</th>
                                 <th scope="col" class="px-6 py-3">Link</th>
                                 <th scope="col" class="px-6 py-3">Medsos</th>
                                 <th scope="col" class="px-6 py-3">Jumlah Like</th>
@@ -82,6 +101,19 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
                                     {{ $item->judul }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @if(isset($item->sumber) && $item->sumber)
+                                        @if($item->sumber == 'Kementan')
+                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 border border-green-400">{{ $item->sumber }}</span>
+                                        @elseif($item->sumber == 'Ditjen PKH')
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 border border-blue-400">{{ $item->sumber }}</span>
+                                        @else
+                                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 border border-purple-400">{{ $item->sumber }}</span>
+                                        @endif
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <a href="{{ $item->link }}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">Link</a>
@@ -141,6 +173,8 @@
             const searchInput = document.getElementById('livesearch-input');
             const filterTanggal = document.getElementById('filter-tanggal');
             const filterMedsos = document.getElementById('filter-medsos');
+            const filterPerPage = document.getElementById('filter-perpage');
+            const filterSumber = document.getElementById('filter-sumber');
             let typingTimer;
             const doneTypingInterval = 500;
             
@@ -163,6 +197,18 @@
                     url.searchParams.set('jenis_medsos', filterMedsos.value);
                 } else {
                     url.searchParams.delete('jenis_medsos');
+                }
+
+                if (filterPerPage && filterPerPage.value !== '') {
+                    url.searchParams.set('per_page', filterPerPage.value);
+                } else {
+                    url.searchParams.delete('per_page');
+                }
+
+                if (filterSumber && filterSumber.value !== '') {
+                    url.searchParams.set('sumber', filterSumber.value);
+                } else {
+                    url.searchParams.delete('sumber');
                 }
 
                 url.searchParams.delete('page');
@@ -210,6 +256,14 @@
 
             if (filterMedsos) {
                 filterMedsos.addEventListener('change', triggerSearch);
+            }
+
+            if (filterPerPage) {
+                filterPerPage.addEventListener('change', triggerSearch);
+            }
+
+            if (filterSumber) {
+                filterSumber.addEventListener('change', triggerSearch);
             }
         });
     </script>

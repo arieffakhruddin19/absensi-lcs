@@ -30,11 +30,12 @@ class PostingController extends Controller
             'link_twitter' => 'nullable|url',
             'link_tiktok' => 'nullable|url',
             'link_youtube' => 'nullable|url',
+            'sumber_posting' => 'required|string|in:Kementan,Ditjen PKH,Pusvetma',
         ]);
 
         Posting::create($request->only(
             'judul_tugas', 'tanggal_tugas', 'batas_waktu', 
-            'link_instagram', 'link_facebook', 'link_twitter', 'link_tiktok', 'link_youtube'
+            'link_instagram', 'link_facebook', 'link_twitter', 'link_tiktok', 'link_youtube', 'sumber_posting'
         ));
 
         event(new AdminDataUpdated('posting'));
@@ -59,12 +60,13 @@ class PostingController extends Controller
             'link_twitter' => 'nullable|url',
             'link_tiktok' => 'nullable|url',
             'link_youtube' => 'nullable|url',
+            'sumber_posting' => 'required|string|in:Kementan,Ditjen PKH,Pusvetma',
         ]);
 
         $posting = Posting::findOrFail($id);
         $posting->update($request->only(
             'judul_tugas', 'tanggal_tugas', 'batas_waktu', 
-            'link_instagram', 'link_facebook', 'link_twitter', 'link_tiktok', 'link_youtube'
+            'link_instagram', 'link_facebook', 'link_twitter', 'link_tiktok', 'link_youtube', 'sumber_posting'
         ));
 
         event(new AdminDataUpdated('posting'));
@@ -83,7 +85,11 @@ class PostingController extends Controller
     {
         $posting = Posting::findOrFail($id);
         
-        $query = \App\Models\Pegawai::query();
+        $today = \Carbon\Carbon::today()->toDateString();
+        $query = \App\Models\Pegawai::query()->where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        });
         if ($request->has('search') && $request->search != '') {
             $query->where('nama_pegawai', 'like', '%' . $request->search . '%');
         }
@@ -100,7 +106,8 @@ class PostingController extends Controller
             }
         }
         
-        $pegawais = $query->orderByRaw('LENGTH(nip) DESC')->orderBy('id', 'asc')->paginate(15);
+        $perPage = $request->input('per_page', 15);
+        $pegawais = $query->orderByRaw('LENGTH(nip) DESC')->orderBy('id', 'asc')->paginate($perPage);
         
         $absensiRecords = \App\Models\AbsensiPosting::where('posting_id', $id)
                         ->whereIn('pegawai_id', $pegawais->pluck('id'))

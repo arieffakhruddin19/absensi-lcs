@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Riwayat Tugas LCS') }}
+            {{ __('Riwayat LCS') }}
         </h2>
     </x-slot>
 
@@ -10,7 +10,7 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
                 <div class="flex justify-between items-center mb-4" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 m-0">Tugas yang sudah diselesaikan</h3>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 m-0">LCS yang sudah diselesaikan</h3>
                     
                     <!-- Live Search Form -->
                     <div style="position: relative; width: 320px;">
@@ -47,6 +47,21 @@
 
                             <div class="flex flex-col items-center justify-center mb-2 mt-4">
                                 <h5 class="mb-0 text-base font-bold text-gray-900 dark:text-white">{{ $post->judul_tugas }}</h5>
+                                @if($post->sumber_posting)
+                                    @if($post->sumber_posting == 'Kementan')
+                                        <span class="mt-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300 border border-green-400">
+                                            {{ $post->sumber_posting }}
+                                        </span>
+                                    @elseif($post->sumber_posting == 'Ditjen PKH')
+                                        <span class="mt-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 border border-blue-400">
+                                            {{ $post->sumber_posting }}
+                                        </span>
+                                    @else
+                                        <span class="mt-2 bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300 border border-purple-400">
+                                            {{ $post->sumber_posting }}
+                                        </span>
+                                    @endif
+                                @endif
                             </div>
                             
                             <div class="flex flex-col gap-2 mb-3 mt-3 w-full px-4 text-left">

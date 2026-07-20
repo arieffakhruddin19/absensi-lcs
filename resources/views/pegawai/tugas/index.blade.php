@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Daftar Tugas LCS Saya') }}
+            {{ __('Daftar LCS Saya') }}
         </h2>
     </x-slot>
 
@@ -9,7 +9,7 @@
         <div class="w-full">
             <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Tugas yang perlu diselesaikan</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Yang perlu diselesaikan</h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @forelse ($postings as $post)
@@ -34,6 +34,21 @@
 
                             <div class="flex flex-col items-center justify-center mb-2 mt-4">
                                 <h5 class="mb-0 text-base font-bold text-gray-900 dark:text-white">{{ $post->judul_tugas }}</h5>
+                                @if($post->sumber_posting)
+                                    @if($post->sumber_posting == 'Kementan')
+                                        <span class="mt-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300 border border-green-400">
+                                            {{ $post->sumber_posting }}
+                                        </span>
+                                    @elseif($post->sumber_posting == 'Ditjen PKH')
+                                        <span class="mt-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 border border-blue-400">
+                                            {{ $post->sumber_posting }}
+                                        </span>
+                                    @else
+                                        <span class="mt-2 bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300 border border-purple-400">
+                                            {{ $post->sumber_posting }}
+                                        </span>
+                                    @endif
+                                @endif
                             </div>
                             
                             <div class="flex flex-col gap-2 mb-3 mt-3 w-full px-4">
@@ -79,7 +94,7 @@
                         </div>
                     @empty
                         <div class="col-span-full p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                          Belum ada tugas LCS postingan baru saat ini.
+                          Belum ada LCS postingan baru saat ini.
                         </div>
                     @endforelse
                 </div>
@@ -295,7 +310,9 @@
                                 const container = document.querySelector('.grid');
                                 if (container && container.children.length === 0) {
                                     container.innerHTML = `<div class="col-span-full p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                                      <span class="font-medium">Hore!</span> Semua tugas telah diselesaikan.
+                                      <span class="font-medium">Makasih tim yang hebat🙌</span><br>
+                                      Yuk kita refresh ilmu bareng-bareng lewat medsos lagi.<br>
+                                      Tetap semangat untuk LCS selanjutnya!💪
                                     </div>`;
                                 }
                             }, 500);

@@ -31,6 +31,7 @@ class RekapLaporanExport implements FromCollection, WithHeadings, WithMapping, S
             'NO',
             'TANGGAL',
             'JUDUL POSTINGAN',
+            'SUMBER',
             'LINK',
             'MEDSOS',
             'JUMLAH LIKE',
@@ -45,6 +46,7 @@ class RekapLaporanExport implements FromCollection, WithHeadings, WithMapping, S
             $row->no,
             \Carbon\Carbon::parse($row->tanggal)->locale('id')->translatedFormat('d F Y'),
             $row->judul,
+            $row->sumber ?? '-',
             $row->link,
             $row->jenis_medsos,
             $row->like . ' (' . round(($row->like / $this->totalPegawaiAktif) * 100, 1) . '%)',
@@ -64,10 +66,11 @@ class RekapLaporanExport implements FromCollection, WithHeadings, WithMapping, S
             // Center align specific columns
             'A'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
             'B'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
-            'E'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
+            'D'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
             'F'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
             'G'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
             'H'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
+            'I'  => ['alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]],
         ];
     }
 }
