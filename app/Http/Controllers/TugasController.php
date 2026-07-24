@@ -279,27 +279,41 @@ class TugasController extends Controller
     {
         $user = Auth::user();
 
-        $today = \Carbon\Carbon::today()->toDateString();
-        $sums = \Illuminate\Support\Facades\DB::table('absensi_postings')
-            ->where('status_selesai', true)
-            ->where('diselesaikan_oleh_admin', false)
-            ->select(
-                'pegawai_id',
-                \Illuminate\Support\Facades\DB::raw('SUM(ig_like) as ig_l, SUM(ig_comment) as ig_c, SUM(ig_share) as ig_s'),
-                \Illuminate\Support\Facades\DB::raw('SUM(fb_like) as fb_l, SUM(fb_comment) as fb_c, SUM(fb_share) as fb_s'),
-                \Illuminate\Support\Facades\DB::raw('SUM(tw_like) as tw_l, SUM(tw_comment) as tw_c, SUM(tw_share) as tw_s'),
-                \Illuminate\Support\Facades\DB::raw('SUM(tt_like) as tt_l, SUM(tt_comment) as tt_c, SUM(tt_share) as tt_s'),
-                \Illuminate\Support\Facades\DB::raw('SUM(yt_like) as yt_l, SUM(yt_comment) as yt_c, SUM(yt_share) as yt_s')
+        $absensiQuery = \Illuminate\Support\Facades\DB::table('absensi_postings')
+            ->join('postings', 'absensi_postings.posting_id', '=', 'postings.id')
+            ->where('absensi_postings.status_selesai', true)
+            ->where('absensi_postings.diselesaikan_oleh_admin', false);
+
+        if ($request->has('start_date') && $request->start_date != '') {
+            $absensiQuery->whereDate('postings.tanggal_tugas', '>=', $request->start_date);
+        }
+        if ($request->has('end_date') && $request->end_date != '') {
+            $absensiQuery->whereDate('postings.tanggal_tugas', '<=', $request->end_date);
+        }
+
+        $sums = $absensiQuery->select(
+                'absensi_postings.pegawai_id',
+                \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.ig_like) as ig_l, SUM(absensi_postings.ig_comment) as ig_c, SUM(absensi_postings.ig_share) as ig_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.fb_like) as fb_l, SUM(absensi_postings.fb_comment) as fb_c, SUM(absensi_postings.fb_share) as fb_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.tw_like) as tw_l, SUM(absensi_postings.tw_comment) as tw_c, SUM(absensi_postings.tw_share) as tw_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.tt_like) as tt_l, SUM(absensi_postings.tt_comment) as tt_c, SUM(absensi_postings.tt_share) as tt_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.yt_like) as yt_l, SUM(absensi_postings.yt_comment) as yt_c, SUM(absensi_postings.yt_share) as yt_s')
             )
-            ->groupBy('pegawai_id')
+            ->groupBy('absensi_postings.pegawai_id')
             ->get()
             ->keyBy('pegawai_id');
 
-        $pegawais = \App\Models\Pegawai::where(function($q) use ($today) {
+        $today = \Carbon\Carbon::today()->toDateString();
+        $queryPegawai = \App\Models\Pegawai::where(function($q) use ($today) {
                 $q->where('tanggal_pensiun', '>=', $today)
                   ->orWhereNull('tanggal_pensiun');
-            })
-            ->get();
+            });
+
+        if ($request->has('search') && $request->search != '') {
+            $queryPegawai->where('nama_pegawai', 'like', '%' . $request->search . '%');
+        }
+
+        $pegawais = $queryPegawai->get();
 
         foreach ($pegawais as $pegawai) {
             $sum = $sums->get($pegawai->id);
