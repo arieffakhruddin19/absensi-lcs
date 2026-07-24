@@ -293,6 +293,7 @@ class TugasController extends Controller
 
         $sums = $absensiQuery->select(
                 'absensi_postings.pegawai_id',
+                \Illuminate\Support\Facades\DB::raw('AVG(TIMESTAMPDIFF(SECOND, postings.created_at, absensi_postings.waktu_dikerjakan)) as avg_duration'),
                 \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.ig_like) as ig_l, SUM(absensi_postings.ig_comment) as ig_c, SUM(absensi_postings.ig_share) as ig_s'),
                 \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.fb_like) as fb_l, SUM(absensi_postings.fb_comment) as fb_c, SUM(absensi_postings.fb_share) as fb_s'),
                 \Illuminate\Support\Facades\DB::raw('SUM(absensi_postings.tw_like) as tw_l, SUM(absensi_postings.tw_comment) as tw_c, SUM(absensi_postings.tw_share) as tw_s'),
@@ -317,6 +318,8 @@ class TugasController extends Controller
 
         foreach ($pegawais as $pegawai) {
             $sum = $sums->get($pegawai->id);
+            $pegawai->avg_duration = $sum->avg_duration ?? 999999999; // default to a very large number if no completions
+            
             $pegawai->ig_l = $sum->ig_l ?? 0;
             $pegawai->ig_c = $sum->ig_c ?? 0;
             $pegawai->ig_s = $sum->ig_s ?? 0;
@@ -347,6 +350,7 @@ class TugasController extends Controller
 
         $pegawais = $pegawais->sortBy([
             ['total_lcs', 'desc'],
+            ['avg_duration', 'asc'],
             ['nama_pegawai', 'asc'],
         ])->values();
 
