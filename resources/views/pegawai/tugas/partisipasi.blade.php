@@ -139,7 +139,7 @@
                                         <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30">{{ $pegawai->yt_c ?: '-' }}</td>
                                         <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30">{{ $pegawai->yt_s ?: '-' }}</td>
 
-                                        <td class="px-4 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30 font-bold text-sm text-gray-800 dark:text-gray-200">
+                                        <td class="px-4 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30 font-bold text-xs text-gray-800 dark:text-gray-200">
                                             {{ $pegawai->total_lcs ?? 0 }}
                                         </td>
                                     </tr>
