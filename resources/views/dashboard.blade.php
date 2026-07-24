@@ -79,11 +79,11 @@
 
                     <!-- Kolom Kanan (Peringkat 4-5) -->
                     <div class="space-y-4">
-                        @foreach($topPegawais->skip(3)->take(2) as $loopIndex => $pegawai)
-                            @php $index = $loopIndex + 3; @endphp
+                        @php $rank = 4; @endphp
+                        @foreach($topPegawais->skip(3)->take(2) as $pegawai)
                             <div class="flex items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600 transition-transform hover:scale-[1.01] hover:shadow-sm">
                                 <div class="flex-shrink-0 mr-4">
-                                    <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-lg">{{ $index + 1 }}</div>
+                                    <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-lg">{{ $rank++ }}</div>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-bold text-gray-900 dark:text-white truncate" title="{{ $pegawai->nama_pegawai }}">
