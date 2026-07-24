@@ -13,63 +13,122 @@
                 
                 <!-- SweetAlert handles success and error messages now -->
 
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Daftar Link Postingan</h3>
+                @php
+                    $sumberText = 'Kementan';
+                    if (isset($tab)) {
+                        if ($tab == 'pkh') $sumberText = 'Ditjen PKH';
+                        elseif ($tab == 'pusvetma') $sumberText = 'Pusvetma';
+                    }
+                @endphp
+                <div class="flex flex-nowrap justify-between items-center w-full gap-2 mb-4">
+                    <h3 id="dynamic-title" class="text-lg font-medium text-gray-900 dark:text-gray-100">Daftar Link Postingan {{ $sumberText }}</h3>
                     
-                    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition ease-in-out duration-150" type="button">
-                      + Tambah Postingan
-                    </button>
+                    <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="inline-block flex-shrink-0 whitespace-nowrap text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition ease-in-out duration-150" type="button">+ Tambah</button>
                 </div>
 
-                <!-- Live Search Form -->
-                <div class="mb-4" style="display: flex; justify-content: flex-end;">
-                    <div style="position: relative; width: 320px;">
-                        <div style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); pointer-events: none;">
-                            <svg style="width: 16px; height: 16px; color: #9ca3af;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                            </svg>
+                <!-- Filter Form -->
+                <style>
+                    .custom-filter-form { display: flex; flex-wrap: wrap; gap: 0.5rem; width: 100%; }
+                    .custom-filter-perpage { flex: 1 1 20%; min-width: 70px; }
+                    .custom-filter-tanggal { flex: 1 1 60%; min-width: 140px; }
+                    .custom-filter-medsos { flex: 1 1 100%; }
+                    .custom-filter-search { flex: 1 1 100%; }
+                    
+                    .aksi-buttons { display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; align-items: stretch; }
+                    .aksi-buttons > a, .aksi-buttons > button, .aksi-buttons > form { width: 100%; text-align: center; }
+                    .aksi-buttons > form > button { width: 100%; }
+                    
+                    @media (min-width: 640px) {
+                        .custom-filter-form { justify-content: flex-end; width: auto; }
+                        .custom-filter-perpage { flex: 0 0 80px; }
+                        .custom-filter-tanggal { flex: 0 0 160px; }
+                        .custom-filter-medsos { flex: 0 0 160px; }
+                        .custom-filter-search { flex: 0 0 260px; }
+                        .aksi-buttons { flex-direction: row; align-items: center; justify-content: center; }
+                        .aksi-buttons > a, .aksi-buttons > button, .aksi-buttons > form { width: auto; }
+                    }
+                </style>
+                <div class="mb-4 flex justify-end w-full">
+                    <form method="GET" action="{{ route('admin.posting.index') }}" class="custom-filter-form">
+                        
+                        <div class="custom-filter-perpage">
+                            <select id="filter-perpage" name="per_page" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="10" {{ request('per_page', '10') == '10' ? 'selected' : '' }}>10</option>
+                                <option value="25" {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                            </select>
                         </div>
-                        <input type="text" id="livesearch-input" name="search" value="{{ request('search') }}" placeholder="Cari judul postingan..." style="padding-left: 36px;" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    </div>
+
+                        <div class="custom-filter-tanggal" style="position: relative; display: flex; align-items: center;">
+                            <input type="text" id="filter-tanggal" name="tanggal" value="{{ request('tanggal') }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal..." title="Filter Tanggal">
+                            <button type="button" onclick="document.getElementById('filter-tanggal')._flatpickr.clear(); window.triggerSearchGlobal();" class="text-gray-400 hover:text-gray-800 dark:hover:text-gray-200" title="Bersihkan tanggal" style="position: absolute; right: 10px;">
+                                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="custom-filter-medsos">
+                            <select id="filter-medsos" name="medsos" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Semua Medsos</option>
+                                <option value="Instagram" {{ request('medsos') == 'Instagram' ? 'selected' : '' }}>Instagram</option>
+                                <option value="Facebook" {{ request('medsos') == 'Facebook' ? 'selected' : '' }}>Facebook</option>
+                                <option value="Twitter" {{ request('medsos') == 'Twitter' ? 'selected' : '' }}>Twitter / X</option>
+                                <option value="TikTok" {{ request('medsos') == 'TikTok' ? 'selected' : '' }}>TikTok</option>
+                                <option value="YouTube" {{ request('medsos') == 'YouTube' ? 'selected' : '' }}>YouTube</option>
+                            </select>
+                        </div>
+
+                        <div class="custom-filter-search" style="position: relative;">
+                            <div style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); pointer-events: none;">
+                                <svg style="width: 16px; height: 16px; color: #9ca3af;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                </svg>
+                            </div>
+                            <input type="text" id="livesearch-input" name="search" value="{{ request('search') }}" placeholder="Cari judul postingan..." style="padding-left: 36px;" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        </div>
+                    </form>
                 </div>
 
                 <div id="realtime-content">
+                    <!-- Tabs -->
+                    <div class="mb-4 flex justify-center sm:justify-start">
+                        <ul class="flex flex-wrap justify-center gap-2 text-xs sm:text-sm font-medium text-center" role="tablist">
+                            <li role="presentation">
+                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
+                            </li>
+                        </ul>
+                    </div>
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-center w-16">No</th>
-                                <th scope="col" class="px-6 py-3">Judul Postingan</th>
-                                <th scope="col" class="px-6 py-3 text-center">Sumber</th>
                                 <th scope="col" class="px-6 py-3 text-center">Tanggal</th>
+                                <th scope="col" class="px-6 py-3">Judul Postingan</th>
                                 <th scope="col" class="px-6 py-3 text-center">Link Medsos</th>
+                                <th scope="col" class="px-6 py-3 text-center">Progress</th>
                                 <th scope="col" class="px-6 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($postings as $index => $post)
                             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td class="px-6 py-4 text-center">{{ $postings->firstItem() + $index }}</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
-                                    {{ $post->judul_tugas }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    @if($post->sumber_posting)
-                                        @if($post->sumber_posting == 'Kementan')
-                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 border border-green-400">{{ $post->sumber_posting }}</span>
-                                        @elseif($post->sumber_posting == 'Ditjen PKH')
-                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 border border-blue-400">{{ $post->sumber_posting }}</span>
-                                        @else
-                                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 border border-purple-400">{{ $post->sumber_posting }}</span>
-                                        @endif
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <td class="px-6 py-4 align-top text-center">{{ $postings->firstItem() + $index }}</td>
+                                <td class="px-6 py-4 align-top whitespace-nowrap text-center">
                                     {{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->locale('id')->translatedFormat('d F Y') : $post->created_at->locale('id')->translatedFormat('d F Y') }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 align-top text-sm font-semibold text-gray-900 dark:text-white">
+                                    {{ $post->judul_tugas }}
+                                </td>
+                                <td class="px-6 py-4 align-top">
                                     <div class="flex flex-wrap justify-center gap-1">
                                         @if($post->link_instagram) <a href="{{ $post->link_instagram }}" target="_blank" class="bg-pink-100 text-pink-800 text-xs font-medium px-2 py-0.5 rounded">IG</a> @endif
                                         @if($post->link_facebook) <a href="{{ $post->link_facebook }}" target="_blank" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">FB</a> @endif
@@ -78,7 +137,13 @@
                                         @if($post->link_youtube) <a href="{{ $post->link_youtube }}" target="_blank" class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">YT</a> @endif
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 flex items-center justify-center space-x-2">
+                                <td class="px-6 py-4 align-top text-center">
+                                    <div class="flex flex-col items-center gap-1">
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded border border-green-400 w-full whitespace-nowrap">Sudah: {{ $post->sudah_lcs_count }}</span>
+                                        <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded border border-red-400 w-full whitespace-nowrap">Belum: {{ max(0, $totalPegawaiAktif - $post->sudah_lcs_count) }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 align-top aksi-buttons">
                                     <a href="{{ route('admin.posting.laporan', $post->id) }}" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition">Laporan</a>
                                     <button data-modal-target="edit-modal-{{ $post->id }}" data-modal-toggle="edit-modal-{{ $post->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition" type="button">Edit</button>
                                     <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" class="inline m-0">
@@ -135,15 +200,14 @@
                             <label for="tanggal_tugas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
                             <input type="text" name="tanggal_tugas" id="tanggal_tugas" class="datepicker-today bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         </div>
-                        <div class="col-span-2">
-                            <label for="sumber_posting" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sumber Posting <span class="text-red-500">*</span></label>
-                            <select id="sumber_posting" name="sumber_posting" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                <option value="">Pilih Sumber Posting</option>
-                                <option value="Kementan">Kementan</option>
-                                <option value="Ditjen PKH">Ditjen PKH</option>
-                                <option value="Pusvetma">Pusvetma</option>
-                            </select>
-                        </div>
+                        @php
+                            $sumberDefault = 'Kementan';
+                            if (isset($tab)) {
+                                if ($tab == 'pkh') $sumberDefault = 'Ditjen PKH';
+                                elseif ($tab == 'pusvetma') $sumberDefault = 'Pusvetma';
+                            }
+                        @endphp
+                        <input type="hidden" name="sumber_posting" value="{{ $sumberDefault }}">
                         <div class="col-span-2 hidden">
                             <label for="batas_waktu" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Batas Waktu (Deadline)</label>
                             <input type="date" name="batas_waktu" id="batas_waktu" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
@@ -210,15 +274,7 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
                             <input type="text" name="tanggal_tugas" value="{{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->format('Y-m-d') : '' }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
                         </div>
-                        <div class="col-span-2">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sumber Posting <span class="text-red-500">*</span></label>
-                            <select name="sumber_posting" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                                <option value="">Pilih Sumber Posting</option>
-                                <option value="Kementan" {{ $post->sumber_posting == 'Kementan' ? 'selected' : '' }}>Kementan</option>
-                                <option value="Ditjen PKH" {{ $post->sumber_posting == 'Ditjen PKH' ? 'selected' : '' }}>Ditjen PKH</option>
-                                <option value="Pusvetma" {{ $post->sumber_posting == 'Pusvetma' ? 'selected' : '' }}>Pusvetma</option>
-                            </select>
-                        </div>
+                        <input type="hidden" name="sumber_posting" value="{{ $post->sumber_posting }}">
                         <div class="col-span-2 hidden">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Batas Waktu (Deadline)</label>
                             <input type="date" name="batas_waktu" value="{{ $post->batas_waktu ? \Carbon\Carbon::parse($post->batas_waktu)->format('Y-m-d') : '' }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
@@ -276,6 +332,18 @@
                 altFormat: "d/m/Y", 
                 allowInput: true,
                 defaultDate: "today"
+            });
+            
+            flatpickr("#filter-tanggal", {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "d/m/Y",
+                allowInput: true,
+                onChange: function(selectedDates, dateStr, instance) {
+                    if (window.triggerSearchGlobal) {
+                        window.triggerSearchGlobal();
+                    }
+                }
             });
         });
     </script>
@@ -364,18 +432,46 @@
         let typingTimer;
         const doneTypingInterval = 500;
         
+        window.switchTab = function(tabName) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', tabName);
+            url.searchParams.delete('page');
+            window.triggerSearch(url.href);
+        };
+        
         window.triggerSearch = function(targetUrl = null) {
             const searchInput = document.getElementById('livesearch-input');
+            const filterTanggal = document.getElementById('filter-tanggal');
+            const filterMedsos = document.getElementById('filter-medsos');
+            const filterPerPage = document.getElementById('filter-perpage');
             let url;
             
             if (targetUrl) {
-                url = new URL(targetUrl);
+                url = new URL(targetUrl, window.location.origin);
             } else {
                 url = new URL(window.location.href);
                 if (searchInput && searchInput.value.trim() !== '') {
                     url.searchParams.set('search', searchInput.value);
                 } else {
                     url.searchParams.delete('search');
+                }
+                
+                if (filterTanggal && filterTanggal.value !== '') {
+                    url.searchParams.set('tanggal', filterTanggal.value);
+                } else {
+                    url.searchParams.delete('tanggal');
+                }
+
+                if (filterMedsos && filterMedsos.value !== '') {
+                    url.searchParams.set('medsos', filterMedsos.value);
+                } else {
+                    url.searchParams.delete('medsos');
+                }
+
+                if (filterPerPage && filterPerPage.value !== '') {
+                    url.searchParams.set('per_page', filterPerPage.value);
+                } else {
+                    url.searchParams.delete('per_page');
                 }
                 
                 url.searchParams.delete('page');
@@ -412,6 +508,12 @@
                     } else if (typeof initModals === 'function') {
                         initModals();
                     }
+                    
+                    const newTitle = doc.querySelector('#dynamic-title');
+                    const currentTitle = document.querySelector('#dynamic-title');
+                    if (newTitle && currentTitle) {
+                        currentTitle.innerHTML = newTitle.innerHTML;
+                    }
                 }
             })
             .catch(err => {
@@ -422,15 +524,23 @@
                 }
             });
         };
+        
+        window.triggerSearchGlobal = window.triggerSearch;
 
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('livesearch-input');
+            const filterTanggal = document.getElementById('filter-tanggal');
+            const filterMedsos = document.getElementById('filter-medsos');
+            const filterPerPage = document.getElementById('filter-perpage');
+            
             if (searchInput) {
                 searchInput.addEventListener('input', function() {
                     clearTimeout(typingTimer);
                     typingTimer = setTimeout(() => window.triggerSearch(), doneTypingInterval);
                 });
             }
+            if (filterMedsos) filterMedsos.addEventListener('change', () => window.triggerSearch());
+            if (filterPerPage) filterPerPage.addEventListener('change', () => window.triggerSearch());
         });
 
         // Intercept Pagination Clicks

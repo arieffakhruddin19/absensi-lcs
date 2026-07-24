@@ -30,18 +30,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.initFlowbite();
             }
             
-            // Re-inisialisasi Flatpickr datepicker jika ada
+            // Re-inisialisasi Flatpickr datepicker jika ada di dalam konten baru
             if (typeof flatpickr === 'function') {
-                document.querySelectorAll('.datepicker').forEach(el => {
-                    if (!el._flatpickr) {
-                        flatpickr(el, {
-                            dateFormat: "Y-m-d",
-                            altInput: true,
-                            altFormat: "d/m/Y",
-                            allowInput: true
-                        });
-                    }
-                });
+                const rtContent = document.querySelector('#realtime-content');
+                if (rtContent) {
+                    rtContent.querySelectorAll('.datepicker').forEach(el => {
+                        if (!el._flatpickr && !el.classList.contains('form-control')) {
+                            flatpickr(el, {
+                                dateFormat: "Y-m-d",
+                                altInput: true,
+                                altFormat: "d/m/Y",
+                                allowInput: true
+                            });
+                        }
+                    });
+                }
             }
 
             // Restore state tombol "Tandai Selesai" yang sudah pernah diklik

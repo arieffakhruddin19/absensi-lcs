@@ -161,6 +161,8 @@ class TugasController extends Controller
 
         event(new PegawaiDataUpdated('tugas', $user->pegawai_id));
         event(new \App\Events\AdminDataUpdated('laporan'));
+        event(new \App\Events\AdminDataUpdated('posting'));
+        event(new \App\Events\AdminDataUpdated('rekap'));
 
         return response()->json([
             'success' => true,

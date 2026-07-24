@@ -9,7 +9,9 @@
         <div class="w-full">
             <div id="realtime-content" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 
-                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Yang perlu diselesaikan</h3>
+                @if(count($postings) > 0)
+                    <h3 id="judul-tugas" class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Yang perlu diselesaikan</h3>
+                @endif
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @forelse ($postings as $post)
@@ -309,6 +311,9 @@
                                 // Cek apakah tidak ada lagi tugas yang tersisa di dalam container grid
                                 const container = document.querySelector('.grid');
                                 if (container && container.children.length === 0) {
+                                    const judulTugas = document.getElementById('judul-tugas');
+                                    if (judulTugas) judulTugas.remove();
+                                    
                                     container.innerHTML = `<div class="col-span-full p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
                                       <span class="font-medium">Makasih tim yang hebat🙌</span><br>
                                       Yuk kita refresh ilmu bareng-bareng lewat medsos lagi.<br>

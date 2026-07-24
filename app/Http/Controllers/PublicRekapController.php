@@ -12,15 +12,22 @@ class PublicRekapController extends Controller
 {
     private function getRekapData(Request $request)
     {
+        $tab = $request->input('tab', 'kementan');
         $query = Posting::query();
+        
+        if ($tab == 'pkh') {
+            $query->where('sumber_posting', 'Ditjen PKH');
+        } elseif ($tab == 'pusvetma') {
+            $query->where('sumber_posting', 'Pusvetma');
+        } else {
+            $query->where('sumber_posting', 'Kementan');
+        }
+
         if ($request->has('search') && $request->search != '') {
             $query->where('judul_tugas', 'like', '%' . $request->search . '%');
         }
         if ($request->has('tanggal') && $request->tanggal != '') {
             $query->whereDate('tanggal_tugas', $request->tanggal);
-        }
-        if ($request->has('sumber') && $request->sumber != '') {
-            $query->where('sumber_posting', $request->sumber);
         }
         $postings = $query->latest()->get();
         
@@ -145,13 +152,15 @@ class PublicRekapController extends Controller
         if ($request->ajax()) {
             return view('public.rekap-laporan', [
                 'rekap' => $paginatedRekap,
-                'totalPegawaiAktif' => $totalPegawaiAktif
+                'totalPegawaiAktif' => $totalPegawaiAktif,
+                'tab' => $request->input('tab', 'kementan')
             ])->render();
         }
 
         return view('public.rekap-laporan', [
             'rekap' => $paginatedRekap,
-            'totalPegawaiAktif' => $totalPegawaiAktif
+            'totalPegawaiAktif' => $totalPegawaiAktif,
+            'tab' => $request->input('tab', 'kementan')
         ]);
     }
 
@@ -166,6 +175,11 @@ class PublicRekapController extends Controller
         })->count();
         $totalPegawaiAktif = $totalPegawaiAktif > 0 ? $totalPegawaiAktif : 1;
 
-        return Excel::download(new RekapLaporanExport($rekap, $totalPegawaiAktif), 'Rekap_Laporan_LCS_' . date('Y-m-d') . '.xlsx');
+        $tab = $request->input('tab', 'kementan');
+        $sumberText = 'Kementan';
+        if ($tab == 'pkh') $sumberText = 'Ditjen_PKH';
+        elseif ($tab == 'pusvetma') $sumberText = 'Pusvetma';
+
+        return Excel::download(new RekapLaporanExport($rekap, $totalPegawaiAktif, $sumberText), 'Rekap_Laporan_LCS_' . $sumberText . '_' . date('Y-m-d') . '.xlsx');
     }
 }

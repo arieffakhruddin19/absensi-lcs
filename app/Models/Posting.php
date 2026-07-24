@@ -17,4 +17,9 @@ class Posting extends Model
         'batas_waktu',
         'sumber_posting'
     ];
+
+    public function absensi()
+    {
+        return $this->hasMany(AbsensiPosting::class, 'posting_id');
+    }
 }

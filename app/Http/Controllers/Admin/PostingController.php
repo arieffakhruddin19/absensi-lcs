@@ -11,12 +11,49 @@ class PostingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Posting::query();
+        $tab = $request->input('tab', 'kementan');
+        $query = Posting::query()->withCount(['absensi as sudah_lcs_count' => function($q) { 
+            $q->where('status_selesai', true); 
+        }]);
+
+        if ($tab == 'pkh') {
+            $query->where('sumber_posting', 'Ditjen PKH');
+        } elseif ($tab == 'pusvetma') {
+            $query->where('sumber_posting', 'Pusvetma');
+        } else {
+            $query->where('sumber_posting', 'Kementan');
+        }
+
         if ($request->has('search') && $request->search != '') {
             $query->where('judul_tugas', 'like', '%' . $request->search . '%');
         }
-        $postings = $query->latest()->paginate(10);
-        return view('admin.posting.index', compact('postings'));
+
+        if ($request->has('tanggal') && $request->tanggal != '') {
+            $query->whereDate('tanggal_tugas', $request->tanggal);
+        }
+
+        if ($request->has('medsos') && $request->medsos != '') {
+            $medsos = strtolower($request->medsos);
+            if (in_array($medsos, ['instagram', 'facebook', 'twitter', 'tiktok', 'youtube'])) {
+                $query->whereNotNull('link_' . $medsos)->where('link_' . $medsos, '!=', '');
+            }
+        }
+        
+        $perPage = $request->input('per_page', 10);
+        $postings = $query->latest()->paginate($perPage)->appends([
+            'tab' => $tab,
+            'search' => $request->search,
+            'tanggal' => $request->tanggal,
+            'medsos' => $request->medsos,
+            'per_page' => $perPage
+        ]);
+        $today = \Carbon\Carbon::today()->toDateString();
+        $totalPegawaiAktif = \App\Models\Pegawai::where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        })->count();
+        
+        return view('admin.posting.index', compact('postings', 'tab', 'totalPegawaiAktif'));
     }
 
     public function store(Request $request)
@@ -39,8 +76,15 @@ class PostingController extends Controller
         ));
 
         event(new AdminDataUpdated('posting'));
+        
+        $tabMap = [
+            'Kementan' => 'kementan',
+            'Ditjen PKH' => 'pkh',
+            'Pusvetma' => 'pusvetma'
+        ];
+        $tab = $tabMap[$request->sumber_posting] ?? 'kementan';
 
-        return redirect()->route('admin.posting.index')->with('success', 'Tugas postingan berhasil ditambahkan!');
+        return redirect()->route('admin.posting.index', ['tab' => $tab])->with('success', 'Tugas postingan berhasil ditambahkan!');
     }
 
     public function edit($id)
@@ -71,14 +115,31 @@ class PostingController extends Controller
 
         event(new AdminDataUpdated('posting'));
 
-        return redirect()->route('admin.posting.index')->with('success', 'Tugas postingan berhasil diperbarui!');
+        $tabMap = [
+            'Kementan' => 'kementan',
+            'Ditjen PKH' => 'pkh',
+            'Pusvetma' => 'pusvetma'
+        ];
+        $tab = $tabMap[$request->sumber_posting] ?? 'kementan';
+
+        return redirect()->route('admin.posting.index', ['tab' => $tab])->with('success', 'Tugas postingan berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        Posting::findOrFail($id)->delete();
+        $posting = Posting::findOrFail($id);
+        
+        $tabMap = [
+            'Kementan' => 'kementan',
+            'Ditjen PKH' => 'pkh',
+            'Pusvetma' => 'pusvetma'
+        ];
+        $tab = $tabMap[$posting->sumber_posting] ?? 'kementan';
+        
+        $posting->delete();
         event(new AdminDataUpdated('posting'));
-        return redirect()->route('admin.posting.index')->with('success', 'Postingan berhasil dihapus.');
+        
+        return redirect()->route('admin.posting.index', ['tab' => $tab])->with('success', 'Postingan berhasil dihapus.');
     }
 
     public function laporan(Request $request, $id)
