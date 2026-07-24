@@ -22,8 +22,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentContent = document.querySelector('#realtime-content');
         
         if (newContent && currentContent) {
+            // 1. Simpan posisi scroll sebelum DOM diganti
+            const scrollContainers = currentContent.querySelectorAll('.overflow-x-auto, .overflow-y-auto');
+            const scrollPositions = Array.from(scrollContainers).map(el => ({
+                scrollLeft: el.scrollLeft,
+                scrollTop: el.scrollTop
+            }));
+
+            // 2. Ganti konten DOM
             currentContent.innerHTML = newContent.innerHTML;
             
+            // 3. Kembalikan posisi scroll pada elemen baru
+            const newScrollContainers = currentContent.querySelectorAll('.overflow-x-auto, .overflow-y-auto');
+            newScrollContainers.forEach((el, index) => {
+                if (scrollPositions[index]) {
+                    el.scrollLeft = scrollPositions[index].scrollLeft;
+                    el.scrollTop = scrollPositions[index].scrollTop;
+                }
+            });
             // Re-inisialisasi Flowbite modal setelah DOM diperbarui
             // agar tombol data-modal-toggle tetap berfungsi
             if (typeof window.initFlowbite === 'function') {
