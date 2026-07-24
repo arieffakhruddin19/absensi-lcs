@@ -14,3 +14,4 @@
 - **[Fixed]** Real-time Sync - Fix real-time sync bugs: preserve scroll state and fix datepicker duplication (commit: 4367ecc)
 - **[Created]** .skills/ - chore: add .skills directory and progress.txt for workflow logging (commit: 14dd312)
 - **[Modified]** UI & Layouts - Fix mobile responsive layout for filter form, fix back navigation link tab persistence, and display source & date metadata in Laporan page
+- **[Created]** Feature - Implement 3-level role system (superadmin, admin, pegawai), add user management for superadmin, and enable interactive LCS filling for superadmin in Laporan page (commit: 7673c85)
