@@ -118,10 +118,8 @@
                 <!-- Doughnut Chart -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
                     <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Platform Terpopuler (Bulan Ini)</h4>
-                    <div class="flex-1 flex justify-center items-center min-h-[250px]">
-                        <div class="w-full max-w-[280px]">
-                            <canvas id="platformChart"></canvas>
-                        </div>
+                    <div class="relative w-full h-[300px]">
+                        <canvas id="platformChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -170,10 +168,11 @@
             // Platform Chart
             const platformCtx = document.getElementById('platformChart').getContext('2d');
             new Chart(platformCtx, {
-                type: 'polarArea',
+                type: 'bar',
                 data: {
                     labels: ['Instagram', 'Facebook', 'Twitter', 'TikTok', 'YouTube'],
                     datasets: [{
+                        label: 'Total LCS',
                         data: {!! json_encode($chartPlatformData) !!},
                         backgroundColor: [
                             'rgba(236, 72, 153, 0.8)', // pink-500
@@ -182,22 +181,24 @@
                             'rgba(31, 41, 55, 0.8)',   // gray-800
                             'rgba(239, 68, 68, 0.8)'   // red-500
                         ],
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        hoverOffset: 4
+                        borderRadius: 6,
+                        borderWidth: 0
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { padding: 20 }
-                        }
+                        legend: { display: false }
                     },
                     scales: {
-                        r: {
-                            ticks: { display: false }
+                        x: {
+                            beginAtZero: true,
+                            grid: { display: true, color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: {
+                            grid: { display: false }
                         }
                     }
                 }
