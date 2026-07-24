@@ -29,7 +29,68 @@ Route::get('/dashboard', function () {
         
         $totalTugas = \App\Models\Posting::count();
 
-        return view('dashboard', compact('totalPegawai', 'pegawaiAktif', 'pegawaiPensiun', 'totalTugas'));
+        // Query Leaderboard Top 5 Bulan Ini
+        $startOfMonth = \Carbon\Carbon::now()->startOfMonth();
+        $endOfMonth = \Carbon\Carbon::now()->endOfMonth();
+
+        $topPegawais = \Illuminate\Support\Facades\DB::table('absensi_postings')
+            ->join('postings', 'absensi_postings.posting_id', '=', 'postings.id')
+            ->join('pegawais', 'absensi_postings.pegawai_id', '=', 'pegawais.id')
+            ->where('absensi_postings.status_selesai', true)
+            ->where('absensi_postings.diselesaikan_oleh_admin', false)
+            ->whereBetween('postings.tanggal_tugas', [$startOfMonth, $endOfMonth])
+            ->select(
+                'pegawais.nama_pegawai',
+                \Illuminate\Support\Facades\DB::raw('(SUM(ig_like) + SUM(ig_comment) + SUM(ig_share) + SUM(fb_like) + SUM(fb_comment) + SUM(fb_share) + SUM(tw_like) + SUM(tw_comment) + SUM(tw_share) + SUM(tt_like) + SUM(tt_comment) + SUM(tt_share) + SUM(yt_like) + SUM(yt_comment) + SUM(yt_share)) as total_lcs')
+            )
+            ->groupBy('pegawais.id', 'pegawais.nama_pegawai')
+            ->orderByDesc('total_lcs')
+            ->limit(5)
+            ->get();
+
+        // Query Tren Partisipasi 7 Hari Terakhir
+        $trendDates = collect();
+        for ($i = 6; $i >= 0; $i--) {
+            $trendDates->push(\Carbon\Carbon::now()->subDays($i)->format('Y-m-d'));
+        }
+
+        $trendDataQuery = \Illuminate\Support\Facades\DB::table('absensi_postings')
+            ->select(\Illuminate\Support\Facades\DB::raw('DATE(waktu_dikerjakan) as date'), \Illuminate\Support\Facades\DB::raw('COUNT(*) as total'))
+            ->where('status_selesai', true)
+            ->where('diselesaikan_oleh_admin', false)
+            ->whereDate('waktu_dikerjakan', '>=', \Carbon\Carbon::now()->subDays(6))
+            ->groupBy('date')
+            ->pluck('total', 'date');
+
+        $chartTrendLabels = $trendDates->map(fn($date) => \Carbon\Carbon::parse($date)->format('d M'));
+        $chartTrendData = $trendDates->map(fn($date) => $trendDataQuery[$date] ?? 0);
+
+        // Query Platform Terpopuler Bulan Ini
+        $platformStats = \Illuminate\Support\Facades\DB::table('absensi_postings')
+            ->join('postings', 'absensi_postings.posting_id', '=', 'postings.id')
+            ->where('absensi_postings.status_selesai', true)
+            ->where('absensi_postings.diselesaikan_oleh_admin', false)
+            ->whereBetween('postings.tanggal_tugas', [$startOfMonth, $endOfMonth])
+            ->select(
+                \Illuminate\Support\Facades\DB::raw('SUM(ig_like + ig_comment + ig_share) as ig'),
+                \Illuminate\Support\Facades\DB::raw('SUM(fb_like + fb_comment + fb_share) as fb'),
+                \Illuminate\Support\Facades\DB::raw('SUM(tw_like + tw_comment + tw_share) as tw'),
+                \Illuminate\Support\Facades\DB::raw('SUM(tt_like + tt_comment + tt_share) as tt'),
+                \Illuminate\Support\Facades\DB::raw('SUM(yt_like + yt_comment + yt_share) as yt')
+            )->first();
+
+        $chartPlatformData = [
+            $platformStats->ig ?? 0,
+            $platformStats->fb ?? 0,
+            $platformStats->tw ?? 0,
+            $platformStats->tt ?? 0,
+            $platformStats->yt ?? 0,
+        ];
+
+        return view('dashboard', compact(
+            'totalPegawai', 'pegawaiAktif', 'pegawaiPensiun', 'totalTugas',
+            'topPegawais', 'chartTrendLabels', 'chartTrendData', 'chartPlatformData'
+        ));
     } else {
         return redirect()->route('tugas.index');
     }
