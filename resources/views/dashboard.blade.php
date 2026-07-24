@@ -43,33 +43,36 @@
             </div>
 
             <!-- Charts & Leaderboard Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Line Chart (Full Width) -->
-                <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
-                    <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Tren Partisipasi (7 Hari Terakhir)</h4>
-                    <div class="relative w-full h-[300px]">
-                        <canvas id="trendChart"></canvas>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Left Column (Charts) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Line Chart -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Tren Partisipasi (7 Hari Terakhir)</h4>
+                        <div class="relative w-full h-[300px]">
+                            <canvas id="trendChart"></canvas>
+                        </div>
                     </div>
-                </div>
-                
-                <!-- Doughnut Chart (Half Width) -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
-                    <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Platform Terpopuler (Bulan Ini)</h4>
-                    <div class="flex-1 flex justify-center items-center min-h-[250px]">
-                        <div class="w-full max-w-[280px]">
-                            <canvas id="platformChart"></canvas>
+                    
+                    <!-- Doughnut Chart -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
+                        <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Platform Terpopuler (Bulan Ini)</h4>
+                        <div class="flex-1 flex justify-center items-center min-h-[250px]">
+                            <div class="w-full max-w-[280px]">
+                                <canvas id="platformChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Vertical Leaderboard (Half Width) -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
+                <!-- Right Column (Vertical Leaderboard) -->
+                <div class="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col h-full">
                     <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center">
                         <svg class="w-6 h-6 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                         Top Pegawai Bulan Ini
                     </h4>
                     
-                    <div class="space-y-3 flex-1 flex flex-col justify-center">
+                    <div class="space-y-3 flex-1 flex flex-col justify-start">
                         @forelse($topPegawais as $index => $pegawai)
                             <div class="flex items-center p-3 {{ $index < 3 ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }} rounded-lg border {{ $index < 3 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-gray-100 dark:border-gray-600' }} transition-transform hover:scale-[1.01]">
                                 <div class="flex-shrink-0 mr-4">
