@@ -4,7 +4,15 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Laporan Absensi LCS') }}
             </h2>
-            <a href="{{ route('admin.posting.index') }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">← Kembali ke Daftar</a>
+            @php
+                $tabMap = [
+                    'Kementan' => 'kementan',
+                    'Ditjen PKH' => 'pkh',
+                    'Pusvetma' => 'pusvetma'
+                ];
+                $backTab = $tabMap[$posting->sumber_posting ?? 'Kementan'] ?? 'kementan';
+            @endphp
+            <a href="{{ route('admin.posting.index', ['tab' => $backTab]) }}" class="text-sm font-medium text-gray-500 hover:text-gray-700">← Kembali</a>
         </div>
     </x-slot>
 
@@ -15,7 +23,22 @@
                 <!-- Info Postingan -->
                 <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
                     <h3 class="text-lg font-bold text-blue-900 mb-1">{{ $posting->judul_tugas }}</h3>
-                    <div class="flex gap-2 mt-2">
+                    <div class="flex flex-wrap items-center gap-3 text-sm text-blue-800 mb-3" style="row-gap: 4px;">
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.949 8.949 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                            </svg>
+                            <span class="font-medium">{{ $posting->sumber_posting }}</span>
+                        </div>
+                        <span class="text-blue-300">•</span>
+                        <div class="flex items-center gap-1">
+                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
+                            </svg>
+                            <span>{{ \Carbon\Carbon::parse($posting->tanggal_tugas)->translatedFormat('d F Y') }}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
                         @if($posting->link_instagram) <a href="{{ $posting->link_instagram }}" target="_blank" class="bg-pink-100 text-pink-800 text-xs font-medium px-2 py-0.5 rounded hover:bg-pink-200">IG</a> @endif
                         @if($posting->link_facebook) <a href="{{ $posting->link_facebook }}" target="_blank" class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded hover:bg-blue-200">FB</a> @endif
                         @if($posting->link_twitter) <a href="{{ $posting->link_twitter }}" target="_blank" class="bg-sky-200 text-sky-900 text-xs font-medium px-2 py-0.5 rounded hover:bg-sky-300">X</a> @endif
@@ -24,29 +47,72 @@
                     </div>
                 </div>
 
+                <style>
+                    .filter-container {
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+                        gap: 10px;
+                        flex-wrap: wrap;
+                    }
+                    .filter-group {
+                        display: flex;
+                        gap: 10px;
+                    }
+                    .filter-perpage {
+                        width: 80px;
+                    }
+                    .filter-status {
+                        width: 150px;
+                    }
+                    .filter-search {
+                        width: 320px;
+                        position: relative;
+                    }
+                    @media (max-width: 768px) {
+                        .filter-container {
+                            flex-direction: column;
+                            align-items: stretch;
+                        }
+                        .filter-group {
+                            width: 100%;
+                        }
+                        .filter-perpage {
+                            flex: 1;
+                        }
+                        .filter-status {
+                            flex: 2;
+                        }
+                        .filter-search {
+                            width: 100%;
+                        }
+                    }
+                </style>
                 <!-- Live Search & Filter Form -->
-                <div class="mb-4" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px;">
-                    <!-- Per Page Filter -->
-                    <div style="width: 80px;">
-                        <select id="perpage-filter" name="per_page" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
-                            <option value="15" {{ request('per_page', 15) == '15' ? 'selected' : '' }}>15</option>
-                            <option value="25" {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
-                        </select>
+                <div class="mb-4 filter-container">
+                    <div class="filter-group">
+                        <!-- Per Page Filter -->
+                        <div class="filter-perpage">
+                            <select id="perpage-filter" name="per_page" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                                <option value="15" {{ request('per_page', 15) == '15' ? 'selected' : '' }}>15</option>
+                                <option value="25" {{ request('per_page') == '25' ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                                <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                            </select>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="filter-status">
+                            <select id="status-filter" name="status" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="semua" {{ request('status') == 'semua' ? 'selected' : '' }}>Semua Status</option>
+                                <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah Selesai</option>
+                                <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Selesai</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <!-- Status Filter -->
-                    <div style="width: 150px;">
-                        <select id="status-filter" name="status" onchange="triggerSearch()" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="semua" {{ request('status') == 'semua' ? 'selected' : '' }}>Semua Status</option>
-                            <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah Selesai</option>
-                            <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum Selesai</option>
-                        </select>
-                    </div>
-
-                    <div style="position: relative; width: 320px;">
+                    <div class="filter-search">
                         <div style="position: absolute; top: 50%; left: 12px; transform: translateY(-50%); pointer-events: none;">
                             <svg style="width: 16px; height: 16px; color: #9ca3af;" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>

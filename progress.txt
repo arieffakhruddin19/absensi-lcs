@@ -13,3 +13,4 @@
 - **[Modified]** UI & Layouts - UI improvements: responsive layouts, real-time sync fixes, and progress tracking (commit: a1ac1b9)
 - **[Fixed]** Real-time Sync - Fix real-time sync bugs: preserve scroll state and fix datepicker duplication (commit: 4367ecc)
 - **[Created]** .skills/ - chore: add .skills directory and progress.txt for workflow logging (commit: 14dd312)
+- **[Modified]** UI & Layouts - Fix mobile responsive layout for filter form, fix back navigation link tab persistence, and display source & date metadata in Laporan page
