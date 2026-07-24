@@ -51,6 +51,8 @@ Route::middleware(['auth', 'checkRole:superadmin,admin'])->group(function () {
     Route::get('admin/posting/{posting}/list-pegawai', [PostingController::class, 'listPegawai'])->name('admin.posting.list-pegawai');
     Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');
     Route::get('admin/rekap-laporan/export', [RekapLaporanController::class, 'export'])->name('admin.rekap-laporan.export');
+    Route::get('admin/partisipasi-lcs', [TugasController::class, 'partisipasi'])->name('tugas.partisipasi');
+    Route::get('admin/partisipasi-lcs/export', [TugasController::class, 'exportPartisipasi'])->name('tugas.partisipasi.export');
 });
 
 // Superadmin Only Routes

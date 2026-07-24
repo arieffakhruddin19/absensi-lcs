@@ -26,8 +26,14 @@
                             .custom-filter-search { flex: 0 0 260px; }
                         }
                     </style>
-                    <div class="flex justify-end w-full">
-                        <form method="GET" action="{{ route('tugas.partisipasi') }}" class="custom-filter-form">
+                    <div class="flex flex-col sm:flex-row justify-between w-full gap-4 mb-4">
+                        <div class="flex-shrink-0">
+                            <a href="{{ route('tugas.partisipasi.export', request()->query()) }}" class="inline-flex items-center px-4 py-2.5 bg-green-600 border border-transparent rounded-lg font-semibold text-sm text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export Excel
+                            </a>
+                        </div>
+                        <form method="GET" action="{{ route('tugas.partisipasi') }}" class="custom-filter-form" style="margin-bottom: 0;">
                             <div class="custom-filter-tanggal" style="position: relative; display: flex; align-items: center;">
                                 <input type="text" id="filter-start-date" name="start_date" value="{{ request('start_date') }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Tanggal Mulai..." title="Tanggal Mulai">
                                 <button type="button" onclick="document.getElementById('filter-start-date')._flatpickr.clear(); triggerSearch();" class="text-gray-400 hover:text-gray-800 dark:hover:text-gray-200" title="Bersihkan tanggal mulai" style="position: absolute; right: 10px;">

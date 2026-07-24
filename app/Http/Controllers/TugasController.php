@@ -8,6 +8,8 @@ use App\Models\AbsensiPosting;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Events\PegawaiDataUpdated;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PartisipasiExport;
 
 class TugasController extends Controller
 {
@@ -355,5 +357,14 @@ class TugasController extends Controller
         ])->values();
 
         return view('pegawai.tugas.partisipasi', compact('pegawais'));
+    }
+
+    public function exportPartisipasi(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $search = $request->input('search');
+
+        return Excel::download(new PartisipasiExport($startDate, $endDate, $search), 'Partisipasi_LCS_' . Carbon::now()->format('Ymd_His') . '.xlsx');
     }
 }
