@@ -345,7 +345,10 @@ class TugasController extends Controller
                 $pegawai->yt_l + $pegawai->yt_c + $pegawai->yt_s;
         }
 
-        $pegawais = $pegawais->sortByDesc('total_lcs')->values();
+        $pegawais = $pegawais->sortBy([
+            ['total_lcs', 'desc'],
+            ['nama_pegawai', 'asc'],
+        ])->values();
 
         return view('pegawai.tugas.partisipasi', compact('pegawais'));
     }
