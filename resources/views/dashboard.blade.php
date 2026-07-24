@@ -49,7 +49,7 @@
                     Top Pegawai Bulan Ini
                 </h4>
                 
-                <div class="space-y-3">
+                <div class="grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-3 lg:grid-flow-col gap-4">
                     @forelse($topPegawais as $index => $pegawai)
                         <div class="flex items-center p-4 {{ $index < 3 ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }} rounded-xl border {{ $index < 3 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-gray-100 dark:border-gray-600' }} transition-transform hover:scale-[1.01] hover:shadow-sm">
                             <div class="flex-shrink-0 mr-4">
