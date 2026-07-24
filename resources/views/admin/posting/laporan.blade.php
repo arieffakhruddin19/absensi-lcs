@@ -136,7 +136,7 @@
                                 @if($posting->link_twitter)<th scope="col" class="px-6 py-3 text-center">X</th>@endif
                                 @if($posting->link_tiktok)<th scope="col" class="px-6 py-3 text-center">TikTok</th>@endif
                                 @if($posting->link_youtube)<th scope="col" class="px-6 py-3 text-center">YT</th>@endif
-                                <th scope="col" class="px-6 py-3 text-center">Status</th>
+                                <th scope="col" class="px-6 py-3 text-center">{{ auth()->user()->role === 'superadmin' ? 'Status / Aksi' : 'Status' }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -165,14 +165,28 @@
                                                             $field = $platKey . '_' . $action;
                                                             $isChecked = $abs && $abs->$field;
                                                         @endphp
+                                                        @if(auth()->user()->role === 'superadmin')
+                                                        <button type="button" 
+                                                            id="btn-lcs-{{ $pegawai->id }}-{{ $platKey }}-{{ $action }}"
+                                                            class="flex items-center gap-1 cursor-pointer hover:opacity-70 transition-opacity" 
+                                                            onclick="toggleLcs({{ $posting->id }}, {{ $pegawai->id }}, '{{ $platKey }}', '{{ $action }}', {{ $isChecked ? 'true' : 'false' }})">
+                                                            <span class="font-bold text-sm" style="{{ $isChecked ? 'color: #16a34a;' : 'color: #6b7280;' }}">{{ $label }}</span>
+                                                            @if($isChecked)
+                                                                <svg class="w-4 h-4" fill="#16a34a" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                                                            @else
+                                                                <svg class="w-4 h-4" fill="#dc2626" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
+                                                            @endif
+                                                        </button>
+                                                        @else
                                                         <div class="flex items-center gap-1">
-                                                            <span class="font-bold text-sm {{ $isChecked ? 'text-green-600' : 'text-gray-500' }}" style="{{ $isChecked ? 'color: #16a34a;' : 'color: #6b7280;' }}">{{ $label }}</span>
+                                                            <span class="font-bold text-sm" style="{{ $isChecked ? 'color: #16a34a;' : 'color: #6b7280;' }}">{{ $label }}</span>
                                                             @if($isChecked)
                                                                 <svg class="w-4 h-4" fill="#16a34a" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
                                                             @else
                                                                 <svg class="w-4 h-4" fill="#dc2626" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
                                                             @endif
                                                         </div>
+                                                        @endif
                                                     @endforeach
                                                 </div>
                                             </td>
@@ -188,6 +202,15 @@
                                             <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
                                                 Belum
                                             </span>
+                                            @if(auth()->user()->role === 'superadmin')
+                                            <div class="mt-2">
+                                                <button type="button" 
+                                                    onclick="selesaikanLcs({{ $posting->id }}, {{ $pegawai->id }})" 
+                                                    class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1 transition">
+                                                    Selesaikan
+                                                </button>
+                                            </div>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
@@ -303,6 +326,90 @@
             }
         });
     </script>
+
+    <!-- Superadmin LCS AJAX Scripts -->
+    @if(auth()->user()->role === 'superadmin')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function toggleLcs(postingId, pegawaiId, platform, action, currentState) {
+            const newState = !currentState;
+            const btn = document.getElementById(`btn-lcs-${pegawaiId}-${platform}-${action}`);
+            if (btn) {
+                btn.style.opacity = '0.4';
+                btn.style.pointerEvents = 'none';
+            }
+
+            const url = `{{ url('admin/posting') }}/${postingId}/tandai-medsos/${pegawaiId}`;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    platform: platform,
+                    action: action,
+                    is_checked: newState
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Refresh tabel via triggerSearch
+                    window.triggerSearch();
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Gagal', text: data.message, timer: 2000, showConfirmButton: false });
+                    if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan jaringan.', timer: 2000, showConfirmButton: false });
+                if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
+            });
+        }
+
+        function selesaikanLcs(postingId, pegawaiId) {
+            Swal.fire({
+                title: 'Selesaikan tugas?',
+                text: 'Tandai tugas ini sebagai selesai untuk pegawai ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Selesaikan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const url = `{{ url('admin/posting') }}/${postingId}/selesaikan-lcs/${pegawaiId}`;
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({ icon: 'success', title: 'Berhasil!', text: data.message, timer: 1500, showConfirmButton: false });
+                            window.triggerSearch();
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Gagal', text: data.message, timer: 2000, showConfirmButton: false });
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan jaringan.', timer: 2000, showConfirmButton: false });
+                    });
+                }
+            });
+        }
+    </script>
+    @endif
 
     <x-realtime-sync type="laporan" />
 </x-app-layout>

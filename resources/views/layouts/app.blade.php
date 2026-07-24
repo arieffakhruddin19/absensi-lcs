@@ -100,7 +100,7 @@
         <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-blue-900 border-r border-blue-900 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
            <div class="h-full px-3 pb-4 overflow-y-auto bg-blue-900 dark:bg-gray-800 text-white">
               <ul class="space-y-2 font-medium text-sm">
-                 @if (Auth::user()->role === 'admin')
+                 @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
                  <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('dashboard') ? 'bg-blue-800' : '' }}">
                        <svg class="w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('dashboard') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -112,9 +112,9 @@
                  </li>
                  @endif
                  
-                 @if (Auth::user()->role === 'admin')
+                 @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
                  <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
-                    <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">MANAJEMEN ADMIN</span>
+                    <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">{{ Auth::user()->role === 'superadmin' ? 'MANAJEMEN SUPERADMIN' : 'MANAJEMEN ADMIN' }}</span>
                  </li>
                  <li>
                     <a href="{{ route('admin.pegawai.index') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.pegawai.*') ? 'bg-blue-800' : '' }}">
@@ -138,6 +138,20 @@
                           <path d="M4 4a2 2 0 0 1 2-2h4.586A2 2 0 0 1 12 2.586L15.414 6A2 2 0 0 1 16 7.414V16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4Zm2 6a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H7a1 1 0 0 1-1-1Zm1 3a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H7Z"/>
                        </svg>
                        <span class="flex-1 ms-3 whitespace-nowrap">Rekap Laporan</span>
+                    </a>
+                 </li>
+                 @endif
+
+                 @if (Auth::user()->role === 'superadmin')
+                 <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
+                    <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">AKSES</span>
+                 </li>
+                 <li>
+                    <a href="{{ route('admin.user.index') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.user.*') ? 'bg-blue-800' : '' }}">
+                       <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('admin.user.*') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                       </svg>
+                       <span class="flex-1 ms-3 whitespace-nowrap">Manajemen User</span>
                     </a>
                  </li>
                  @endif

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PegawaiController;
 use App\Http\Controllers\Admin\PostingController;
 use App\Http\Controllers\Admin\RekapLaporanController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\TugasController;
 
 Route::get('/', function () {
@@ -16,7 +17,7 @@ Route::get('rekap-laporan-lcs', [\App\Http\Controllers\PublicRekapController::cl
 Route::get('rekap-laporan-lcs/export', [\App\Http\Controllers\PublicRekapController::class, 'export'])->name('public.rekap-laporan.export');
 
 Route::get('/dashboard', function () {
-    if (auth()->user()->role == 'admin') {
+    if (in_array(auth()->user()->role, ['superadmin', 'admin'])) {
         $today = \Carbon\Carbon::now()->format('Y-m-d');
         
         $totalPegawai = \App\Models\Pegawai::count();
@@ -38,16 +39,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Admin Routes
+});
+
+// Admin Routes (superadmin + admin)
+Route::middleware(['auth', 'checkRole:superadmin,admin'])->group(function () {
     Route::resource('admin/pegawai', PegawaiController::class)->names('admin.pegawai');
     Route::post('admin/pegawai/{pegawai}/reset-password', [PegawaiController::class, 'resetPassword'])->name('admin.pegawai.reset-password');
     Route::resource('admin/posting', PostingController::class)->names('admin.posting');
     Route::get('admin/posting/{posting}/laporan', [PostingController::class, 'laporan'])->name('admin.posting.laporan');
     Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');
     Route::get('admin/rekap-laporan/export', [RekapLaporanController::class, 'export'])->name('admin.rekap-laporan.export');
-    
-    // Pegawai Routes
+});
+
+// Superadmin Only Routes
+Route::middleware(['auth', 'checkRole:superadmin'])->group(function () {
+    // User Management
+    Route::resource('admin/user', UserController::class)->names('admin.user');
+
+    // Fitur Isi LCS Pegawai
+    Route::post('admin/posting/{posting}/tandai-medsos/{pegawai}', [PostingController::class, 'tandaiMedsosSuperadmin'])->name('admin.posting.tandai-medsos');
+    Route::post('admin/posting/{posting}/selesaikan-lcs/{pegawai}', [PostingController::class, 'selesaikanSuperadmin'])->name('admin.posting.selesaikan-lcs');
+});
+
+// Pegawai Routes
+Route::middleware(['auth', 'checkRole:pegawai'])->group(function () {
     Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');
     Route::get('tugas/riwayat', [TugasController::class, 'riwayat'])->name('tugas.riwayat');
     Route::post('tugas/{id}/medsos', [TugasController::class, 'tandaiMedsos'])->name('tugas.medsos');

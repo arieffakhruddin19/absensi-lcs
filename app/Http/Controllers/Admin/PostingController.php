@@ -177,4 +177,93 @@ class PostingController extends Controller
 
         return view('admin.posting.laporan', compact('posting', 'pegawais', 'absensiRecords'));
     }
+
+    /**
+     * Superadmin: Toggle individual Like/Comment/Share untuk pegawai tertentu
+     */
+    public function tandaiMedsosSuperadmin(Request $request, $posting_id, $pegawai_id)
+    {
+        $platform = $request->input('platform'); // 'ig', 'fb', 'tw', 'tt', 'yt'
+        $action = $request->input('action'); // 'like', 'comment', 'share'
+        $isChecked = $request->input('is_checked', true);
+        
+        $validPlatforms = ['ig', 'fb', 'tw', 'tt', 'yt'];
+        $validActions = ['like', 'comment', 'share'];
+
+        if (!in_array($platform, $validPlatforms) || !in_array($action, $validActions)) {
+            return response()->json(['success' => false, 'message' => 'Data tidak valid']);
+        }
+
+        $posting = \App\Models\Posting::findOrFail($posting_id);
+        $pegawai = \App\Models\Pegawai::findOrFail($pegawai_id);
+
+        $absensi = \App\Models\AbsensiPosting::firstOrCreate([
+            'pegawai_id' => $pegawai->id,
+            'posting_id' => $posting->id,
+        ]);
+
+        $field = $platform . '_' . $action;
+        $absensi->$field = $isChecked;
+        
+        // Cek apakah ketiganya sudah true
+        $likeField = $platform . '_like';
+        $commentField = $platform . '_comment';
+        $shareField = $platform . '_share';
+        
+        $waktuPlatformMap = [
+            'ig' => 'instagram',
+            'fb' => 'facebook',
+            'tw' => 'twitter',
+            'tt' => 'tiktok',
+            'yt' => 'youtube'
+        ];
+        $waktuField = 'waktu_' . $waktuPlatformMap[$platform];
+
+        if ($absensi->$likeField && $absensi->$commentField && $absensi->$shareField && !$absensi->$waktuField) {
+            $absensi->$waktuField = \Carbon\Carbon::now();
+        } elseif (!$absensi->$likeField || !$absensi->$commentField || !$absensi->$shareField) {
+            $absensi->$waktuField = null;
+        }
+
+        $absensi->save();
+
+        event(new AdminDataUpdated('laporan'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menandai ' . strtoupper($action) . ' pada ' . strtoupper($platform) . ' untuk ' . $pegawai->nama_pegawai . '.'
+        ]);
+    }
+
+    /**
+     * Superadmin: Tandai tugas selesai untuk pegawai tertentu
+     */
+    public function selesaikanSuperadmin(Request $request, $posting_id, $pegawai_id)
+    {
+        $posting = \App\Models\Posting::findOrFail($posting_id);
+        $pegawai = \App\Models\Pegawai::findOrFail($pegawai_id);
+
+        $absensi = \App\Models\AbsensiPosting::updateOrCreate(
+            [
+                'pegawai_id' => $pegawai->id,
+                'posting_id' => $posting->id,
+            ],
+            [
+                'status_selesai' => true,
+                'waktu_dikerjakan' => \Carbon\Carbon::now(),
+            ]
+        );
+
+        $absensi->save();
+
+        event(new \App\Events\PegawaiDataUpdated('tugas', $pegawai->id));
+        event(new AdminDataUpdated('laporan'));
+        event(new AdminDataUpdated('posting'));
+        event(new AdminDataUpdated('rekap'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil menandai tugas selesai untuk ' . $pegawai->nama_pegawai . '.'
+        ]);
+    }
 }

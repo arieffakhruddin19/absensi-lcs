@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @if (Auth::user()->role === 'admin')
+                    @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
                     <x-nav-link :href="route('admin.pegawai.index')" :active="request()->routeIs('admin.pegawai.*')">
                         {{ __('Pegawai') }}
                     </x-nav-link>
@@ -81,7 +81,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @if (Auth::user()->role === 'admin')
+            @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
             <x-responsive-nav-link :href="route('admin.pegawai.index')" :active="request()->routeIs('admin.pegawai.*')">
                 {{ __('Pegawai') }}
             </x-responsive-nav-link>

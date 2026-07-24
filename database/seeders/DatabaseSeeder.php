@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'nip' => 'superadmin',
             'email' => 'superadmin@mail.com',
             'password' => bcrypt('12345678'),
-            'role' => 'admin',
+            'role' => 'superadmin',
         ]);
 
         // Dummy Pegawai
