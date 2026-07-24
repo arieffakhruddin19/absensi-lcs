@@ -170,29 +170,34 @@
             // Platform Chart
             const platformCtx = document.getElementById('platformChart').getContext('2d');
             new Chart(platformCtx, {
-                type: 'doughnut',
+                type: 'polarArea',
                 data: {
                     labels: ['Instagram', 'Facebook', 'Twitter', 'TikTok', 'YouTube'],
                     datasets: [{
                         data: {!! json_encode($chartPlatformData) !!},
                         backgroundColor: [
-                            '#ec4899', // pink-500 (IG)
-                            '#3b82f6', // blue-500 (FB)
-                            '#14b8a6', // teal-500 (TW)
-                            '#1f2937', // gray-800 (TT)
-                            '#ef4444'  // red-500 (YT)
+                            'rgba(236, 72, 153, 0.8)', // pink-500
+                            'rgba(59, 130, 246, 0.8)', // blue-500
+                            'rgba(20, 184, 166, 0.8)', // teal-500
+                            'rgba(31, 41, 55, 0.8)',   // gray-800
+                            'rgba(239, 68, 68, 0.8)'   // red-500
                         ],
-                        borderWidth: 0,
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
                         hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
-                    cutout: '65%',
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: { padding: 20 }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            ticks: { display: false }
                         }
                     }
                 }
