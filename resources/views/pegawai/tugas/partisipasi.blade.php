@@ -62,19 +62,19 @@
                                     <th scope="col" class="px-4 py-3 border-r border-gray-200 dark:border-gray-700" rowspan="2">
                                         Nama Pegawai
                                     </th>
-                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30" colspan="3">
+                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30" colspan="3">
                                         <i class="fab fa-instagram text-pink-500"></i> IG
                                     </th>
-                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30" colspan="3">
+                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30" colspan="3">
                                         <i class="fab fa-facebook text-blue-600"></i> FB
                                     </th>
-                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30" colspan="3">
+                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30" colspan="3">
                                         <i class="fab fa-twitter text-blue-400"></i> TW
                                     </th>
-                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50" colspan="3">
+                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50" colspan="3">
                                         <i class="fab fa-tiktok text-black dark:text-white"></i> TT
                                     </th>
-                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30" colspan="3">
+                                    <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30" colspan="3">
                                         <i class="fab fa-youtube text-red-600"></i> YT
                                     </th>
                                     <th scope="col" class="px-4 py-3 text-center w-32" rowspan="2">
@@ -83,25 +83,25 @@
                                 </tr>
                                 <tr>
                                     <!-- IG -->
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30" title="Like">L</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30" title="Comment">C</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30" title="Share">S</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30" title="Like">L</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30" title="Comment">C</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30" title="Share">S</th>
                                     <!-- FB -->
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30" title="Like">L</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30" title="Comment">C</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30" title="Share">S</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30" title="Like">L</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30" title="Comment">C</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30" title="Share">S</th>
                                     <!-- TW -->
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30" title="Like">L</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30" title="Comment">C</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30" title="Share">S</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30" title="Like">L</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30" title="Comment">C</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30" title="Share">S</th>
                                     <!-- TT -->
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50" title="Like">L</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50" title="Comment">C</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50" title="Share">S</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50" title="Like">L</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50" title="Comment">C</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50" title="Share">S</th>
                                     <!-- YT -->
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30" title="Like">L</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30" title="Comment">C</th>
-                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30" title="Share">S</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30" title="Like">L</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30" title="Comment">C</th>
+                                    <th scope="col" class="px-1 py-1 text-center border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30" title="Share">S</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,29 +115,29 @@
                                         </td>
                                         
                                         <!-- IG -->
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30">{{ $pegawai->ig_l ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30">{{ $pegawai->ig_c ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-pink-100 dark:bg-pink-900/30">{{ $pegawai->ig_s ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30">{{ $pegawai->ig_l ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30">{{ $pegawai->ig_c ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-pink-100/50 dark:bg-pink-900/30">{{ $pegawai->ig_s ?: '-' }}</td>
                                         
                                         <!-- FB -->
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30">{{ $pegawai->fb_l ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30">{{ $pegawai->fb_c ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-blue-100 dark:bg-blue-900/30">{{ $pegawai->fb_s ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30">{{ $pegawai->fb_l ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30">{{ $pegawai->fb_c ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-blue-100/50 dark:bg-blue-900/30">{{ $pegawai->fb_s ?: '-' }}</td>
 
                                         <!-- TW -->
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30">{{ $pegawai->tw_l ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30">{{ $pegawai->tw_c ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-purple-100 dark:bg-purple-900/30">{{ $pegawai->tw_s ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30">{{ $pegawai->tw_l ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30">{{ $pegawai->tw_c ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-purple-100/50 dark:bg-purple-900/30">{{ $pegawai->tw_s ?: '-' }}</td>
 
                                         <!-- TT -->
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50">{{ $pegawai->tt_l ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50">{{ $pegawai->tt_c ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-gray-200 dark:bg-gray-700/50">{{ $pegawai->tt_s ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50">{{ $pegawai->tt_l ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50">{{ $pegawai->tt_c ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-gray-200/50 dark:bg-gray-700/50">{{ $pegawai->tt_s ?: '-' }}</td>
 
                                         <!-- YT -->
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30">{{ $pegawai->yt_l ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30">{{ $pegawai->yt_c ?: '-' }}</td>
-                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 dark:bg-red-900/30">{{ $pegawai->yt_s ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30">{{ $pegawai->yt_l ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30">{{ $pegawai->yt_c ?: '-' }}</td>
+                                        <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100/50 dark:bg-red-900/30">{{ $pegawai->yt_s ?: '-' }}</td>
 
                                         <td class="px-4 py-2 text-center font-bold text-blue-600 dark:text-blue-400">
                                             <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
