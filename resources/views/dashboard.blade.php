@@ -43,9 +43,9 @@
             </div>
 
             <!-- Charts & Leaderboard Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- Left Column (Charts) -->
-                <div class="lg:col-span-2 space-y-6">
+                <div class="lg:col-span-1 space-y-6">
                     <!-- Line Chart -->
                     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
                         <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Tren Partisipasi (7 Hari Terakhir)</h4>
