@@ -12,7 +12,7 @@ class PublicRekapController extends Controller
 {
     private function getRekapData(Request $request)
     {
-        $tab = $request->input('tab', 'kementan');
+        $tab = $request->input('tab', 'pkh');
         $query = Posting::query();
         
         if ($tab == 'pkh') {
@@ -154,14 +154,14 @@ class PublicRekapController extends Controller
             return view('public.rekap-laporan', [
                 'rekap' => $paginatedRekap,
                 'totalPegawaiAktif' => $totalPegawaiAktif,
-                'tab' => $request->input('tab', 'kementan')
+                'tab' => $request->input('tab', 'pkh')
             ])->render();
         }
 
         return view('public.rekap-laporan', [
             'rekap' => $paginatedRekap,
             'totalPegawaiAktif' => $totalPegawaiAktif,
-            'tab' => $request->input('tab', 'kementan')
+            'tab' => $request->input('tab', 'pkh')
         ]);
     }
 
@@ -176,7 +176,7 @@ class PublicRekapController extends Controller
         })->count();
         $totalPegawaiAktif = $totalPegawaiAktif > 0 ? $totalPegawaiAktif : 1;
 
-        $tab = $request->input('tab', 'kementan');
+        $tab = $request->input('tab', 'pkh');
         $sumberText = 'Kementan';
         if ($tab == 'pkh') $sumberText = 'Ditjen_PKH';
         elseif ($tab == 'pusvetma') $sumberText = 'Pusvetma';

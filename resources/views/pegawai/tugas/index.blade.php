@@ -17,7 +17,7 @@
                     @forelse ($postings as $post)
                         @php
                             $abs = $absensiRecords[$post->id] ?? null;
-                            $sudahSelesai = $abs && $abs->status_selesai;
+                            $sudahSelesai = $abs && $abs->status_selesai && !$abs->diselesaikan_oleh_admin;
                         @endphp
                         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative text-center">
                             <span class="absolute top-0 left-0 bg-gray-100 text-gray-600 text-xs font-medium px-2.5 py-0.5 rounded-br-lg rounded-tl-lg dark:bg-gray-700 dark:text-gray-300">
@@ -68,7 +68,8 @@
                                                 @foreach(['like' => 'L', 'comment' => 'C', 'share' => 'S'] as $action => $actionLabel)
                                                     @php 
                                                         $field = $data['key'] . '_' . $action;
-                                                        $isChecked = $abs->$field ?? false;
+                                                        $isHutang = $abs && $abs->diselesaikan_oleh_admin;
+                                                        $isChecked = $isHutang ? false : ($abs->$field ?? false);
                                                     @endphp
                                                     <label class="flex items-center space-x-1 cursor-pointer" title="{{ ucfirst($action) }}">
                                                         <input type="checkbox" class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 transition-opacity duration-200 medsos-checkbox-{{ $post->id }} medsos-checkbox-{{ $post->id }}-{{ $data['key'] }} {{ $isChecked ? '' : 'opacity-50 cursor-not-allowed' }}" data-locked="{{ $isChecked ? 'false' : 'true' }}" data-post="{{ $post->id }}" data-platform="{{ $data['key'] }}" data-action="{{ $action }}" data-url="{{ route('tugas.medsos', $post->id) }}" onclick="return handleCheckboxClick(event, this);" onchange="tandaiMedsos(this)" {{ $isChecked ? 'checked' : '' }}>
@@ -88,7 +89,7 @@
                                         Sudah Dikerjakan
                                     </button>
                                 @else
-                                    <button type="button" id="btn-selesai-{{ $post->id }}" onclick="tandaiSelesai('{{ route('tugas.selesai', $post->id) }}', this)" disabled class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-center text-gray-500 bg-gray-200 rounded-lg cursor-not-allowed dark:bg-gray-700 dark:text-gray-400 transition-all w-full" title="Selesaikan semua medsos di atas terlebih dahulu">
+                                    <button type="button" id="btn-selesai-{{ $post->id }}" onclick="tandaiSelesai('{{ route('tugas.selesai', $post->id) }}', this, '{{ $post->id }}')" disabled class="inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium text-center text-gray-500 bg-gray-200 rounded-lg cursor-not-allowed dark:bg-gray-700 dark:text-gray-400 transition-all w-full" title="Selesaikan semua medsos di atas terlebih dahulu">
                                         Konfirmasi Selesai Semua
                                     </button>
                                 @endif
@@ -112,6 +113,9 @@
         // Format: 'postId-platform' misalnya '7-ig'
         if (!window._unlockedPlatforms) {
             window._unlockedPlatforms = new Set();
+        }
+        if (!window._checkedBoxes) {
+            window._checkedBoxes = new Set();
         }
 
         function bukaDanBukaKunci(postId, platform, url) {
@@ -140,6 +144,11 @@
                 var postId = parts[0];
                 var platform = parts[1];
                 unlockCheckboxes(postId, platform);
+            });
+            window._checkedBoxes.forEach(function(key) {
+                var parts = key.split('-');
+                var cb = document.querySelector('.medsos-checkbox-' + parts[0] + '-' + parts[1] + '[data-action="' + parts[2] + '"]');
+                if (cb) cb.checked = true;
             });
             // Re-check tombol selesai
             var posts = new Set();
@@ -228,6 +237,13 @@
             const isChecked = checkbox.checked;
             const targetUrl = checkbox.getAttribute('data-url');
             
+            const uniqueKey = postId + '-' + platform + '-' + action;
+            if (isChecked) {
+                window._checkedBoxes.add(uniqueKey);
+            } else {
+                window._checkedBoxes.delete(uniqueKey);
+            }
+            
             fetch(targetUrl, {
                 method: 'POST',
                 headers: {
@@ -269,7 +285,7 @@
             restoreUnlockedCheckboxes();
         });
 
-        function tandaiSelesai(targetUrl, btnElement) {
+        function tandaiSelesai(targetUrl, btnElement, postId) {
             Swal.fire({
                 title: 'Konfirmasi LCS',
                 text: 'Apakah Anda yakin sudah melakukan Like, Comment, dan Share pada postingan ini?',
@@ -286,13 +302,21 @@
                     btnElement.innerHTML = 'Memproses...';
                     btnElement.disabled = true;
 
+                    const checkboxes = document.querySelectorAll('.medsos-checkbox-' + postId);
+                    const finalState = {};
+                    checkboxes.forEach(cb => {
+                        const platform = cb.getAttribute('data-platform');
+                        const action = cb.getAttribute('data-action');
+                        finalState[platform + '_' + action] = cb.checked;
+                    });
+
                     fetch(targetUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                         },
-                        body: JSON.stringify({})
+                        body: JSON.stringify({ final_state: finalState })
                     })
                     .then(response => response.json())
                     .then(data => {

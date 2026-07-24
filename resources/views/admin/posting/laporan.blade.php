@@ -194,9 +194,15 @@
                                     @endforeach
                                     <td class="px-6 py-4 text-center">
                                         @if($isSelesai)
-                                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                                                Selesai
-                                            </span>
+                                            @if($abs && $abs->diselesaikan_oleh_admin)
+                                                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300" title="Diselesaikan oleh Admin">
+                                                    Selesai
+                                                </span>
+                                            @else
+                                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                                    Selesai
+                                                </span>
+                                            @endif
                                             <div class="text-xs text-gray-500 mt-1">{{ $waktu }}</div>
                                         @else
                                             <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">

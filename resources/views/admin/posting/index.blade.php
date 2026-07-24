@@ -34,7 +34,7 @@
                     .custom-filter-medsos { flex: 1 1 100%; }
                     .custom-filter-search { flex: 1 1 100%; }
                     
-                    .aksi-buttons { display: flex; flex-direction: column; gap: 0.5rem; justify-content: center; align-items: stretch; }
+                    .aksi-buttons { display: flex; flex-direction: column; gap: 0.25rem; justify-content: center; align-items: stretch; }
                     .aksi-buttons > a, .aksi-buttons > button, .aksi-buttons > form { width: 100%; text-align: center; }
                     .aksi-buttons > form > button { width: 100%; }
                     
@@ -96,13 +96,13 @@
                     <div class="mb-4 flex justify-center sm:justify-start">
                         <ul class="flex flex-wrap justify-center gap-2 text-xs sm:text-sm font-medium text-center" role="tablist">
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
                             </li>
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
                             </li>
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
                             </li>
                         </ul>
                     </div>
@@ -144,12 +144,12 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 align-top aksi-buttons">
-                                    <a href="{{ route('admin.posting.laporan', $post->id) }}" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition">Laporan</a>
-                                    <button data-modal-target="edit-modal-{{ $post->id }}" data-modal-toggle="edit-modal-{{ $post->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition" type="button">Edit</button>
+                                    <a href="{{ route('admin.posting.laporan', $post->id) }}" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded text-xs px-2 py-1 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition">Laporan</a>
+                                    <button data-modal-target="edit-modal-{{ $post->id }}" data-modal-toggle="edit-modal-{{ $post->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded text-xs px-2 py-1 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition" type="button">Edit</button>
                                     <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" class="inline m-0">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900 transition" onclick="confirmDelete(this, 'Yakin ingin menghapus postingan ini?')">Hapus</button>
+                                        <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded text-xs px-2 py-1 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900 transition" onclick="confirmDelete(this, 'Yakin ingin menghapus postingan ini?')">Hapus</button>
                                     </form>
                                 </td>
                             </tr>
@@ -198,7 +198,7 @@
                         </div>
                         <div class="col-span-2">
                             <label for="tanggal_tugas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
-                            <input type="text" name="tanggal_tugas" id="tanggal_tugas" class="datepicker-today bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <input type="text" name="tanggal_tugas" id="tanggal_tugas" value="{{ \Carbon\Carbon::today()->format('Y-m-d') }}" class="datepicker-today bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                         </div>
                         @php
                             $sumberDefault = 'Kementan';
@@ -246,6 +246,8 @@
             </div>
         </div>
     </div>
+    
+    <div id="modals-container">
     <!-- Edit Modals -->
     @foreach ($postings as $post)
     <div id="edit-modal-{{ $post->id }}" tabindex="-1" aria-hidden="true" data-modal-backdrop="static" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -314,37 +316,84 @@
         </div>
     </div>
     @endforeach
+    </div>
 
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            flatpickr(".datepicker", {
-                dateFormat: "Y-m-d", // Data dikirim ke server dalam format ini
-                altInput: true,
-                altFormat: "d/m/Y", // Tampilan untuk user
-                allowInput: true
-            });
-            
-            flatpickr(".datepicker-today", {
-                dateFormat: "Y-m-d", 
-                altInput: true,
-                altFormat: "d/m/Y", 
-                allowInput: true,
-                defaultDate: "today"
-            });
-            
-            flatpickr("#filter-tanggal", {
-                dateFormat: "Y-m-d",
-                altInput: true,
-                altFormat: "d/m/Y",
-                allowInput: true,
-                onChange: function(selectedDates, dateStr, instance) {
-                    if (window.triggerSearchGlobal) {
-                        window.triggerSearchGlobal();
+        // Initialize flatpickr for visible elements (filter, edit modals datepickers)
+        window.initDatepickers = function() {
+            // Filter tanggal (always visible)
+            var filterEl = document.getElementById('filter-tanggal');
+            if (filterEl && !filterEl._flatpickr) {
+                flatpickr(filterEl, {
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "d/m/Y",
+                    allowInput: true,
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (window.triggerSearchGlobal) {
+                            window.triggerSearchGlobal();
+                        }
                     }
+                });
+            }
+
+            // Edit modal datepickers (init when visible)
+            document.querySelectorAll('.datepicker').forEach(function(el) {
+                if (!el._flatpickr) {
+                    flatpickr(el, {
+                        dateFormat: "Y-m-d",
+                        altInput: true,
+                        altFormat: "d/m/Y",
+                        allowInput: true
+                    });
                 }
             });
+        };
+
+        // Initialize flatpickr for crud-modal WHEN it becomes visible
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-modal-target="crud-modal"]');
+            if (btn) {
+                setTimeout(function() {
+                    var el = document.getElementById('tanggal_tugas');
+                    if (el && !el._flatpickr) {
+                        flatpickr(el, {
+                            dateFormat: "Y-m-d",
+                            altInput: true,
+                            altFormat: "d/m/Y",
+                            allowInput: true,
+                            defaultDate: "today"
+                        });
+                    }
+                }, 150);
+            }
+
+            // Also handle edit modal open
+            var editBtn = e.target.closest('[data-modal-target^="edit-modal-"]');
+            if (editBtn) {
+                var targetId = editBtn.getAttribute('data-modal-target');
+                setTimeout(function() {
+                    var modal = document.getElementById(targetId);
+                    if (modal) {
+                        modal.querySelectorAll('.datepicker').forEach(function(el) {
+                            if (!el._flatpickr) {
+                                flatpickr(el, {
+                                    dateFormat: "Y-m-d",
+                                    altInput: true,
+                                    altFormat: "d/m/Y",
+                                    allowInput: true
+                                });
+                            }
+                        });
+                    }
+                }, 150);
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            window.initDatepickers();
         });
     </script>
 
@@ -436,6 +485,15 @@
             const url = new URL(window.location.href);
             url.searchParams.set('tab', tabName);
             url.searchParams.delete('page');
+            
+            // Update crud-modal hidden input
+            const crudSumber = document.querySelector('#crud-modal input[name="sumber_posting"]');
+            if (crudSumber) {
+                if (tabName === 'pkh') crudSumber.value = 'Ditjen PKH';
+                else if (tabName === 'pusvetma') crudSumber.value = 'Pusvetma';
+                else crudSumber.value = 'Kementan';
+            }
+            
             window.triggerSearch(url.href);
         };
         
@@ -503,11 +561,25 @@
                     contentDiv.style.opacity = '1';
                     contentDiv.style.pointerEvents = 'auto';
                     
-                    if (typeof initFlowbite === 'function') {
-                        initFlowbite();
-                    } else if (typeof initModals === 'function') {
-                        initModals();
+                    const newModals = doc.querySelector('#modals-container');
+                    const modalsDiv = document.querySelector('#modals-container');
+                    if (newModals && modalsDiv) {
+                        modalsDiv.innerHTML = newModals.innerHTML;
                     }
+                    
+                    try {
+                        if (typeof initFlowbite === 'function') {
+                            initFlowbite();
+                        } else if (typeof initModals === 'function') {
+                            initModals();
+                        }
+                    } catch(e) { console.error('initFlowbite error:', e); }
+                    
+                    try {
+                        if (typeof window.initDatepickers === 'function') {
+                            setTimeout(() => { window.initDatepickers(); }, 50);
+                        }
+                    } catch(e) { console.error('initDatepickers error:', e); }
                     
                     const newTitle = doc.querySelector('#dynamic-title');
                     const currentTitle = document.querySelector('#dynamic-title');

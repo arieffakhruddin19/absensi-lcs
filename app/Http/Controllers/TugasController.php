@@ -22,6 +22,7 @@ class TugasController extends Controller
 
         $completedPostingIds = AbsensiPosting::where('pegawai_id', $user->pegawai_id)
             ->where('status_selesai', true)
+            ->where('diselesaikan_oleh_admin', false)
             ->pluck('posting_id')
             ->toArray();
 
@@ -35,9 +36,12 @@ class TugasController extends Controller
             ->latest()
             ->get();
 
-        // Ambil absensi yang status_selesai = false untuk mengambil progress medsos
+        // Ambil absensi yang status_selesai = false ATAU diselesaikan_oleh_admin = true (Hutang)
         $absensiRecords = AbsensiPosting::where('pegawai_id', $user->pegawai_id)
-            ->where('status_selesai', false)
+            ->where(function($q) {
+                $q->where('status_selesai', false)
+                  ->orWhere('diselesaikan_oleh_admin', true);
+            })
             ->get()
             ->keyBy('posting_id');
 
@@ -154,8 +158,19 @@ class TugasController extends Controller
             [
                 'status_selesai' => true,
                 'waktu_dikerjakan' => Carbon::now(),
+                'diselesaikan_oleh_admin' => false,
             ]
         );
+
+        if ($request->has('final_state')) {
+            $finalState = $request->input('final_state');
+            $allowedFields = ['ig_like', 'ig_comment', 'ig_share', 'fb_like', 'fb_comment', 'fb_share', 'tw_like', 'tw_comment', 'tw_share', 'tt_like', 'tt_comment', 'tt_share', 'yt_like', 'yt_comment', 'yt_share'];
+            foreach ($finalState as $field => $value) {
+                if (in_array($field, $allowedFields)) {
+                    $absensi->$field = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                }
+            }
+        }
 
         $absensi->save();
 

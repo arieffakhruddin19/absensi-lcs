@@ -11,7 +11,7 @@ class PostingController extends Controller
 {
     public function index(Request $request)
     {
-        $tab = $request->input('tab', 'kementan');
+        $tab = $request->input('tab', 'pkh');
         $query = Posting::query()->withCount(['absensi as sudah_lcs_count' => function($q) { 
             $q->where('status_selesai', true); 
         }]);
@@ -251,6 +251,7 @@ class PostingController extends Controller
             [
                 'status_selesai' => true,
                 'waktu_dikerjakan' => \Carbon\Carbon::now(),
+                'diselesaikan_oleh_admin' => true,
             ]
         );
 

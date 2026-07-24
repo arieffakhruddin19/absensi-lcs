@@ -95,13 +95,13 @@
                     <div class="mb-4 flex justify-center sm:justify-start">
                         <ul class="flex flex-wrap justify-center gap-2 text-xs sm:text-sm font-medium text-center" role="tablist">
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-3 py-2 whitespace-nowrap rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-3 py-2 whitespace-nowrap rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
                             </li>
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-3 py-2 whitespace-nowrap rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-3 py-2 whitespace-nowrap rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
                             </li>
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-3 py-2 whitespace-nowrap rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'kementan') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-3 py-2 whitespace-nowrap rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
                             </li>
                         </ul>
                     </div>
@@ -109,15 +109,15 @@
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="px-6 py-3 w-16">No</th>
+                                <th scope="col" class="px-6 py-3 w-16 text-center">No</th>
                                 <th scope="col" class="px-6 py-3">Tanggal</th>
                                 <th scope="col" class="px-6 py-3">Judul Postingan</th>
-                                <th scope="col" class="px-6 py-3">Sumber</th>
-                                <th scope="col" class="px-6 py-3">Link</th>
-                                <th scope="col" class="px-6 py-3">Medsos</th>
-                                <th scope="col" class="px-6 py-3">Jumlah Like</th>
-                                <th scope="col" class="px-6 py-3">Jumlah Comment</th>
-                                <th scope="col" class="px-6 py-3">Jumlah Share</th>
+                                <th scope="col" class="px-6 py-3 text-center">Sumber</th>
+                                <th scope="col" class="px-6 py-3 text-center">Link</th>
+                                <th scope="col" class="px-6 py-3 text-center">Medsos</th>
+                                <th scope="col" class="px-6 py-3 text-center">Jumlah Like</th>
+                                <th scope="col" class="px-6 py-3 text-center">Jumlah Comment</th>
+                                <th scope="col" class="px-6 py-3 text-center">Jumlah Share</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,7 +130,7 @@
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-900 dark:text-white">
                                     {{ $item->judul }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
                                     @if(isset($item->sumber) && $item->sumber)
                                         @if($item->sumber == 'Kementan')
                                             <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 border border-green-400">{{ $item->sumber }}</span>
@@ -143,10 +143,10 @@
                                         -
                                     @endif
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-center">
                                     <a href="{{ $item->link }}" target="_blank" class="text-blue-600 dark:text-blue-500 hover:underline">Link</a>
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 text-center">
                                     {{ $item->jenis_medsos }}
                                 </td>
                                 <td class="px-6 py-4 text-center">

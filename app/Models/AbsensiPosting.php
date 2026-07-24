@@ -14,6 +14,6 @@ class AbsensiPosting extends Model
         'tt_like', 'tt_comment', 'tt_share',
         'yt_like', 'yt_comment', 'yt_share',
         'waktu_instagram', 'waktu_facebook', 'waktu_twitter', 'waktu_tiktok', 'waktu_youtube',
-        'status_selesai', 'waktu_dikerjakan'
+        'status_selesai', 'waktu_dikerjakan', 'diselesaikan_oleh_admin'
     ];
 }
