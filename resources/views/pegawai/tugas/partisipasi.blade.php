@@ -77,7 +77,7 @@
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30" colspan="3">
                                         <i class="fab fa-youtube text-red-600"></i> YT
                                     </th>
-                                    <th scope="col" class="px-4 py-3 text-center w-32 border-b border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-50 dark:bg-yellow-900/30" rowspan="2">
+                                    <th scope="col" class="px-4 py-3 text-center w-32 border-b border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30" rowspan="2">
                                         Total LCS
                                     </th>
                                 </tr>
@@ -139,7 +139,7 @@
                                         <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30">{{ $pegawai->yt_c ?: '-' }}</td>
                                         <td class="px-1 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30">{{ $pegawai->yt_s ?: '-' }}</td>
 
-                                        <td class="px-4 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-50 dark:bg-yellow-900/30 font-bold text-blue-600 dark:text-blue-400">
+                                        <td class="px-4 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30 font-bold text-blue-600 dark:text-blue-400">
                                             <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
                                                 {{ $pegawai->total_lcs ?? 0 }}
                                             </span>
