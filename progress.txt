@@ -1,0 +1,4 @@
+### 2026-07-24
+- **[Created]** .skills/ - Menambahkan folder .skills berisi script code-review-skill.md, log-skill.md, security-skill.md, dan wfh-report-skill.md dari vetmalance-v2.
+- **[Modified]** UI & Layouts - UI improvements: responsive layouts, real-time sync fixes, dan progress tracking (commit: a1ac1b9)
+- **[Fixed]** Real-time Sync - Fix real-time sync bugs: preserve scroll state and fix datepicker duplication (commit: 4367ecc)
