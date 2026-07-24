@@ -141,7 +141,7 @@
 
                                         <td class="px-4 py-2 text-center font-bold text-blue-600 dark:text-blue-400">
                                             <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                                                {{ $pegawai->total_lcs ?? 0 }} LCS
+                                                {{ $pegawai->total_lcs ?? 0 }}
                                             </span>
                                         </td>
                                     </tr>
