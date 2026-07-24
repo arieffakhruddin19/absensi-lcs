@@ -41,10 +41,13 @@ Route::get('/dashboard', function () {
             ->whereBetween('postings.tanggal_tugas', [$startOfMonth, $endOfMonth])
             ->select(
                 'pegawais.nama_pegawai',
-                \Illuminate\Support\Facades\DB::raw('(SUM(ig_like) + SUM(ig_comment) + SUM(ig_share) + SUM(fb_like) + SUM(fb_comment) + SUM(fb_share) + SUM(tw_like) + SUM(tw_comment) + SUM(tw_share) + SUM(tt_like) + SUM(tt_comment) + SUM(tt_share) + SUM(yt_like) + SUM(yt_comment) + SUM(yt_share)) as total_lcs')
+                \Illuminate\Support\Facades\DB::raw('(SUM(ig_like) + SUM(ig_comment) + SUM(ig_share) + SUM(fb_like) + SUM(fb_comment) + SUM(fb_share) + SUM(tw_like) + SUM(tw_comment) + SUM(tw_share) + SUM(tt_like) + SUM(tt_comment) + SUM(tt_share) + SUM(yt_like) + SUM(yt_comment) + SUM(yt_share)) as total_lcs'),
+                \Illuminate\Support\Facades\DB::raw('AVG(TIMESTAMPDIFF(SECOND, postings.created_at, absensi_postings.waktu_dikerjakan)) as avg_duration')
             )
             ->groupBy('pegawais.id', 'pegawais.nama_pegawai')
             ->orderByDesc('total_lcs')
+            ->orderBy('avg_duration', 'asc')
+            ->orderBy('pegawais.nama_pegawai', 'asc')
             ->limit(6)
             ->get();
 
