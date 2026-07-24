@@ -42,63 +42,62 @@
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <!-- Line Chart -->
+            <!-- Charts & Leaderboard Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Line Chart (Full Width) -->
                 <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
                     <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Tren Partisipasi (7 Hari Terakhir)</h4>
-                    <canvas id="trendChart" height="100"></canvas>
+                    <div class="relative w-full h-[300px]">
+                        <canvas id="trendChart"></canvas>
+                    </div>
                 </div>
                 
-                <!-- Doughnut Chart -->
-                <div class="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+                <!-- Doughnut Chart (Half Width) -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
                     <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Platform Terpopuler (Bulan Ini)</h4>
-                    <div class="flex justify-center h-full items-center">
-                        <div class="w-full max-w-[250px] pb-6">
+                    <div class="flex-1 flex justify-center items-center min-h-[250px]">
+                        <div class="w-full max-w-[280px]">
                             <canvas id="platformChart"></canvas>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Horizontal Leaderboard -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
-                <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center justify-center lg:justify-start">
-                    <svg class="w-7 h-7 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    Top Pegawai Bulan Ini
-                </h4>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    @forelse($topPegawais as $index => $pegawai)
-                        <div class="flex flex-col items-center justify-center p-5 bg-gradient-to-b from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-100 dark:border-gray-600 shadow-sm relative overflow-hidden transition-transform duration-300 hover:-translate-y-1 hover:shadow-md">
-                            
-                            @if($index == 0)
-                                <div class="absolute top-0 w-full h-1 bg-yellow-400"></div>
-                                <div class="w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 flex items-center justify-center text-white font-black text-xl shadow-lg ring-4 ring-yellow-100 dark:ring-yellow-900/30">1</div>
-                            @elseif($index == 1)
-                                <div class="absolute top-0 w-full h-1 bg-gray-400"></div>
-                                <div class="w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center text-white font-black text-xl shadow-lg ring-4 ring-gray-100 dark:ring-gray-700">2</div>
-                            @elseif($index == 2)
-                                <div class="absolute top-0 w-full h-1 bg-orange-400"></div>
-                                <div class="w-12 h-12 mb-3 rounded-full bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center text-white font-black text-xl shadow-lg ring-4 ring-orange-100 dark:ring-orange-900/30">3</div>
-                            @else
-                                <div class="absolute top-0 w-full h-1 bg-blue-400"></div>
-                                <div class="w-10 h-10 mb-3 rounded-full bg-gray-100 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold text-lg">{{ $index + 1 }}</div>
-                            @endif
-
-                            <p class="text-sm font-bold text-gray-900 dark:text-white text-center w-full truncate px-2 mb-1" title="{{ $pegawai->nama_pegawai }}">
-                                {{ $pegawai->nama_pegawai }}
-                            </p>
-                            
-                            <div class="mt-auto pt-2">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $index < 3 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300' }}">
-                                    {{ $pegawai->total_lcs }} LCS
-                                </span>
+                <!-- Vertical Leaderboard (Half Width) -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        Top Pegawai Bulan Ini
+                    </h4>
+                    
+                    <div class="space-y-3 flex-1 flex flex-col justify-center">
+                        @forelse($topPegawais as $index => $pegawai)
+                            <div class="flex items-center p-3 {{ $index < 3 ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }} rounded-lg border {{ $index < 3 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-gray-100 dark:border-gray-600' }} transition-transform hover:scale-[1.01]">
+                                <div class="flex-shrink-0 mr-4">
+                                    @if($index == 0)
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 flex items-center justify-center text-white font-black text-sm shadow-md">1</div>
+                                    @elseif($index == 1)
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-black text-sm shadow-md">2</div>
+                                    @elseif($index == 2)
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center text-white font-black text-sm shadow-md">3</div>
+                                    @else
+                                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-sm">{{ $index + 1 }}</div>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                        {{ $pegawai->nama_pegawai }}
+                                    </p>
+                                </div>
+                                <div class="flex-shrink-0 text-right ml-2">
+                                    <div class="text-sm font-bold {{ $index < 3 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-600 dark:text-gray-300' }} bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+                                        {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @empty
-                        <div class="col-span-full text-center text-sm text-gray-500 py-8">Belum ada aktivitas LCS di bulan ini.</div>
-                    @endforelse
+                        @empty
+                            <div class="text-center text-sm text-gray-500 py-8">Belum ada aktivitas LCS di bulan ini.</div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
 
