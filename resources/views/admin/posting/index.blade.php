@@ -94,15 +94,15 @@
                 <div id="realtime-content">
                     <!-- Tabs -->
                     <div class="mb-4 flex justify-center sm:justify-start">
-                        <ul class="flex flex-wrap justify-center gap-2 text-xs sm:text-sm font-medium text-center" role="tablist">
+                        <ul class="flex flex-wrap justify-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-center" role="tablist">
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('pkh')" class="inline-block px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pkh' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Ditjen PKH</a>
                             </li>
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('pusvetma')" class="inline-block px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'pusvetma' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Pusvetma</a>
                             </li>
                             <li role="presentation">
-                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
+                                <a href="#" onclick="event.preventDefault(); switchTab('kementan')" class="inline-block px-3 sm:px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm {{ (isset($tab) ? $tab : 'pkh') == 'kementan' ? 'text-white bg-blue-600 dark:bg-blue-500' : 'text-gray-600 bg-gray-100 border border-gray-200 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white' }}" role="tab">Kementan</a>
                             </li>
                         </ul>
                     </div>
@@ -139,8 +139,8 @@
                                 </td>
                                 <td class="px-6 py-4 align-top text-center">
                                     <div class="flex flex-col items-center gap-1">
-                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded border border-green-400 w-full whitespace-nowrap">Sudah: {{ $post->sudah_lcs_count }}</span>
-                                        <span class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded border border-red-400 w-full whitespace-nowrap">Belum: {{ max(0, $totalPegawaiAktif - $post->sudah_lcs_count) }}</span>
+                                        <button type="button" onclick="showListPegawai('{{ route('admin.posting.list-pegawai', $post->id) }}', 'sudah', '{{ htmlspecialchars($post->judul_tugas, ENT_QUOTES) }}')" class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded border border-green-400 w-full whitespace-nowrap hover:bg-green-200 transition focus:outline-none focus:ring-2 focus:ring-green-400">Sudah: {{ $post->sudah_lcs_count }}</button>
+                                        <button type="button" onclick="showListPegawai('{{ route('admin.posting.list-pegawai', $post->id) }}', 'belum', '{{ htmlspecialchars($post->judul_tugas, ENT_QUOTES) }}')" class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded border border-red-400 w-full whitespace-nowrap hover:bg-red-200 transition focus:outline-none focus:ring-2 focus:ring-red-400">Belum: {{ max(0, $totalPegawaiAktif - $post->sudah_lcs_count) }}</button>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 align-top aksi-buttons">
@@ -316,6 +316,59 @@
         </div>
     </div>
     @endforeach
+    
+    <!-- List Pegawai Modal -->
+    <div id="list-pegawai-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static" class="hidden fixed inset-0 z-50 justify-center items-center">
+        <div class="relative p-4 w-full max-w-md" style="max-height: 100vh; margin: auto;">
+            <!-- Modal content -->
+            <div id="list-pegawai-modal-content" class="relative bg-white rounded-lg shadow dark:bg-gray-700 flex flex-col">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600" style="flex-shrink: 0;">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white" id="list-pegawai-modal-title">
+                        Daftar Pegawai
+                    </h3>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" onclick="closeListPegawaiModal()">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span class="sr-only">Tutup</span>
+                    </button>
+                </div>
+                <!-- Modal Search Area -->
+                <div class="p-4 md:p-5 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700" style="flex-shrink: 0;">
+                    <div class="mb-3 text-sm text-gray-500 dark:text-gray-400 font-medium line-clamp-2" id="list-pegawai-posting-title"></div>
+                    
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input type="text" id="search-list-pegawai" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Cari nama pegawai...">
+                    </div>
+                </div>
+
+                <!-- Modal body - this is the ONLY scrollable area -->
+                <div id="list-pegawai-body" class="p-4 md:p-5" style="overflow-y: scroll; -webkit-overflow-scrolling: touch; touch-action: pan-y; overscroll-behavior: contain;">
+
+                    <div id="list-pegawai-loading" class="text-center py-8 hidden">
+                        <div role="status">
+                            <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                            </svg>
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+
+                    <ul id="list-pegawai-container" class="space-y-1 select-none">
+                        <!-- List will be populated here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     </div>
 
     <!-- Flatpickr JS -->
@@ -623,5 +676,103 @@
                 window.triggerSearch(paginationLink.href);
             }
         });
+        
+        let allPegawaiData = [];
+        window.showListPegawai = function(url, status, judulTugas) {
+            const modal = document.getElementById('list-pegawai-modal');
+            const title = document.getElementById('list-pegawai-modal-title');
+            const subtitle = document.getElementById('list-pegawai-posting-title');
+            const container = document.getElementById('list-pegawai-container');
+            const loading = document.getElementById('list-pegawai-loading');
+            const searchInput = document.getElementById('search-list-pegawai');
+            
+            title.textContent = 'Pegawai ' + (status === 'sudah' ? 'Sudah LCS' : 'Belum LCS');
+            title.className = 'text-lg font-semibold ' + (status === 'sudah' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400');
+            subtitle.textContent = judulTugas;
+            
+            container.innerHTML = '';
+            searchInput.value = '';
+            container.classList.add('hidden');
+            loading.classList.remove('hidden');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.classList.add('overflow-hidden');
+            
+            // Calculate body height dynamically using actual pixel values
+            // This fixes mobile browsers where vh units are unreliable
+            setTimeout(function() {
+                var modalContent = document.getElementById('list-pegawai-modal-content');
+                var bodyDiv = document.getElementById('list-pegawai-body');
+                var windowHeight = window.innerHeight;
+                var maxModalHeight = Math.floor(windowHeight * 0.85);
+                modalContent.style.maxHeight = maxModalHeight + 'px';
+                
+                // Calculate remaining height for body after header and search
+                var headerHeight = modalContent.querySelector('.border-b.rounded-t') ? modalContent.querySelector('.border-b.rounded-t').offsetHeight : 0;
+                var searchHeight = document.getElementById('list-pegawai-posting-title').closest('.border-b.border-gray-200') ? document.getElementById('list-pegawai-posting-title').closest('.border-b.border-gray-200').offsetHeight : 0;
+                var remainingHeight = maxModalHeight - headerHeight - searchHeight - 20;
+                bodyDiv.style.maxHeight = Math.max(remainingHeight, 150) + 'px';
+            }, 50);
+            
+            if (typeof createBackdrop === 'function') createBackdrop();
+            else {
+                const backdrop = document.createElement('div');
+                backdrop.id = 'list-pegawai-backdrop';
+                backdrop.style.cssText = 'position:fixed;inset:0;z-index:40;background:rgba(17,24,39,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);transition:opacity 0.2s;';
+                document.body.appendChild(backdrop);
+            }
+            
+            fetch(`${url}?status=${status}`)
+                .then(res => res.json())
+                .then(data => {
+                    allPegawaiData = data.data || [];
+                    renderPegawaiList(allPegawaiData);
+                    loading.classList.add('hidden');
+                    container.classList.remove('hidden');
+                })
+                .catch(err => {
+                    console.error(err);
+                    loading.classList.add('hidden');
+                    container.innerHTML = '<li class="p-2 text-center text-sm text-red-500">Gagal memuat data.</li>';
+                    container.classList.remove('hidden');
+                });
+        };
+        
+        window.closeListPegawaiModal = function() {
+            const modal = document.getElementById('list-pegawai-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.classList.remove('overflow-hidden');
+            
+            if (typeof removeBackdrop === 'function') removeBackdrop();
+            const bd = document.getElementById('list-pegawai-backdrop');
+            if (bd) bd.remove();
+        };
+        
+        function renderPegawaiList(data) {
+            const container = document.getElementById('list-pegawai-container');
+            container.innerHTML = '';
+            
+            if (data.length === 0) {
+                container.innerHTML = '<li class="p-2 text-center text-sm text-gray-500 dark:text-gray-400">Tidak ada data pegawai.</li>';
+                return;
+            }
+            
+            data.forEach((pegawai, index) => {
+                const li = document.createElement('li');
+                li.className = 'px-3 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0 text-sm text-gray-700 dark:text-gray-200 flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition rounded-md select-none';
+                li.innerHTML = `<span class="font-medium text-gray-500 dark:text-gray-400 w-5 text-right flex-shrink-0">${index + 1}.</span> <span>${pegawai.nama_pegawai}</span>`;
+                container.appendChild(li);
+            });
+        }
+        
+        document.getElementById('search-list-pegawai').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = allPegawaiData.filter(p => p.nama_pegawai.toLowerCase().includes(keyword));
+            renderPegawaiList(filtered);
+        });
+        
+
     </script>
 </x-app-layout>

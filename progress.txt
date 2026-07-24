@@ -15,3 +15,4 @@
 - **[Created]** .skills/ - chore: add .skills directory and progress.txt for workflow logging (commit: 14dd312)
 - **[Modified]** UI & Layouts - Fix mobile responsive layout for filter form, fix back navigation link tab persistence, and display source & date metadata in Laporan page
 - **[Created]** Feature - Implement 3-level role system (superadmin, admin, pegawai), add user management for superadmin, and enable interactive LCS filling for superadmin in Laporan page (commit: 7673c85)
+- **[Modified]** UI & Layouts - Update table styles, fix flatpickr initialization in modals, optimize action buttons styling, and center table columns in Rekap Laporan (commit: c9401c3)

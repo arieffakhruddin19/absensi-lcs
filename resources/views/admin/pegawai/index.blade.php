@@ -55,6 +55,7 @@
                                 <th scope="col" class="px-6 py-3 text-center">TMT</th>
                                 <th scope="col" class="px-6 py-3 text-center">Tanggal Pensiun</th>
                                 <th scope="col" class="px-6 py-3 text-center">Status</th>
+                                <th scope="col" class="px-6 py-3 text-center">Akses Monitoring</th>
                                 <th scope="col" class="px-6 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -79,6 +80,12 @@
                                     @else
                                         <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Aktif</span>
                                     @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <label class="inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer toggle-monitor" data-id="{{ $pegawai->id }}" {{ $pegawai->can_monitor ? 'checked' : '' }}>
+                                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    </label>
                                 </td>
                                 <td class="px-6 py-4 flex items-center justify-center space-x-2">
                                     <button data-modal-target="edit-modal-{{ $pegawai->id }}" data-modal-toggle="edit-modal-{{ $pegawai->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition" type="button">
@@ -403,6 +410,47 @@
             if (paginationLink && paginationLink.href) {
                 e.preventDefault();
                 window.triggerSearch(paginationLink.href);
+            }
+        });
+
+        // Toggle Monitor Hak Akses
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('toggle-monitor')) {
+                const checkbox = e.target;
+                const pegawaiId = checkbox.getAttribute('data-id');
+                const isChecked = checkbox.checked ? 1 : 0;
+                const url = `{{ url('admin/pegawai') }}/${pegawaiId}/toggle-monitor`;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ can_monitor: isChecked })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    } else {
+                        checkbox.checked = !isChecked; // revert
+                        Swal.fire({ icon: 'error', title: 'Gagal', text: data.message });
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    checkbox.checked = !isChecked; // revert
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan sistem' });
+                });
             }
         });
     </script>

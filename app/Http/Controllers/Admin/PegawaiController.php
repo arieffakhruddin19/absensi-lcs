@@ -117,4 +117,24 @@ class PegawaiController extends Controller
         }
         return redirect()->route('admin.pegawai.index')->with('error', "Gagal mereset password: Akun login tidak ditemukan.");
     }
+
+    public function toggleMonitor(Request $request, $id)
+    {
+        $request->validate([
+            'can_monitor' => 'required|boolean'
+        ]);
+
+        $pegawai = Pegawai::findOrFail($id);
+        $pegawai->can_monitor = $request->can_monitor;
+        $pegawai->save();
+
+        event(new AdminDataUpdated('pegawai'));
+        event(new \App\Events\PegawaiDataUpdated('sidebar', $pegawai->id));
+
+        $statusText = $pegawai->can_monitor ? 'diaktifkan' : 'dinonaktifkan';
+        return response()->json([
+            'success' => true,
+            'message' => "Akses monitoring untuk {$pegawai->nama_pegawai} berhasil {$statusText}."
+        ]);
+    }
 }

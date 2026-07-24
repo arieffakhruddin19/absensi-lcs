@@ -176,6 +176,19 @@
                        <span class="flex-1 ms-3 whitespace-nowrap">Riwayat Selesai</span>
                     </a>
                  </li>
+                 @if(Auth::user()->pegawai && Auth::user()->pegawai->can_monitor)
+                 <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
+                    <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">KINERJA TIM</span>
+                 </li>
+                 <li>
+                    <a href="{{ route('tugas.monitoring') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('tugas.monitoring') ? 'bg-blue-800' : '' }}">
+                       <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('tugas.monitoring') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                          <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                       </svg>
+                       <span class="flex-1 ms-3 whitespace-nowrap">Monitoring LCS</span>
+                    </a>
+                 </li>
+                 @endif
                  @endif
 
               </ul>
@@ -235,6 +248,25 @@
                 }
             });
         </script>
+
+        <!-- Listener Akses Sidebar Pegawai -->
+        @if(Auth::check() && Auth::user()->role === 'pegawai' && Auth::user()->pegawai_id)
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(() => {
+                    if (window.Echo) {
+                        window.Echo.channel('pegawai-notifications-{{ Auth::user()->pegawai_id }}')
+                            .listen('.App\\Events\\PegawaiDataUpdated', (e) => {
+                                if (e.type === 'sidebar') {
+                                    // Refresh halaman untuk memperbarui menu sidebar (muncul/hilang)
+                                    window.location.reload();
+                                }
+                            });
+                    }
+                }, 2000);
+            });
+        </script>
+        @endif
 
         <!-- Service Worker Registration -->
         <script>

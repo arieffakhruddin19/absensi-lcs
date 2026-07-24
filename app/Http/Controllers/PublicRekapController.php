@@ -37,7 +37,6 @@ class PublicRekapController extends Controller
         if (!empty($postingIds)) {
             $sums = DB::table('absensi_postings')
                 ->whereIn('posting_id', $postingIds)
-                ->where('status_selesai', true)
                 ->select(
                     'posting_id',
                     DB::raw('SUM(ig_like) as ig_like'), DB::raw('SUM(ig_comment) as ig_comment'), DB::raw('SUM(ig_share) as ig_share'),

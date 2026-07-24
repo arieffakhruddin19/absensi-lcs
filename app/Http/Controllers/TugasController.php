@@ -58,6 +58,7 @@ class TugasController extends Controller
 
         $completedPostingIds = AbsensiPosting::where('pegawai_id', $user->pegawai_id)
             ->where('status_selesai', true)
+            ->where('diselesaikan_oleh_admin', false)
             ->pluck('posting_id')
             ->toArray();
 
@@ -76,6 +77,96 @@ class TugasController extends Controller
             ->keyBy('posting_id');
 
         return view('pegawai.tugas.riwayat', compact('postings', 'absensiRecords'));
+    }
+
+    public function monitoring(Request $request)
+    {
+        $user = Auth::user();
+        
+        if (!$user->pegawai_id || !$user->pegawai->can_monitor) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses monitoring.');
+        }
+
+        $query = Posting::query();
+        if ($request->has('search') && $request->search != '') {
+            $query->where('judul_tugas', 'like', '%' . $request->search . '%');
+        }
+        if ($request->has('tanggal') && $request->tanggal != '') {
+            $query->whereDate('tanggal_tugas', $request->tanggal);
+        }
+        if ($request->has('sumber') && $request->sumber != '') {
+            $query->where('sumber_posting', $request->sumber);
+        }
+        $postings = $query->latest()->paginate(12);
+
+        $stats = [];
+        $today = Carbon::today()->toDateString();
+        $totalAktif = \App\Models\Pegawai::where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        })->count();
+
+        foreach($postings as $post) {
+            $selesai = AbsensiPosting::where('posting_id', $post->id)
+                ->where('status_selesai', true)
+                ->where('diselesaikan_oleh_admin', false)
+                ->count();
+            $stats[$post->id] = [
+                'total' => $totalAktif,
+                'selesai' => $selesai,
+                'belum' => $totalAktif - $selesai
+            ];
+        }
+
+        return view('pegawai.tugas.monitoring', compact('postings', 'stats'));
+    }
+
+    public function listPegawai(Request $request, $posting_id)
+    {
+        $user = Auth::user();
+        if (!$user->pegawai_id || !$user->pegawai->can_monitor) {
+            return response()->json(['success' => false, 'message' => 'Akses ditolak']);
+        }
+
+        $status = $request->input('status', 'sudah');
+        $posting = Posting::findOrFail($posting_id);
+        
+        $today = \Carbon\Carbon::today()->toDateString();
+        $query = \App\Models\Pegawai::query()->where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        });
+
+        $finishedPegawaiIds = AbsensiPosting::where('posting_id', $posting_id)
+            ->where('status_selesai', true)
+            ->where('diselesaikan_oleh_admin', false)
+            ->pluck('pegawai_id');
+            
+        if ($status == 'sudah') {
+            $query->whereIn('id', $finishedPegawaiIds);
+        } else {
+            $query->whereNotIn('id', $finishedPegawaiIds);
+        }
+        
+        // Also fetch the time they completed it if they have
+        $pegawais = $query->orderBy('nama_pegawai', 'asc')->get(['id', 'nama_pegawai']);
+        
+        if ($status == 'sudah') {
+            $absensiData = AbsensiPosting::where('posting_id', $posting_id)
+                ->where('status_selesai', true)
+                ->get()->keyBy('pegawai_id');
+                
+            $pegawais->transform(function($pegawai) use ($absensiData) {
+                $absensi = $absensiData->get($pegawai->id);
+                $pegawai->waktu_selesai = $absensi && $absensi->waktu_dikerjakan ? Carbon::parse($absensi->waktu_dikerjakan)->locale('id')->translatedFormat('d M Y H:i') : '-';
+                return $pegawai;
+            });
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => $pegawais
+        ]);
     }
 
     public function tandaiMedsos(Request $request, $posting_id)

@@ -45,8 +45,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'checkRole:superadmin,admin'])->group(function () {
     Route::resource('admin/pegawai', PegawaiController::class)->names('admin.pegawai');
     Route::post('admin/pegawai/{pegawai}/reset-password', [PegawaiController::class, 'resetPassword'])->name('admin.pegawai.reset-password');
+    Route::post('admin/pegawai/{pegawai}/toggle-monitor', [PegawaiController::class, 'toggleMonitor'])->name('admin.pegawai.toggle-monitor');
     Route::resource('admin/posting', PostingController::class)->names('admin.posting');
     Route::get('admin/posting/{posting}/laporan', [PostingController::class, 'laporan'])->name('admin.posting.laporan');
+    Route::get('admin/posting/{posting}/list-pegawai', [PostingController::class, 'listPegawai'])->name('admin.posting.list-pegawai');
     Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');
     Route::get('admin/rekap-laporan/export', [RekapLaporanController::class, 'export'])->name('admin.rekap-laporan.export');
 });
@@ -65,6 +67,8 @@ Route::middleware(['auth', 'checkRole:superadmin'])->group(function () {
 Route::middleware(['auth', 'checkRole:pegawai'])->group(function () {
     Route::get('tugas', [TugasController::class, 'index'])->name('tugas.index');
     Route::get('tugas/riwayat', [TugasController::class, 'riwayat'])->name('tugas.riwayat');
+    Route::get('tugas/monitoring', [TugasController::class, 'monitoring'])->name('tugas.monitoring');
+    Route::get('tugas/{id}/list-pegawai', [TugasController::class, 'listPegawai'])->name('tugas.list-pegawai');
     Route::post('tugas/{id}/medsos', [TugasController::class, 'tandaiMedsos'])->name('tugas.medsos');
     Route::post('tugas/{id}/selesai', [TugasController::class, 'selesaikan'])->name('tugas.selesai');
 });

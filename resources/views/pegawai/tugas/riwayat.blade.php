@@ -32,9 +32,7 @@
                             $sudahSelesai = $abs && $abs->status_selesai;
                         @endphp
                         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 relative text-center">
-                            <span class="absolute top-0 left-0 bg-gray-100 text-gray-600 text-xs font-medium px-2.5 py-0.5 rounded-br-lg dark:bg-gray-700 dark:text-gray-300">
-                                {{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->locale('id')->translatedFormat('d F Y') : $post->created_at->locale('id')->translatedFormat('d F Y') }}
-                            </span>
+
                             @if($sudahSelesai)
                                 <span class="absolute top-0 right-0 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-bl-lg dark:bg-green-900 dark:text-green-300">
                                     Selesai
@@ -47,21 +45,21 @@
 
                             <div class="flex flex-col items-center justify-center mb-2 mt-4">
                                 <h5 class="mb-0 text-base font-bold text-gray-900 dark:text-white">{{ $post->judul_tugas }}</h5>
-                                @if($post->sumber_posting)
-                                    @if($post->sumber_posting == 'Kementan')
-                                        <span class="mt-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300 border border-green-400">
-                                            {{ $post->sumber_posting }}
-                                        </span>
-                                    @elseif($post->sumber_posting == 'Ditjen PKH')
-                                        <span class="mt-2 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 border border-blue-400">
-                                            {{ $post->sumber_posting }}
-                                        </span>
-                                    @else
-                                        <span class="mt-2 bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300 border border-purple-400">
-                                            {{ $post->sumber_posting }}
-                                        </span>
-                                    @endif
-                                @endif
+                                <div class="flex items-center justify-center gap-1.5 mt-2 mb-3 text-xs text-blue-700 dark:text-blue-400 font-medium">
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.949 8.949 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                        </svg>
+                                        {{ $post->sumber_posting ?? 'Pusvetma' }}
+                                    </div>
+                                    <span class="text-blue-300 dark:text-blue-600">&bull;</span>
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
+                                        </svg>
+                                        {{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->locale('id')->translatedFormat('d F Y') : $post->created_at->locale('id')->translatedFormat('d F Y') }}
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="flex flex-col gap-2 mb-3 mt-3 w-full px-4 text-left">

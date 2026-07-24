@@ -13,7 +13,7 @@ class PostingController extends Controller
     {
         $tab = $request->input('tab', 'pkh');
         $query = Posting::query()->withCount(['absensi as sudah_lcs_count' => function($q) { 
-            $q->where('status_selesai', true); 
+            $q->where('status_selesai', true)->where('diselesaikan_oleh_admin', false); 
         }]);
 
         if ($tab == 'pkh') {
@@ -142,6 +142,36 @@ class PostingController extends Controller
         return redirect()->route('admin.posting.index', ['tab' => $tab])->with('success', 'Postingan berhasil dihapus.');
     }
 
+    public function listPegawai(Request $request, $id)
+    {
+        $status = $request->input('status', 'sudah');
+        $posting = Posting::findOrFail($id);
+        
+        $today = \Carbon\Carbon::today()->toDateString();
+        $query = \App\Models\Pegawai::query()->where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        });
+
+        $finishedPegawaiIds = \App\Models\AbsensiPosting::where('posting_id', $id)
+            ->where('status_selesai', true)
+            ->where('diselesaikan_oleh_admin', false)
+            ->pluck('pegawai_id');
+            
+        if ($status == 'sudah') {
+            $query->whereIn('id', $finishedPegawaiIds);
+        } else {
+            $query->whereNotIn('id', $finishedPegawaiIds);
+        }
+        
+        $pegawais = $query->orderBy('nama_pegawai', 'asc')->get(['id', 'nama_pegawai']);
+        
+        return response()->json([
+            'success' => true,
+            'data' => $pegawais
+        ]);
+    }
+
     public function laporan(Request $request, $id)
     {
         $posting = Posting::findOrFail($id);
@@ -158,6 +188,7 @@ class PostingController extends Controller
         if ($request->has('status') && $request->status != 'semua') {
             $finishedPegawaiIds = \App\Models\AbsensiPosting::where('posting_id', $id)
                 ->where('status_selesai', true)
+                ->where('diselesaikan_oleh_admin', false)
                 ->pluck('pegawai_id');
                 
             if ($request->status == 'sudah') {
@@ -242,17 +273,54 @@ class PostingController extends Controller
     {
         $posting = \App\Models\Posting::findOrFail($posting_id);
         $pegawai = \App\Models\Pegawai::findOrFail($pegawai_id);
+        
+        $absensi = \App\Models\AbsensiPosting::where('pegawai_id', $pegawai->id)
+            ->where('posting_id', $posting->id)
+            ->first();
+
+        $updates = [
+            'status_selesai' => true,
+            'waktu_dikerjakan' => \Carbon\Carbon::now(),
+            'diselesaikan_oleh_admin' => true,
+        ];
+
+        if ($posting->link_instagram) {
+            $updates['ig_like'] = true;
+            $updates['ig_comment'] = true;
+            $updates['ig_share'] = true;
+            if (!$absensi || !$absensi->waktu_instagram) $updates['waktu_instagram'] = \Carbon\Carbon::now();
+        }
+        if ($posting->link_facebook) {
+            $updates['fb_like'] = true;
+            $updates['fb_comment'] = true;
+            $updates['fb_share'] = true;
+            if (!$absensi || !$absensi->waktu_facebook) $updates['waktu_facebook'] = \Carbon\Carbon::now();
+        }
+        if ($posting->link_twitter) {
+            $updates['tw_like'] = true;
+            $updates['tw_comment'] = true;
+            $updates['tw_share'] = true;
+            if (!$absensi || !$absensi->waktu_twitter) $updates['waktu_twitter'] = \Carbon\Carbon::now();
+        }
+        if ($posting->link_tiktok) {
+            $updates['tt_like'] = true;
+            $updates['tt_comment'] = true;
+            $updates['tt_share'] = true;
+            if (!$absensi || !$absensi->waktu_tiktok) $updates['waktu_tiktok'] = \Carbon\Carbon::now();
+        }
+        if ($posting->link_youtube) {
+            $updates['yt_like'] = true;
+            $updates['yt_comment'] = true;
+            $updates['yt_share'] = true;
+            if (!$absensi || !$absensi->waktu_youtube) $updates['waktu_youtube'] = \Carbon\Carbon::now();
+        }
 
         $absensi = \App\Models\AbsensiPosting::updateOrCreate(
             [
                 'pegawai_id' => $pegawai->id,
                 'posting_id' => $posting->id,
             ],
-            [
-                'status_selesai' => true,
-                'waktu_dikerjakan' => \Carbon\Carbon::now(),
-                'diselesaikan_oleh_admin' => true,
-            ]
+            $updates
         );
 
         $absensi->save();
