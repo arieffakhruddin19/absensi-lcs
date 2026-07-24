@@ -275,4 +275,63 @@ class TugasController extends Controller
             'message' => 'Berhasil menandai tugas selesai.'
         ]);
     }
+    public function partisipasi(Request $request)
+    {
+        $user = Auth::user();
+
+        $today = \Carbon\Carbon::today()->toDateString();
+        $sums = \Illuminate\Support\Facades\DB::table('absensi_postings')
+            ->where('status_selesai', true)
+            ->select(
+                'pegawai_id',
+                \Illuminate\Support\Facades\DB::raw('SUM(ig_like) as ig_l, SUM(ig_comment) as ig_c, SUM(ig_share) as ig_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(fb_like) as fb_l, SUM(fb_comment) as fb_c, SUM(fb_share) as fb_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(tw_like) as tw_l, SUM(tw_comment) as tw_c, SUM(tw_share) as tw_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(tt_like) as tt_l, SUM(tt_comment) as tt_c, SUM(tt_share) as tt_s'),
+                \Illuminate\Support\Facades\DB::raw('SUM(yt_like) as yt_l, SUM(yt_comment) as yt_c, SUM(yt_share) as yt_s')
+            )
+            ->groupBy('pegawai_id')
+            ->get()
+            ->keyBy('pegawai_id');
+
+        $pegawais = \App\Models\Pegawai::where(function($q) use ($today) {
+                $q->where('tanggal_pensiun', '>=', $today)
+                  ->orWhereNull('tanggal_pensiun');
+            })
+            ->get();
+
+        foreach ($pegawais as $pegawai) {
+            $sum = $sums->get($pegawai->id);
+            $pegawai->ig_l = $sum->ig_l ?? 0;
+            $pegawai->ig_c = $sum->ig_c ?? 0;
+            $pegawai->ig_s = $sum->ig_s ?? 0;
+            
+            $pegawai->fb_l = $sum->fb_l ?? 0;
+            $pegawai->fb_c = $sum->fb_c ?? 0;
+            $pegawai->fb_s = $sum->fb_s ?? 0;
+            
+            $pegawai->tw_l = $sum->tw_l ?? 0;
+            $pegawai->tw_c = $sum->tw_c ?? 0;
+            $pegawai->tw_s = $sum->tw_s ?? 0;
+            
+            $pegawai->tt_l = $sum->tt_l ?? 0;
+            $pegawai->tt_c = $sum->tt_c ?? 0;
+            $pegawai->tt_s = $sum->tt_s ?? 0;
+            
+            $pegawai->yt_l = $sum->yt_l ?? 0;
+            $pegawai->yt_c = $sum->yt_c ?? 0;
+            $pegawai->yt_s = $sum->yt_s ?? 0;
+
+            $pegawai->total_lcs = 
+                $pegawai->ig_l + $pegawai->ig_c + $pegawai->ig_s +
+                $pegawai->fb_l + $pegawai->fb_c + $pegawai->fb_s +
+                $pegawai->tw_l + $pegawai->tw_c + $pegawai->tw_s +
+                $pegawai->tt_l + $pegawai->tt_c + $pegawai->tt_s +
+                $pegawai->yt_l + $pegawai->yt_c + $pegawai->yt_s;
+        }
+
+        $pegawais = $pegawais->sortByDesc('total_lcs')->values();
+
+        return view('pegawai.tugas.partisipasi', compact('pegawais'));
+    }
 }
