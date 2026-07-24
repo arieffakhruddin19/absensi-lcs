@@ -1,4 +1,15 @@
+### 2026-07-12
+- **[Created]** Project - Initial commit: PWA LCS System (commit: 05a6757)
+- **[Modified]** Config & Routing - Update root routing and htaccess for direct access without public directory (commit: 7ab74cc)
+- **[Fixed]** Real-time Sync - fix: persist Tandai Selesai button state across realtime-sync DOM refresh, add realtime-sync component with Pusher + AJAX polling, add broadcast events (commit: 8bd0c03)
+- **[Refactored]** UI - Refactor UI, implement Pagination & Live Search, and optimize Responsive Grid layout (commit: a37480d)
+- **[Created]** Feature - feat: perbarui fitur dan tampilan rekap laporan lcs (commit: 300ec07)
+- **[Modified]** UI - UI enhancements for login page, user avatar feature, and report bug fixes (commit: 98a0482)
+
+### 2026-07-20
+- **[Modified]** Feature & UI - Update fitur sumber posting dan penyesuaian UI pegawai (commit: d78a0a2)
+
 ### 2026-07-24
-- **[Created]** .skills/ - Menambahkan folder .skills berisi script code-review-skill.md, log-skill.md, security-skill.md, dan wfh-report-skill.md dari vetmalance-v2.
-- **[Modified]** UI & Layouts - UI improvements: responsive layouts, real-time sync fixes, dan progress tracking (commit: a1ac1b9)
+- **[Modified]** UI & Layouts - UI improvements: responsive layouts, real-time sync fixes, and progress tracking (commit: a1ac1b9)
 - **[Fixed]** Real-time Sync - Fix real-time sync bugs: preserve scroll state and fix datepicker duplication (commit: 4367ecc)
+- **[Created]** .skills/ - chore: add .skills directory and progress.txt for workflow logging (commit: 14dd312)
