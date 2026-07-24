@@ -51,16 +51,16 @@
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <!-- Kolom Kiri (Peringkat 1-3) -->
-                    <div class="space-y-4">
+                    <div class="space-y-3">
                         @foreach($topPegawais->take(3) as $index => $pegawai)
-                            <div class="flex items-center p-4 {{ $index < 3 ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }} rounded-xl border {{ $index < 3 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-gray-100 dark:border-gray-600' }} transition-transform hover:scale-[1.01] hover:shadow-sm">
+                            <div class="flex items-center py-2.5 px-4 {{ $index < 3 ? 'bg-yellow-50 dark:bg-yellow-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }} rounded-xl border {{ $index < 3 ? 'border-yellow-200 dark:border-yellow-700/50' : 'border-gray-100 dark:border-gray-600' }} transition-transform hover:scale-[1.01] hover:shadow-sm">
                                 <div class="flex-shrink-0 mr-4">
                                     @if($index == 0)
-                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 flex items-center justify-center text-white font-black text-lg shadow-md ring-4 ring-yellow-100 dark:ring-yellow-900/30">1</div>
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 flex items-center justify-center text-white font-black text-base shadow-md ring-4 ring-yellow-100 dark:ring-yellow-900/30">1</div>
                                     @elseif($index == 1)
-                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-black text-lg shadow-md ring-4 ring-gray-100 dark:ring-gray-700">2</div>
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center text-white font-black text-base shadow-md ring-4 ring-gray-100 dark:ring-gray-700">2</div>
                                     @elseif($index == 2)
-                                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center text-white font-black text-lg shadow-md ring-4 ring-orange-100 dark:ring-orange-900/30">3</div>
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center text-white font-black text-base shadow-md ring-4 ring-orange-100 dark:ring-orange-900/30">3</div>
                                     @endif
                                 </div>
                                 <div class="flex-1 min-w-0">
@@ -69,7 +69,7 @@
                                     </p>
                                 </div>
                                 <div class="flex-shrink-0 text-right ml-4">
-                                    <div class="text-sm font-bold text-yellow-600 dark:text-yellow-400 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+                                    <div class="text-sm font-bold text-yellow-600 dark:text-yellow-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
                                         {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
                                     </div>
                                 </div>
@@ -77,13 +77,13 @@
                         @endforeach
                     </div>
 
-                    <!-- Kolom Kanan (Peringkat 4-5) -->
-                    <div class="space-y-4">
+                    <!-- Kolom Kanan (Peringkat 4-6) -->
+                    <div class="space-y-3">
                         @php $rank = 4; @endphp
                         @foreach($topPegawais->skip(3)->take(3) as $pegawai)
-                            <div class="flex items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600 transition-transform hover:scale-[1.01] hover:shadow-sm">
+                            <div class="flex items-center py-2.5 px-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600 transition-transform hover:scale-[1.01] hover:shadow-sm">
                                 <div class="flex-shrink-0 mr-4">
-                                    <div class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-lg">{{ $rank++ }}</div>
+                                    <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-base">{{ $rank++ }}</div>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <p class="text-sm font-bold text-gray-900 dark:text-white truncate" title="{{ $pegawai->nama_pegawai }}">
@@ -91,7 +91,7 @@
                                     </p>
                                 </div>
                                 <div class="flex-shrink-0 text-right ml-4">
-                                    <div class="text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 px-4 py-2 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+                                    <div class="text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
                                         {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
                                     </div>
                                 </div>
