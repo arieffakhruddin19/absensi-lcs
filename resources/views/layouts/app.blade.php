@@ -133,11 +133,19 @@
                     </a>
                  </li>
                  <li>
-                    <a href="{{ route('admin.rekap-laporan') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.rekap-laporan') ? 'bg-blue-800' : '' }}">
+                     <a href="{{ route('admin.rekap-laporan') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.rekap-laporan') ? 'bg-blue-800' : '' }}">
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('admin.rekap-laporan') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M4 4a2 2 0 0 1 2-2h4.586A2 2 0 0 1 12 2.586L15.414 6A2 2 0 0 1 16 7.414V16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4Zm2 6a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H7a1 1 0 0 1-1-1Zm1 3a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H7Z"/>
                        </svg>
                        <span class="flex-1 ms-3 whitespace-nowrap">Rekap Laporan</span>
+                    </a>
+                 </li>
+                 <li>
+                    <a href="{{ route('tugas.partisipasi') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('tugas.partisipasi') ? 'bg-blue-800' : '' }}">
+                       <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('tugas.partisipasi') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                       </svg>
+                       <span class="flex-1 ms-3 whitespace-nowrap">Partisipasi LCS</span>
                     </a>
                  </li>
                  @endif
@@ -176,6 +184,7 @@
                        <span class="flex-1 ms-3 whitespace-nowrap">Riwayat Selesai</span>
                     </a>
                  </li>
+
                  @if(Auth::user()->pegawai && Auth::user()->pegawai->can_monitor)
                  <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
                     <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">KINERJA TIM</span>
