@@ -282,6 +282,7 @@ class TugasController extends Controller
         $today = \Carbon\Carbon::today()->toDateString();
         $sums = \Illuminate\Support\Facades\DB::table('absensi_postings')
             ->where('status_selesai', true)
+            ->where('diselesaikan_oleh_admin', false)
             ->select(
                 'pegawai_id',
                 \Illuminate\Support\Facades\DB::raw('SUM(ig_like) as ig_l, SUM(ig_comment) as ig_c, SUM(ig_share) as ig_s'),
