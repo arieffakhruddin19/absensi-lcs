@@ -45,7 +45,7 @@ Route::get('/dashboard', function () {
             )
             ->groupBy('pegawais.id', 'pegawais.nama_pegawai')
             ->orderByDesc('total_lcs')
-            ->limit(5)
+            ->limit(6)
             ->get();
 
         // Query Tren Partisipasi 7 Hari Terakhir
