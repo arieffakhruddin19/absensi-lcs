@@ -186,6 +186,7 @@
                 altInput: true,
                 altFormat: "d/m/Y", // Tampilan untuk user
                 allowInput: true,
+                disableMobile: "true",
                 onChange: function(selectedDates, dateStr, instance) {
                     if (window.triggerSearchGlobal) {
                         window.triggerSearchGlobal();
