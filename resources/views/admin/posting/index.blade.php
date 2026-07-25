@@ -384,6 +384,7 @@
                     altInput: true,
                     altFormat: "d/m/Y",
                     allowInput: true,
+                    disableMobile: "true",
                     onChange: function(selectedDates, dateStr, instance) {
                         if (window.triggerSearch) {
                             window.triggerSearch();
@@ -405,6 +406,7 @@
                             altInput: true,
                             altFormat: "d/m/Y",
                             allowInput: true,
+                            disableMobile: "true",
                             defaultDate: "today"
                         });
                     }
@@ -424,7 +426,8 @@
                                     dateFormat: "Y-m-d",
                                     altInput: true,
                                     altFormat: "d/m/Y",
-                                    allowInput: true
+                                    allowInput: true,
+                                    disableMobile: "true"
                                 });
                             }
                         });
