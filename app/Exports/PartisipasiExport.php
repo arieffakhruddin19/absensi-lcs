@@ -112,8 +112,19 @@ class PartisipasiExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function headings(): array
     {
+        \Carbon\Carbon::setLocale('id');
+        $formattedStart = $this->startDate ? \Carbon\Carbon::parse($this->startDate)->translatedFormat('j F Y') : '-';
+        $formattedEnd = $this->endDate ? \Carbon\Carbon::parse($this->endDate)->translatedFormat('j F Y') : '-';
+        
+        $subtitle = ($this->startDate == $this->endDate) 
+            ? "Tanggal " . $formattedStart 
+            : "Periode " . $formattedStart . " - " . $formattedEnd;
+
         return [
-            ['NO.', 'NAMA PEGAWAI', 'IG', '', '', 'FB', '', '', 'TW', '', '', 'TT', '', '', 'YT', '', '', 'TOTAL LCS'],
+            ['PARTISIPASI PEGAWAI DALAM LCS MEDSOS KEMENTAN, DITJEN PKH DAN PUSVETMA'],
+            [$subtitle],
+            [],
+            ['NO.', 'NAMA PEGAWAI', 'INSTAGRAM', '', '', 'FACEBOOK', '', '', 'TWITTER', '', '', 'TIKTOK', '', '', 'YOUTUBE', '', '', 'TOTAL LCS'],
             ['', '', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', '']
         ];
     }
@@ -134,23 +145,35 @@ class PartisipasiExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function styles(Worksheet $sheet)
     {
+        // Merge cells for Title and Subtitle
+        $sheet->mergeCells('A1:R1');
+        $sheet->mergeCells('A2:R2');
+
         // Merge cells for headings
-        $sheet->mergeCells('A1:A2'); // NO.
-        $sheet->mergeCells('B1:B2'); // NAMA PEGAWAI
-        $sheet->mergeCells('C1:E1'); // IG
-        $sheet->mergeCells('F1:H1'); // FB
-        $sheet->mergeCells('I1:K1'); // TW
-        $sheet->mergeCells('L1:N1'); // TT
-        $sheet->mergeCells('O1:Q1'); // YT
-        $sheet->mergeCells('R1:R2'); // TOTAL LCS
+        $sheet->mergeCells('A4:A5'); // NO.
+        $sheet->mergeCells('B4:B5'); // NAMA PEGAWAI
+        $sheet->mergeCells('C4:E4'); // IG
+        $sheet->mergeCells('F4:H4'); // FB
+        $sheet->mergeCells('I4:K4'); // TW
+        $sheet->mergeCells('L4:N4'); // TT
+        $sheet->mergeCells('O4:Q4'); // YT
+        $sheet->mergeCells('R4:R5'); // TOTAL LCS
 
         // Style the headings
         return [
             1 => [
-                'font' => ['bold' => true],
+                'font' => ['bold' => true, 'size' => 14],
                 'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
             ],
             2 => [
+                'font' => ['bold' => false, 'size' => 11],
+                'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
+            ],
+            4 => [
+                'font' => ['bold' => true],
+                'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
+            ],
+            5 => [
                 'font' => ['bold' => true],
                 'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
             ]

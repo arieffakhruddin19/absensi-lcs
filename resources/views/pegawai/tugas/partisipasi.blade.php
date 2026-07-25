@@ -10,9 +10,23 @@
         <div class="w-full">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Berikut adalah daftar peringkat partisipasi pegawai dalam mengerjakan tugas LCS (Like, Comment, Share), diurutkan berdasarkan jumlah LCS terbanyak.
+                    <div class="mb-6 text-center">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white uppercase">
+                            Partisipasi Pegawai dalam LCS Medsos Kementan, Ditjen PKH dan Pusvetma
+                        </h3>
+                        @php
+                            $startDate = request('start_date');
+                            $endDate = request('end_date');
+                            \Carbon\Carbon::setLocale('id');
+                            $formattedStart = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('j F Y') : '-';
+                            $formattedEnd = $endDate ? \Carbon\Carbon::parse($endDate)->translatedFormat('j F Y') : '-';
+                        @endphp
+                        <p id="periode-subtitle" class="text-md text-gray-600 dark:text-gray-400 mt-1">
+                            @if($startDate == $endDate)
+                                Tanggal {{ $formattedStart }}
+                            @else
+                                Periode {{ $formattedStart }} - {{ $formattedEnd }}
+                            @endif
                         </p>
                     </div>
 
@@ -27,10 +41,14 @@
                         }
                     </style>
                     <div class="flex flex-col sm:flex-row justify-between w-full gap-4 mb-4">
-                        <div class="flex-shrink-0">
-                            <a href="{{ route('tugas.partisipasi.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                        <div class="flex-shrink-0 flex gap-2">
+                            <a id="btn-export-excel" href="{{ route('tugas.partisipasi.export', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 Export Excel
+                            </a>
+                            <a id="btn-export-pdf" href="{{ route('tugas.partisipasi.pdf', request()->query()) }}" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export PDF
                             </a>
                         </div>
                         <form method="GET" action="{{ route('tugas.partisipasi') }}" class="custom-filter-form" style="margin-bottom: 0;">
@@ -58,9 +76,32 @@
                     </div>
                     
                     <div id="realtime-content">
-                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <style>
+                        #realtime-content table th { font-weight: 800 !important; color: #111827 !important; font-size: 13.5px !important; }
+                        .dark #realtime-content table th { color: #f3f4f6 !important; }
+                        
+                        /* Fix rendering border di sudut (menghilangkan border dari tag table dan menggunakan outline/shadow jika perlu, atau cukup th/td) */
+                        #realtime-content table {
+                            border-collapse: collapse !important;
+                            border: none !important;
+                            outline: 1px solid #d1d5db;
+                        }
+                        #realtime-content table th,
+                        #realtime-content table td {
+                            border: 1px solid #d1d5db !important; /* Tailwind gray-300 */
+                            background-clip: padding-box;
+                        }
+                        .dark #realtime-content table {
+                            outline: 1px solid #4b5563;
+                        }
+                        .dark #realtime-content table th,
+                        .dark #realtime-content table td {
+                            border: 1px solid #4b5563 !important; /* Tailwind gray-600 */
+                        }
+                    </style>
+                    <div class="relative overflow-x-auto shadow-md p-[1px]">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <thead class="text-sm text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-100 [&_th]:font-extrabold">
                                 <tr>
                                     <th scope="col" class="px-2 py-3 text-center border-r border-gray-200 dark:border-gray-700" rowspan="2">
                                         No.
@@ -69,19 +110,19 @@
                                         Nama Pegawai
                                     </th>
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-pink-100 bg-opacity-50 dark:bg-pink-900/30" colspan="3">
-                                        <i class="fab fa-instagram text-pink-500"></i> IG
+                                        <i class="fab fa-instagram text-pink-600"></i> INSTAGRAM
                                     </th>
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-blue-100 bg-opacity-50 dark:bg-blue-900/30" colspan="3">
-                                        <i class="fab fa-facebook text-blue-600"></i> FB
+                                        <i class="fab fa-facebook text-blue-600"></i> FACEBOOK
                                     </th>
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-purple-100 bg-opacity-50 dark:bg-purple-900/30" colspan="3">
-                                        <i class="fab fa-twitter text-blue-400"></i> TW
+                                        <i class="fab fa-twitter text-blue-400"></i> TWITTER
                                     </th>
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-gray-200 bg-opacity-50 dark:bg-gray-700/50" colspan="3">
-                                        <i class="fab fa-tiktok text-black dark:text-white"></i> TT
+                                        <i class="fab fa-tiktok text-black dark:text-white"></i> TIKTOK
                                     </th>
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30" colspan="3">
-                                        <i class="fab fa-youtube text-red-600"></i> YT
+                                        <i class="fab fa-youtube text-red-600"></i> YOUTUBE
                                     </th>
                                     <th scope="col" class="px-4 py-3 text-center w-32 border-b border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30" rowspan="2">
                                         Total LCS
@@ -243,10 +284,29 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     const newContent = doc.querySelector('#realtime-content');
+                    const newSubtitle = doc.querySelector('#periode-subtitle');
+                    const oldSubtitle = document.querySelector('#periode-subtitle');
+                    const exportBtn = document.querySelector('#btn-export-excel');
+                    const exportPdfBtn = document.querySelector('#btn-export-pdf');
+
+                    if (exportBtn) {
+                        let exportUrl = new URL(exportBtn.href);
+                        exportUrl.search = url.search;
+                        exportBtn.href = exportUrl.href;
+                    }
+                    if (exportPdfBtn) {
+                        let exportPdfUrl = new URL(exportPdfBtn.href);
+                        exportPdfUrl.search = url.search;
+                        exportPdfBtn.href = exportPdfUrl.href;
+                    }
+
                     if (newContent && contentDiv) {
                         contentDiv.innerHTML = newContent.innerHTML;
                         contentDiv.style.opacity = '1';
                         contentDiv.style.pointerEvents = 'auto';
+                    }
+                    if (newSubtitle && oldSubtitle) {
+                        oldSubtitle.innerHTML = newSubtitle.innerHTML;
                     }
                 })
                 .catch(err => {

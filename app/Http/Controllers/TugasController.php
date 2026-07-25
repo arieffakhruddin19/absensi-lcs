@@ -286,12 +286,20 @@ class TugasController extends Controller
             ->where('absensi_postings.status_selesai', true)
             ->where('absensi_postings.diselesaikan_oleh_admin', false);
 
-        if ($request->has('start_date') && $request->start_date != '') {
-            $absensiQuery->whereDate('postings.tanggal_tugas', '>=', $request->start_date);
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if (empty($startDate)) {
+            $startDate = \Carbon\Carbon::now()->startOfMonth()->toDateString();
+            $request->merge(['start_date' => $startDate]);
         }
-        if ($request->has('end_date') && $request->end_date != '') {
-            $absensiQuery->whereDate('postings.tanggal_tugas', '<=', $request->end_date);
+        if (empty($endDate)) {
+            $endDate = \Carbon\Carbon::now()->toDateString();
+            $request->merge(['end_date' => $endDate]);
         }
+
+        $absensiQuery->whereDate('postings.tanggal_tugas', '>=', $startDate);
+        $absensiQuery->whereDate('postings.tanggal_tugas', '<=', $endDate);
 
         $sums = $absensiQuery->select(
                 'absensi_postings.pegawai_id',
@@ -365,6 +373,43 @@ class TugasController extends Controller
         $endDate = $request->input('end_date');
         $search = $request->input('search');
 
+        if (empty($startDate)) {
+            $startDate = \Carbon\Carbon::now()->startOfMonth()->toDateString();
+        }
+        if (empty($endDate)) {
+            $endDate = \Carbon\Carbon::now()->toDateString();
+        }
+
         return Excel::download(new PartisipasiExport($startDate, $endDate, $search), 'Partisipasi_LCS_' . Carbon::now()->format('Ymd_His') . '.xlsx');
+    }
+
+    public function exportPdfPartisipasi(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $search = $request->input('search');
+
+        if (empty($startDate)) {
+            $startDate = \Carbon\Carbon::now()->startOfMonth()->toDateString();
+        }
+        if (empty($endDate)) {
+            $endDate = \Carbon\Carbon::now()->toDateString();
+        }
+
+        $export = new PartisipasiExport($startDate, $endDate, $search);
+        $pegawais = $export->collection();
+
+        \Carbon\Carbon::setLocale('id');
+        $formattedStart = $startDate ? \Carbon\Carbon::parse($startDate)->translatedFormat('j F Y') : '-';
+        $formattedEnd = $endDate ? \Carbon\Carbon::parse($endDate)->translatedFormat('j F Y') : '-';
+        
+        $subtitle = ($startDate == $endDate) 
+            ? "Tanggal " . $formattedStart 
+            : "Periode " . $formattedStart . " - " . $formattedEnd;
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pegawai.tugas.pdf-partisipasi', compact('pegawais', 'subtitle'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('Partisipasi_LCS_' . Carbon::now()->format('Ymd_His') . '.pdf');
     }
 }
