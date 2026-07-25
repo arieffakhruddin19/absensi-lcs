@@ -30,7 +30,7 @@
                 <div class="relative overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl shadow-lg p-6 text-white border-none">
                     <div class="relative z-10 flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-emerald-100 mb-1">Total Tugas LCS</p>
+                            <p class="text-sm font-medium text-emerald-100 mb-1">Postingan LCS Bulan ini</p>
                             <h4 class="text-4xl font-extrabold">{{ $totalTugas ?? 0 }}</h4>
                         </div>
                         <div class="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -63,14 +63,16 @@
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-300 to-orange-500 flex items-center justify-center text-white font-black text-base shadow-md ring-4 ring-orange-100 dark:ring-orange-900/30">3</div>
                                     @endif
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white truncate" title="{{ $pegawai->nama_pegawai }}">
-                                        {{ $pegawai->nama_pegawai }}
-                                    </p>
-                                </div>
-                                <div class="flex-shrink-0 text-right ml-4">
-                                    <div class="text-sm font-bold text-yellow-600 dark:text-yellow-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
-                                        {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
+                                <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between min-w-0 gap-2 sm:gap-4">
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white break-words leading-tight" title="{{ $pegawai->nama_pegawai }}">
+                                            {{ $pegawai->nama_pegawai }}
+                                        </p>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <div class="inline-block text-sm font-bold text-yellow-600 dark:text-yellow-400 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+                                            {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -85,14 +87,16 @@
                                 <div class="flex-shrink-0 mr-4">
                                     <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 font-bold text-base">{{ $rank++ }}</div>
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white truncate" title="{{ $pegawai->nama_pegawai }}">
-                                        {{ $pegawai->nama_pegawai }}
-                                    </p>
-                                </div>
-                                <div class="flex-shrink-0 text-right ml-4">
-                                    <div class="text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
-                                        {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
+                                <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between min-w-0 gap-2 sm:gap-4">
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white break-words leading-tight" title="{{ $pegawai->nama_pegawai }}">
+                                            {{ $pegawai->nama_pegawai }}
+                                        </p>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <div class="inline-block text-sm font-bold text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 px-3 py-1.5 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+                                            {{ $pegawai->total_lcs }} <span class="font-normal text-xs">LCS</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

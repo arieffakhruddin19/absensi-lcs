@@ -61,8 +61,8 @@
                         </div>
 
                         <div class="custom-filter-tanggal" style="position: relative; display: flex; align-items: center;">
-                            <input type="text" id="filter-tanggal" name="tanggal" value="{{ request('tanggal') }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal..." title="Filter Tanggal">
-                            <button type="button" onclick="document.getElementById('filter-tanggal')._flatpickr.clear(); window.triggerSearchGlobal();" class="text-gray-400 hover:text-gray-800 dark:hover:text-gray-200" title="Bersihkan tanggal" style="position: absolute; right: 10px;">
+                            <input type="text" id="filter-tanggal" name="tanggal" value="{{ request('tanggal') }}" autocomplete="off" class="fp-filter bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Pilih Tanggal..." title="Filter Tanggal">
+                            <button type="button" onclick="document.getElementById('filter-tanggal')._flatpickr.clear(); window.triggerSearch();" class="text-gray-400 hover:text-gray-800 dark:hover:text-gray-200" title="Bersihkan tanggal" style="position: absolute; right: 10px;">
                                 <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
@@ -274,7 +274,7 @@
                         </div>
                         <div class="col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal</label>
-                            <input type="text" name="tanggal_tugas" value="{{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->format('Y-m-d') : '' }}" class="datepicker bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                            <input type="text" name="tanggal_tugas" value="{{ $post->tanggal_tugas ? \Carbon\Carbon::parse($post->tanggal_tugas)->format('Y-m-d') : '' }}" class="fp-filter bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5">
                         </div>
                         <input type="hidden" name="sumber_posting" value="{{ $post->sumber_posting }}">
                         <div class="col-span-2 hidden">
@@ -374,9 +374,9 @@
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        // Initialize flatpickr for visible elements (filter, edit modals datepickers)
-        window.initDatepickers = function() {
-            // Filter tanggal (always visible)
+        // PENTING: jangan pakai nama "initDatepickers" karena Flowbite menimpa nama tersebut!
+        window.initFlatpickrFilters = function() {
+            // Init filter tanggal utama
             var filterEl = document.getElementById('filter-tanggal');
             if (filterEl && !filterEl._flatpickr) {
                 flatpickr(filterEl, {
@@ -385,24 +385,12 @@
                     altFormat: "d/m/Y",
                     allowInput: true,
                     onChange: function(selectedDates, dateStr, instance) {
-                        if (window.triggerSearchGlobal) {
-                            window.triggerSearchGlobal();
+                        if (window.triggerSearch) {
+                            window.triggerSearch();
                         }
                     }
                 });
             }
-
-            // Edit modal datepickers (init when visible)
-            document.querySelectorAll('.datepicker').forEach(function(el) {
-                if (!el._flatpickr) {
-                    flatpickr(el, {
-                        dateFormat: "Y-m-d",
-                        altInput: true,
-                        altFormat: "d/m/Y",
-                        allowInput: true
-                    });
-                }
-            });
         };
 
         // Initialize flatpickr for crud-modal WHEN it becomes visible
@@ -430,7 +418,7 @@
                 setTimeout(function() {
                     var modal = document.getElementById(targetId);
                     if (modal) {
-                        modal.querySelectorAll('.datepicker').forEach(function(el) {
+                        modal.querySelectorAll('.fp-filter').forEach(function(el) {
                             if (!el._flatpickr) {
                                 flatpickr(el, {
                                     dateFormat: "Y-m-d",
@@ -445,9 +433,15 @@
             }
         });
 
+        // Init saat DOMContentLoaded
         document.addEventListener("DOMContentLoaded", function() {
-            window.initDatepickers();
+            window.initFlatpickrFilters();
         });
+
+        // Fallback: jika DOMContentLoaded sudah lewat, init langsung
+        if (document.readyState !== 'loading') {
+            window.initFlatpickrFilters();
+        }
     </script>
 
     <script>
@@ -629,10 +623,10 @@
                     } catch(e) { console.error('initFlowbite error:', e); }
                     
                     try {
-                        if (typeof window.initDatepickers === 'function') {
-                            setTimeout(() => { window.initDatepickers(); }, 50);
+                        if (typeof window.initFlatpickrFilters === 'function') {
+                            setTimeout(() => { window.initFlatpickrFilters(); }, 50);
                         }
-                    } catch(e) { console.error('initDatepickers error:', e); }
+                    } catch(e) { console.error('initFlatpickrFilters error:', e); }
                     
                     const newTitle = doc.querySelector('#dynamic-title');
                     const currentTitle = document.querySelector('#dynamic-title');

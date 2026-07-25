@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (typeof flatpickr === 'function') {
                 const rtContent = document.querySelector('#realtime-content');
                 if (rtContent) {
-                    rtContent.querySelectorAll('.datepicker').forEach(el => {
+                    rtContent.querySelectorAll('.datepicker, .fp-filter').forEach(el => {
                         if (!el._flatpickr && !el.classList.contains('form-control')) {
                             flatpickr(el, {
                                 dateFormat: "Y-m-d",

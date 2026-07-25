@@ -1,18 +1,60 @@
-### 2026-07-12
-- **[Created]** Project - Initial commit: PWA LCS System (commit: 05a6757)
-- **[Modified]** Config & Routing - Update root routing and htaccess for direct access without public directory (commit: 7ab74cc)
-- **[Fixed]** Real-time Sync - fix: persist Tandai Selesai button state across realtime-sync DOM refresh, add realtime-sync component with Pusher + AJAX polling, add broadcast events (commit: 8bd0c03)
-- **[Refactored]** UI - Refactor UI, implement Pagination & Live Search, and optimize Responsive Grid layout (commit: a37480d)
-- **[Created]** Feature - feat: perbarui fitur dan tampilan rekap laporan lcs (commit: 300ec07)
-- **[Modified]** UI - UI enhancements for login page, user avatar feature, and report bug fixes (commit: 98a0482)
-
-### 2026-07-20
-- **[Modified]** Feature & UI - Update fitur sumber posting dan penyesuaian UI pegawai (commit: d78a0a2)
-
-### 2026-07-24
-- **[Modified]** UI & Layouts - UI improvements: responsive layouts, real-time sync fixes, and progress tracking (commit: a1ac1b9)
-- **[Fixed]** Real-time Sync - Fix real-time sync bugs: preserve scroll state and fix datepicker duplication (commit: 4367ecc)
-- **[Created]** .skills/ - chore: add .skills directory and progress.txt for workflow logging (commit: 14dd312)
-- **[Modified]** UI & Layouts - Fix mobile responsive layout for filter form, fix back navigation link tab persistence, and display source & date metadata in Laporan page
-- **[Created]** Feature - Implement 3-level role system (superadmin, admin, pegawai), add user management for superadmin, and enable interactive LCS filling for superadmin in Laporan page (commit: 7673c85)
-- **[Modified]** UI & Layouts - Update table styles, fix flatpickr initialization in modals, optimize action buttons styling, and center table columns in Rekap Laporan (commit: c9401c3)
+05a6757 - 2026-07-12 - Initial commit: PWA LCS System
+7ab74cc - 2026-07-12 - Update root routing and htaccess for direct access without public directory
+8bd0c03 - 2026-07-12 - fix: persist Tandai Selesai button state across realtime-sync DOM refresh, add realtime-sync component with Pusher + AJAX polling, add broadcast events
+a37480d - 2026-07-12 - Refactor UI, implement Pagination & Live Search, and optimize Responsive Grid layout
+300ec07 - 2026-07-12 - feat: perbarui fitur dan tampilan rekap laporan lcs
+98a0482 - 2026-07-12 - UI enhancements for login page, user avatar feature, and report bug fixes
+d78a0a2 - 2026-07-20 - Update fitur sumber posting dan penyesuaian UI pegawai
+a1ac1b9 - 2026-07-24 - UI improvements: responsive layouts, real-time sync fixes, and progress tracking
+4367ecc - 2026-07-24 - Fix real-time sync bugs: preserve scroll state and fix datepicker duplication
+14dd312 - 2026-07-24 - chore: add .skills directory and progress.txt for workflow logging
+a8d075c - 2026-07-24 - docs: generate complete progress history from git log
+06716bc - 2026-07-24 - fix(ui): enhance responsive filter layout, back link persistence, and metadata display
+7673c85 - 2026-07-24 - feat: implement superadmin role, user management, and interactive LCS for superadmin
+8acf370 - 2026-07-24 - chore: log superadmin feature in progress.txt
+c9401c3 - 2026-07-24 - Update table styles, flatpickr initialization, action buttons styling, and realtime sync improvements
+0269929 - 2026-07-24 - Update UI monitoring LCS (Realtime & Filter), and fix styling riwayat selesai
+9dc4cfe - 2026-07-24 - Fix bug where selesaikanSuperadmin does not actually update the database record
+9038697 - 2026-07-24 - Count superadmin completed tasks in rekap and partisipasi sums
+77b4df2 - 2026-07-24 - Revert partisipasi change, keep only for rekap laporan
+ab250dc - 2026-07-24 - Add date range and search filters to partisipasi page
+b9f2f07 - 2026-07-24 - Add secondary sort by nama_pegawai in partisipasi page
+a48bb46 - 2026-07-24 - Add avg_duration sorting for partisipasi ties
+907d87c - 2026-07-24 - Remove LCS text from total score badge
+184a987 - 2026-07-24 - Differentiate column background colors by social media in partisipasi table
+f6d05db - 2026-07-24 - Fix TW background color to indigo
+2ce2fb2 - 2026-07-24 - Change TW column color to purple for differentiation
+703a286 - 2026-07-24 - Reduce opacity of social media column colors by 50%
+3a60ffe - 2026-07-24 - Adjust opacity of social media columns from /50 to /75
+4954626 - 2026-07-24 - Adjust opacity of social media columns from /75 to /60
+5d7c2a3 - 2026-07-24 - Use standard bg-opacity-75 class for social columns
+9200662 - 2026-07-24 - Reduce opacity to bg-opacity-50 for softer colors
+e497048 - 2026-07-25 - Add yellow background color to Total LCS column
+576b5fa - 2026-07-25 - Reduce opacity of Total LCS column from 50 to 25
+ee3d0d3 - 2026-07-25 - Remove badge style from Total LCS and make it plain bold text
+4d0c11b - 2026-07-25 - Reduce font size of Total LCS text
+33d4767 - 2026-07-25 - Reduce font size of Total LCS text to text-xs to match others
+27afe8e - 2026-07-25 - Increase horizontal padding on social media numeric columns to px-3 to widen them and reduce the gap to Name column
+5ab3179 - 2026-07-25 - Add Export Excel feature for Partisipasi LCS
+7b0a5f3 - 2026-07-25 - Reduce size of Export Excel button to match filter inputs
+424d1b3 - 2026-07-25 - Further reduce size of Export Excel button
+237da8a - 2026-07-25 - Adjust Export Excel button to match height of filter inputs perfectly
+04e6911 - 2026-07-25 - Add Leaderboard and Analytics Charts to Admin Dashboard
+ee7e148 - 2026-07-25 - Remove Total Pegawai and Pegawai Pensiun cards from dashboard
+9ea758c - 2026-07-25 - Redesign Dashboard layout with horizontal leaderboard and gradient cards
+e41fa58 - 2026-07-25 - Fix dashboard layout to a symmetrical 2x2 grid
+ca24668 - 2026-07-25 - Move Leaderboard next to Tren Partisipasi
+47c9f08 - 2026-07-25 - Change dashboard grid to 50-50 width
+0ba9d3d - 2026-07-25 - Fix chart width by disabling maintainAspectRatio
+9516c81 - 2026-07-25 - Create full width leaderboard with 3x2 grid layout
+7f1a0c5 - 2026-07-25 - Revert leaderboard position and apply 3x2 grid
+7500c48 - 2026-07-25 - Move Leaderboard above Charts and revert to horizontal list items
+434254e - 2026-07-25 - Split Leaderboard into 2 vertical columns using CSS grid flow
+f69c5e5 - 2026-07-25 - Fix Leaderboard column order to flow downwards
+ebff8d8 - 2026-07-25 - Fix rank numbering for the second column
+f9d35b9 - 2026-07-25 - Increase Leaderboard to Top 6 for symmetrical layout
+da5a6e1 - 2026-07-25 - Reduce height of Leaderboard items
+f739498 - 2026-07-25 - Change platform chart from Doughnut to Polar Area
+fe85ad8 - 2026-07-25 - Change platform chart to horizontal bar to fill canvas
+83e4717 - 2026-07-25 - Fix Leaderboard sorting to match Partisipasi page
+2dd1da8 - 2026-07-25 - Update layout and model adjustments

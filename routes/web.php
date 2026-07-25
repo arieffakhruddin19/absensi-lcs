@@ -19,15 +19,25 @@ Route::get('rekap-laporan-lcs/export', [\App\Http\Controllers\PublicRekapControl
 Route::get('/dashboard', function () {
     if (in_array(auth()->user()->role, ['superadmin', 'admin'])) {
         $today = \Carbon\Carbon::now()->format('Y-m-d');
-        
         $totalPegawai = \App\Models\Pegawai::count();
         $pegawaiAktif = \App\Models\Pegawai::where(function($q) use ($today) {
             $q->where('tanggal_pensiun', '>=', $today)
               ->orWhereNull('tanggal_pensiun');
         })->count();
         $pegawaiPensiun = $totalPegawai - $pegawaiAktif;
-        
-        $totalTugas = \App\Models\Posting::count();
+        $startOfMonth = \Carbon\Carbon::now()->startOfMonth();
+        $endOfMonth = \Carbon\Carbon::now()->endOfMonth();
+
+        $totalTugas = (int) \Illuminate\Support\Facades\DB::table('postings')
+            ->whereBetween('tanggal_tugas', [$startOfMonth, $endOfMonth])
+            ->selectRaw('
+            SUM(CASE WHEN link_instagram IS NOT NULL AND link_instagram != "" THEN 1 ELSE 0 END) +
+            SUM(CASE WHEN link_facebook IS NOT NULL AND link_facebook != "" THEN 1 ELSE 0 END) +
+            SUM(CASE WHEN link_twitter IS NOT NULL AND link_twitter != "" THEN 1 ELSE 0 END) +
+            SUM(CASE WHEN link_tiktok IS NOT NULL AND link_tiktok != "" THEN 1 ELSE 0 END) +
+            SUM(CASE WHEN link_youtube IS NOT NULL AND link_youtube != "" THEN 1 ELSE 0 END)
+            as total
+        ')->value('total');
 
         // Query Leaderboard Top 5 Bulan Ini
         $startOfMonth = \Carbon\Carbon::now()->startOfMonth();
