@@ -428,7 +428,7 @@
                 altInput: true,
                 altFormat: "d/m/Y",
                 allowInput: true,
-                disableMobile: true
+                disableMobile: "true"
             });
         });
     </script>
