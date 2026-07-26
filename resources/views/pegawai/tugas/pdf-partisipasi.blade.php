@@ -27,7 +27,7 @@
             margin-top: 10px;
         }
         th, td {
-            border: 0.2pt solid #666;
+            border: 0.5pt solid #666;
             padding: 4px;
             text-align: center;
         }
@@ -57,13 +57,14 @@
         <thead>
             <tr>
                 <th rowspan="2" style="width: 3%;">NO.</th>
-                <th rowspan="2" style="width: 20%;">NAMA PEGAWAI</th>
+                <th rowspan="2" style="width: 23%;">NAMA PEGAWAI</th>
                 <th colspan="3">INSTAGRAM</th>
                 <th colspan="3">FACEBOOK</th>
                 <th colspan="3">TWITTER</th>
                 <th colspan="3">TIKTOK</th>
                 <th colspan="3">YOUTUBE</th>
-                <th style="width: 6%; border-bottom: none; vertical-align: bottom; padding-bottom: 0;">TOTAL</th>
+                <th style="width: 5%; border-bottom: none; vertical-align: bottom; padding-bottom: 0;">TOTAL</th>
+                <th style="width: 9%; border-bottom: none; vertical-align: bottom; padding-bottom: 0;">AVG</th>
             </tr>
             <tr>
                 <!-- IG -->
@@ -86,7 +87,9 @@
                 <th style="width: 4%;">L</th>
                 <th style="width: 4%;">C</th>
                 <th style="width: 4%;">S</th>
+                
                 <th style="border-top: none; vertical-align: top; padding-top: 0;">LCS</th>
+                <th style="border-top: none; vertical-align: top; padding-top: 0;">SELESAI</th>
             </tr>
         </thead>
         <tbody>
@@ -116,10 +119,30 @@
                     <td>{{ $pegawai->yt_s ?: '-' }}</td>
                     
                     <td style="font-weight: bold;">{{ $pegawai->total_lcs ?? 0 }}</td>
+                    <td style="font-weight: bold;">
+                        @if(isset($pegawai->avg_duration) && $pegawai->avg_duration < 999999999)
+                            @php
+                                $seconds = (int)$pegawai->avg_duration;
+                                $d = floor($seconds / 86400);
+                                $h = floor(($seconds % 86400) / 3600);
+                                $m = floor(($seconds % 3600) / 60);
+                                $s = $seconds % 60;
+                                
+                                $timeStr = sprintf('%02d:%02d:%02d', $h, $m, $s);
+                                if ($d > 0) {
+                                    echo "{$d} hari {$timeStr}";
+                                } else {
+                                    echo $timeStr;
+                                }
+                            @endphp
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="18" style="padding: 20px; color: #777;">
+                    <td colspan="19" style="padding: 20px; color: #777;">
                         Belum ada data partisipasi pegawai.
                     </td>
                 </tr>

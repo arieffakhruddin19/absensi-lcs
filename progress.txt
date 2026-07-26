@@ -58,3 +58,10 @@ f739498 - 2026-07-25 - Change platform chart from Doughnut to Polar Area
 fe85ad8 - 2026-07-25 - Change platform chart to horizontal bar to fill canvas
 83e4717 - 2026-07-25 - Fix Leaderboard sorting to match Partisipasi page
 2dd1da8 - 2026-07-25 - Update layout and model adjustments
+45bfb53 - 2026-07-25 - Fix flatpickr Flowbite conflict, update dashboard labels, update realtime-sync
+989d87c - 2026-07-25 - Disable native mobile UI for flatpickr to fix missing placeholder on mobile
+5dfa50f - 2026-07-25 - Disable native mobile UI for flatpickr in Rekap Laporan and Partisipasi LCS
+864911a - 2026-07-25 - Make disableMobile value a string in monitoring page for consistency
+f0dba6c - 2026-07-25 - fix: typo placeholder pencarian dan perbaikan layout mobile halaman riwayat
+5edf3e6 - 2026-07-25 - Update layout tabel partisipasi LCS, perbaiki ekspor PDF DomPDF (tabel border, rowspan, capital letters), dan update Excel Export
+6261e0a - 2026-07-26 - Add AVG Selesai column with HH:MM:SS format and resolve PDF dompdf rowspan border bug

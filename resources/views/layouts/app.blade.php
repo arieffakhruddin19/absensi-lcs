@@ -100,7 +100,7 @@
         <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-blue-900 border-r border-blue-900 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
            <div class="h-full px-3 pb-4 overflow-y-auto bg-blue-900 dark:bg-gray-800 text-white">
               <ul class="space-y-2 font-medium text-sm">
-                 @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
+                 @if (in_array(Auth::user()->role, ['superadmin', 'admin', 'viewer']))
                  <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('dashboard') ? 'bg-blue-800' : '' }}">
                        <svg class="w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('dashboard') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
@@ -112,10 +112,11 @@
                  </li>
                  @endif
                  
-                 @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
+                 @if (in_array(Auth::user()->role, ['superadmin', 'admin', 'viewer']))
                  <li class="pt-4 mt-4 space-y-2 border-t border-blue-800">
                     <span class="px-3 text-xs font-semibold text-blue-300 uppercase tracking-wider">{{ Auth::user()->role === 'superadmin' ? 'MANAJEMEN SUPERADMIN' : 'MANAJEMEN ADMIN' }}</span>
                  </li>
+                 @if (in_array(Auth::user()->role, ['superadmin', 'admin']))
                  <li>
                     <a href="{{ route('admin.pegawai.index') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.pegawai.*') ? 'bg-blue-800' : '' }}">
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('admin.pegawai.*') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
@@ -124,6 +125,7 @@
                        <span class="flex-1 ms-3 whitespace-nowrap">Data Pegawai</span>
                     </a>
                  </li>
+                 @endif
                  <li>
                     <a href="{{ route('admin.posting.index') }}" class="flex items-center p-2 rounded-lg text-white hover:bg-blue-800 group {{ request()->routeIs('admin.posting.*') ? 'bg-blue-800' : '' }}">
                        <svg class="flex-shrink-0 w-5 h-5 text-blue-200 transition duration-75 group-hover:text-white {{ request()->routeIs('admin.posting.*') ? 'text-white' : '' }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

@@ -37,7 +37,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:superadmin,admin,pegawai',
+            'role' => 'required|in:superadmin,admin,pegawai,viewer',
         ]);
 
         User::create([
@@ -58,7 +58,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8',
-            'role' => 'required|in:superadmin,admin,pegawai',
+            'role' => 'required|in:superadmin,admin,pegawai,viewer',
         ]);
 
         $data = [

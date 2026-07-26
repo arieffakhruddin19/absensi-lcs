@@ -124,13 +124,29 @@ class PartisipasiExport implements FromCollection, WithHeadings, WithMapping, Wi
             ['PARTISIPASI PEGAWAI DALAM LCS MEDSOS KEMENTAN, DITJEN PKH DAN PUSVETMA'],
             [$subtitle],
             [],
-            ['NO.', 'NAMA PEGAWAI', 'INSTAGRAM', '', '', 'FACEBOOK', '', '', 'TWITTER', '', '', 'TIKTOK', '', '', 'YOUTUBE', '', '', 'TOTAL LCS'],
-            ['', '', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', '']
+            ['NO.', 'NAMA PEGAWAI', 'INSTAGRAM', '', '', 'FACEBOOK', '', '', 'TWITTER', '', '', 'TIKTOK', '', '', 'YOUTUBE', '', '', 'TOTAL LCS', 'AVG SELESAI'],
+            ['', '', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', 'L', 'C', 'S', '', '']
         ];
     }
 
     public function map($row): array
     {
+        $avg_str = '-';
+        if (isset($row->avg_duration) && $row->avg_duration < 999999999) {
+            $seconds = (int)$row->avg_duration;
+            $d = floor($seconds / 86400);
+            $h = floor(($seconds % 86400) / 3600);
+            $m = floor(($seconds % 3600) / 60);
+            $s = $seconds % 60;
+            
+            $timeStr = sprintf('%02d:%02d:%02d', $h, $m, $s);
+            if ($d > 0) {
+                $avg_str = "{$d} hari {$timeStr}";
+            } else {
+                $avg_str = $timeStr;
+            }
+        }
+
         return [
             $row->row_number,
             $row->nama_pegawai,
@@ -139,15 +155,16 @@ class PartisipasiExport implements FromCollection, WithHeadings, WithMapping, Wi
             $row->tw_l, $row->tw_c, $row->tw_s,
             $row->tt_l, $row->tt_c, $row->tt_s,
             $row->yt_l, $row->yt_c, $row->yt_s,
-            $row->total_lcs
+            $row->total_lcs,
+            $avg_str
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         // Merge cells for Title and Subtitle
-        $sheet->mergeCells('A1:R1');
-        $sheet->mergeCells('A2:R2');
+        $sheet->mergeCells('A1:S1');
+        $sheet->mergeCells('A2:S2');
 
         // Merge cells for headings
         $sheet->mergeCells('A4:A5'); // NO.
@@ -158,6 +175,7 @@ class PartisipasiExport implements FromCollection, WithHeadings, WithMapping, Wi
         $sheet->mergeCells('L4:N4'); // TT
         $sheet->mergeCells('O4:Q4'); // YT
         $sheet->mergeCells('R4:R5'); // TOTAL LCS
+        $sheet->mergeCells('S4:S5'); // AVG SELESAI
 
         // Style the headings
         return [

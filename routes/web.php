@@ -17,7 +17,7 @@ Route::get('rekap-laporan-lcs', [\App\Http\Controllers\PublicRekapController::cl
 Route::get('rekap-laporan-lcs/export', [\App\Http\Controllers\PublicRekapController::class, 'export'])->name('public.rekap-laporan.export');
 
 Route::get('/dashboard', function () {
-    if (in_array(auth()->user()->role, ['superadmin', 'admin'])) {
+    if (in_array(auth()->user()->role, ['superadmin', 'admin', 'viewer'])) {
         $today = \Carbon\Carbon::now()->format('Y-m-d');
         $totalPegawai = \App\Models\Pegawai::count();
         $pegawaiAktif = \App\Models\Pegawai::where(function($q) use ($today) {
@@ -120,7 +120,12 @@ Route::middleware(['auth', 'checkRole:superadmin,admin'])->group(function () {
     Route::resource('admin/pegawai', PegawaiController::class)->names('admin.pegawai');
     Route::post('admin/pegawai/{pegawai}/reset-password', [PegawaiController::class, 'resetPassword'])->name('admin.pegawai.reset-password');
     Route::post('admin/pegawai/{pegawai}/toggle-monitor', [PegawaiController::class, 'toggleMonitor'])->name('admin.pegawai.toggle-monitor');
-    Route::resource('admin/posting', PostingController::class)->names('admin.posting');
+    Route::resource('admin/posting', PostingController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->names('admin.posting');
+});
+
+// Admin + Viewer Routes
+Route::middleware(['auth', 'checkRole:superadmin,admin,viewer'])->group(function () {
+    Route::resource('admin/posting', PostingController::class)->only(['index', 'show'])->names('admin.posting');
     Route::get('admin/posting/{posting}/laporan', [PostingController::class, 'laporan'])->name('admin.posting.laporan');
     Route::get('admin/posting/{posting}/list-pegawai', [PostingController::class, 'listPegawai'])->name('admin.posting.list-pegawai');
     Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');

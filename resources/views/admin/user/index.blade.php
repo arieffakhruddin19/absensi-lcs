@@ -49,6 +49,7 @@
                             <option value="superadmin" {{ request('role') == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
                             <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="pegawai" {{ request('role') == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
+                            <option value="viewer" {{ request('role') == 'viewer' ? 'selected' : '' }}>Viewer</option>
                         </select>
                     </div>
 
@@ -88,8 +89,10 @@
                                         <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Superadmin</span>
                                     @elseif($user->role === 'admin')
                                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Admin</span>
+                                    @elseif($user->role === 'viewer')
+                                        <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-orange-900 dark:text-orange-300">Viewer</span>
                                     @else
-                                        <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-900 dark:text-gray-300">Pegawai</span>
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Pegawai</span>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 flex items-center justify-center space-x-2">
@@ -141,6 +144,7 @@
                                                                 <option value="superadmin" {{ $user->role == 'superadmin' ? 'selected' : '' }}>Superadmin</option>
                                                                 <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                                                                 <option value="pegawai" {{ $user->role == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
+                                                                <option value="viewer" {{ $user->role == 'viewer' ? 'selected' : '' }}>Viewer</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -208,6 +212,7 @@
                                 <option value="superadmin">Superadmin</option>
                                 <option value="admin">Admin</option>
                                 <option value="pegawai">Pegawai</option>
+                                <option value="viewer">Viewer</option>
                             </select>
                         </div>
                     </div>

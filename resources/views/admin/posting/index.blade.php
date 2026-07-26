@@ -23,7 +23,9 @@
                 <div class="flex flex-nowrap justify-between items-center w-full gap-2 mb-4">
                     <h3 id="dynamic-title" class="text-lg font-medium text-gray-900 dark:text-gray-100">Daftar Link Postingan {{ $sumberText }}</h3>
                     
+                    @if(Auth::user()->role !== 'viewer')
                     <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="inline-block flex-shrink-0 whitespace-nowrap text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition ease-in-out duration-150" type="button">+ Tambah</button>
+                    @endif
                 </div>
 
                 <!-- Filter Form -->
@@ -145,12 +147,14 @@
                                 </td>
                                 <td class="px-6 py-4 align-top aksi-buttons">
                                     <a href="{{ route('admin.posting.laporan', $post->id) }}" class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded text-xs px-2 py-1 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition">Laporan</a>
+                                    @if(Auth::user()->role !== 'viewer')
                                     <button data-modal-target="edit-modal-{{ $post->id }}" data-modal-toggle="edit-modal-{{ $post->id }}" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded text-xs px-2 py-1 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition" type="button">Edit</button>
                                     <form action="{{ route('admin.posting.destroy', $post->id) }}" method="POST" class="inline m-0">
                                         @csrf
                                         @method('DELETE')
                                         <button type="button" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded text-xs px-2 py-1 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-900 transition" onclick="confirmDelete(this, 'Yakin ingin menghapus postingan ini?')">Hapus</button>
                                     </form>
+                                    @endif
                                 </td>
                             </tr>
                             @empty

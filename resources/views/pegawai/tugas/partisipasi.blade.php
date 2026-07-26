@@ -124,8 +124,11 @@
                                     <th scope="col" class="px-2 py-2 text-center border-b border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30" colspan="3">
                                         <i class="fab fa-youtube text-red-600"></i> YOUTUBE
                                     </th>
-                                    <th scope="col" class="px-4 py-3 text-center w-32 border-b border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30" rowspan="2">
-                                        Total LCS
+                                    <th scope="col" class="px-2 py-3 text-center w-24 border-b border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30" rowspan="2">
+                                        Total<br>LCS
+                                    </th>
+                                    <th scope="col" class="px-2 py-3 text-center w-32 border-b border-l border-gray-200 dark:border-gray-700 bg-green-100 bg-opacity-25 dark:bg-green-900/30" rowspan="2">
+                                        AVG<br>Selesai
                                     </th>
                                 </tr>
                                 <tr>
@@ -186,13 +189,33 @@
                                         <td class="px-3 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30">{{ $pegawai->yt_c ?: '-' }}</td>
                                         <td class="px-3 py-2 text-center text-xs font-semibold text-gray-700 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 bg-red-100 bg-opacity-50 dark:bg-red-900/30">{{ $pegawai->yt_s ?: '-' }}</td>
 
-                                        <td class="px-4 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30 font-bold text-xs text-gray-800 dark:text-gray-200">
+                                        <td class="px-2 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-yellow-100 bg-opacity-25 dark:bg-yellow-900/30 font-bold text-xs text-gray-800 dark:text-gray-200">
                                             {{ $pegawai->total_lcs ?? 0 }}
+                                        </td>
+                                        <td class="px-2 py-2 text-center border-l border-gray-200 dark:border-gray-700 bg-green-100 bg-opacity-25 dark:bg-green-900/30 font-bold text-xs text-gray-800 dark:text-gray-200" title="{{ isset($pegawai->avg_duration) && $pegawai->avg_duration < 999999999 ? number_format($pegawai->avg_duration, 0, ',', '.') . ' detik' : '-' }}">
+                                            @if(isset($pegawai->avg_duration) && $pegawai->avg_duration < 999999999)
+                                                @php
+                                                    $seconds = (int)$pegawai->avg_duration;
+                                                    $d = floor($seconds / 86400);
+                                                    $h = floor(($seconds % 86400) / 3600);
+                                                    $m = floor(($seconds % 3600) / 60);
+                                                    $s = $seconds % 60;
+                                                    
+                                                    $timeStr = sprintf('%02d:%02d:%02d', $h, $m, $s);
+                                                    if ($d > 0) {
+                                                        echo "{$d} hari {$timeStr}";
+                                                    } else {
+                                                        echo $timeStr;
+                                                    }
+                                                @endphp
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="18" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                        <td colspan="19" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                             Belum ada data partisipasi pegawai.
                                         </td>
                                     </tr>
