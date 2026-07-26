@@ -8,7 +8,7 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- PWA / Web App Manifest -->
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <link rel="manifest" href="{{ asset('manifest.json') }}?v=2">
         <meta name="theme-color" content="#1e40af">
         <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
 
