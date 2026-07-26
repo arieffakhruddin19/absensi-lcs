@@ -65,3 +65,5 @@ fe85ad8 - 2026-07-25 - Change platform chart to horizontal bar to fill canvas
 f0dba6c - 2026-07-25 - fix: typo placeholder pencarian dan perbaikan layout mobile halaman riwayat
 5edf3e6 - 2026-07-25 - Update layout tabel partisipasi LCS, perbaiki ekspor PDF DomPDF (tabel border, rowspan, capital letters), dan update Excel Export
 6261e0a - 2026-07-26 - Add AVG Selesai column with HH:MM:SS format and resolve PDF dompdf rowspan border bug
+ecf2bbf - 2026-07-26 - fix(UI): vertically center login form on mobile
+5e34372 - 2026-07-26 - feat(PWA): add custom generated icon, update short name, and add cache busting
