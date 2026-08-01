@@ -24,7 +24,7 @@
                             @endforeach
                         </select>
                         <select id="filter-year" class="flex-1 md:flex-none bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            @foreach(range(date('Y'), date('Y') - 5) as $y)
+                            @foreach(range(date('Y'), 2026) as $y)
                                 <option value="{{ $y }}" {{ (isset($selectedYear) ? $selectedYear : date('Y')) == $y ? 'selected' : '' }}>
                                     {{ $y }}
                                 </option>
@@ -52,8 +52,8 @@
                 <div class="relative overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl shadow-lg p-6 text-white border-none">
                     <div class="relative z-10 flex items-center justify-between">
                         <div>
-                            <p id="title-tugas-bulan" class="text-sm font-medium text-emerald-100 mb-1">Postingan LCS Bulan {{ $monthYear }}</p>
-                            <h4 id="val-total-tugas" class="text-4xl font-extrabold">{{ $totalTugas ?? 0 }}</h4>
+                            <p id="title-tugas-bulan" class="text-sm font-medium text-teal-100 mb-1">Postingan LCS Bulan {{ $monthYear }}</p>
+                            <h4 id="val-total-tugas" class="text-4xl font-extrabold">{{ $totalTugas ?? 0 }} <span class="text-lg font-normal text-teal-200">/ {{ $totalTugasTahunIni ?? 0 }}</span></h4>
                         </div>
                         <div class="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
@@ -67,8 +67,8 @@
                 <div class="relative overflow-hidden rounded-xl shadow-lg p-6 text-white border-none" style="background: linear-gradient(to bottom right, #8b5cf6, #d946ef);">
                     <div class="relative z-10 flex items-center justify-between">
                         <div>
-                            <p id="title-tugas-tahun" class="text-sm font-medium text-purple-100 mb-1">Total Postingan LCS Tahun {{ $yearName }}</p>
-                            <h4 id="val-total-tugas-tahun-ini" class="text-4xl font-extrabold">{{ $totalTugasTahunIni ?? 0 }}</h4>
+                            <p id="title-lcs-selesai" class="text-sm font-medium text-purple-100 mb-1">Rata-rata LCS Selesai Bulan {{ $monthYear }}</p>
+                            <h4 id="val-lcs-selesai" class="text-4xl font-extrabold">{{ $totalPengerjaanSelesai ?? 0 }} <span class="text-lg font-normal text-purple-200">/ {{ $totalTargetPekerjaan ?? 0 }}</span></h4>
                         </div>
                         <div class="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -82,7 +82,7 @@
                 <div class="relative overflow-hidden rounded-xl shadow-lg p-6 text-white border-none" style="background: linear-gradient(to bottom right, #fb923c, #ef4444);">
                     <div class="relative z-10 flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-orange-100 mb-1">Persentase Keaktifan (%)</p>
+                            <p class="text-sm font-medium text-orange-100 mb-1">Persentase Penyelesaian (%)</p>
                             <h4 id="val-persentase-keaktifan" class="text-4xl font-extrabold">{{ $persentaseKeaktifan ?? 0 }}%</h4>
                         </div>
                         <div class="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -280,15 +280,15 @@
             function updateUI(data) {
                 // Update Cards
                 document.getElementById('val-pegawai-aktif').textContent = data.pegawaiAktif;
-                document.getElementById('val-total-tugas').textContent = data.totalTugas;
-                document.getElementById('val-total-tugas-tahun-ini').textContent = data.totalTugasTahunIni;
+                document.getElementById('val-total-tugas').innerHTML = `${data.totalTugas} <span class="text-lg font-normal text-teal-200">/ ${data.totalTugasTahunIni}</span>`;
+                document.getElementById('val-lcs-selesai').innerHTML = `${data.totalPengerjaanSelesai} <span class="text-lg font-normal text-purple-200">/ ${data.totalTargetPekerjaan}</span>`;
                 document.getElementById('val-persentase-keaktifan').textContent = data.persentaseKeaktifan + '%';
 
                 // Update Titles
                 if (data.monthName && data.selectedYear) {
                     const monthYear = `${data.monthName} ${data.selectedYear}`;
                     document.getElementById('title-tugas-bulan').textContent = `Postingan LCS Bulan ${monthYear}`;
-                    document.getElementById('title-tugas-tahun').textContent = `Total Postingan LCS Tahun ${data.selectedYear}`;
+                    document.getElementById('title-lcs-selesai').textContent = `Rata-rata LCS Selesai Bulan ${monthYear}`;
                     document.getElementById('title-top-pegawai').textContent = `Top Pegawai Bulan ${monthYear}`;
                     document.getElementById('empty-msg-month').textContent = monthYear;
                     document.getElementById('title-tren').textContent = `Tren Partisipasi Bulan ${monthYear}`;

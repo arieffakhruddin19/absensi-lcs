@@ -71,17 +71,37 @@ class DashboardController extends Controller
             as total
         ')->value('total');
 
-        $pegawaiBerpartisipasiBulanIni = DB::table('absensi_postings')
+        // Menghitung total seluruh tugas/link yang berhasil diselesaikan oleh SEMUA pegawai
+        // Khusus difilter hanya yang murni diselesaikan oleh pegawai (bukan oleh admin)
+        $totalPengerjaanSelesaiSeluruhPegawai = (int) DB::table('absensi_postings')
             ->join('postings', 'absensi_postings.posting_id', '=', 'postings.id')
             ->where('absensi_postings.status_selesai', true)
+            ->where(function($query) {
+                $query->where('absensi_postings.diselesaikan_oleh_admin', false)
+                      ->orWhereNull('absensi_postings.diselesaikan_oleh_admin');
+            })
             ->whereBetween('postings.tanggal_tugas', [$startOfMonth, $endOfMonth])
-            ->distinct('absensi_postings.pegawai_id')
-            ->count('absensi_postings.pegawai_id');
+            ->selectRaw('
+                SUM(CASE WHEN postings.link_instagram IS NOT NULL AND postings.link_instagram != "" THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN postings.link_facebook IS NOT NULL AND postings.link_facebook != "" THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN postings.link_twitter IS NOT NULL AND postings.link_twitter != "" THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN postings.link_tiktok IS NOT NULL AND postings.link_tiktok != "" THEN 1 ELSE 0 END) +
+                SUM(CASE WHEN postings.link_youtube IS NOT NULL AND postings.link_youtube != "" THEN 1 ELSE 0 END)
+            ')->value('total');
+
+        $rataRataPengerjaanSelesai = 0;
+        if ($pegawaiAktif > 0) {
+            $rataRataPengerjaanSelesai = round($totalPengerjaanSelesaiSeluruhPegawai / $pegawaiAktif);
+        }
 
         $persentaseKeaktifan = 0;
-        if ($pegawaiAktif > 0) {
-            $persentaseKeaktifan = round(($pegawaiBerpartisipasiBulanIni / $pegawaiAktif) * 100, 1);
+        if ($totalTugas > 0) {
+            $persentaseKeaktifan = round(($rataRataPengerjaanSelesai / $totalTugas) * 100, 1);
         }
+
+        // Kita oper variabel rata-rata ini ke view agar sesuai dengan angka 179
+        $totalPengerjaanSelesaiBulanIni = $rataRataPengerjaanSelesai;
+        $totalTargetPekerjaan = $totalTugas;
 
         // Leaderboard Top 5 Bulan Ini
         $topPegawais = DB::table('absensi_postings')
@@ -149,6 +169,8 @@ class DashboardController extends Controller
             'pegawaiPensiun' => $pegawaiPensiun,
             'totalTugas' => $totalTugas,
             'totalTugasTahunIni' => $totalTugasTahunIni,
+            'totalPengerjaanSelesai' => $totalPengerjaanSelesaiBulanIni,
+            'totalTargetPekerjaan' => $totalTargetPekerjaan,
             'persentaseKeaktifan' => $persentaseKeaktifan,
             'topPegawais' => $topPegawais,
             'chartTrendLabels' => $chartTrendLabels,
