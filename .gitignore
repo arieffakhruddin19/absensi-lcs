@@ -22,3 +22,16 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Custom Ignore Rules (Backup, Temp, & Test Files)
+*.sql
+*.zip
+*.docx
+progress.txt
+temp_docx/
+check_db*.php
+test*.php
+fix.php
+force_update.php
+get_*.php
+revert.php
