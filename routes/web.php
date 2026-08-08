@@ -42,6 +42,8 @@ Route::middleware(['auth', 'checkRole:superadmin,admin,viewer'])->group(function
     Route::get('admin/posting/{posting}/list-pegawai', [PostingController::class, 'listPegawai'])->name('admin.posting.list-pegawai');
     Route::get('admin/rekap-laporan', [RekapLaporanController::class, 'index'])->name('admin.rekap-laporan');
     Route::get('admin/rekap-laporan/export', [RekapLaporanController::class, 'export'])->name('admin.rekap-laporan.export');
+    Route::get('admin/rekap-laporan/export-word', [RekapLaporanController::class, 'exportWord'])->name('admin.rekap-laporan.export-word');
+    Route::get('admin/rekap-laporan/export-wa', [RekapLaporanController::class, 'exportWa'])->name('admin.rekap-laporan.export-wa');
     Route::get('admin/partisipasi-lcs', [TugasController::class, 'partisipasi'])->name('tugas.partisipasi');
     Route::get('admin/partisipasi-lcs/export', [TugasController::class, 'exportPartisipasi'])->name('tugas.partisipasi.export');
     Route::get('admin/partisipasi-lcs/export-pdf', [TugasController::class, 'exportPdfPartisipasi'])->name('tugas.partisipasi.pdf');

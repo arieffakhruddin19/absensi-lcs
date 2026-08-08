@@ -178,4 +178,124 @@ class RekapLaporanController extends Controller
 
         return Excel::download(new RekapLaporanExport($rekap, $totalPegawaiAktif, $sumberText), 'Rekap_Laporan_LCS_' . $sumberText . '_' . date('Y-m-d') . '.xlsx');
     }
+
+    public function exportWord(Request $request)
+    {
+        $rekap = $this->getRekapData($request);
+        
+        $today = \Carbon\Carbon::now()->format('Y-m-d');
+        $totalPegawaiAktif = \App\Models\Pegawai::where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        })->count();
+        $totalPegawaiAktif = $totalPegawaiAktif > 0 ? $totalPegawaiAktif : 1;
+
+        $tab = $request->input('tab', 'pkh');
+        $sumberText = 'Kementan';
+        if ($tab == 'pkh') $sumberText = 'Ditjen PKH';
+        elseif ($tab == 'pusvetma') $sumberText = 'Pusvetma';
+
+        $tanggalStr = \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y');
+        if ($request->has('tanggal') && $request->tanggal != '') {
+            $tanggalStr = \Carbon\Carbon::parse($request->tanggal)->locale('id')->translatedFormat('l, d F Y');
+        }
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->setDefaultFontName('Calibri');
+        $phpWord->setDefaultFontSize(11);
+        $phpWord->setDefaultParagraphStyle(
+            array('spaceAfter' => 0, 'spaceBefore' => 0)
+        );
+        $section = $phpWord->addSection();
+
+        $section->addText('Selamat Pagi Bapak/Ibu', array('bold' => true));
+        
+        $textRun = $section->addTextRun();
+        $textRun->addText("Berikut disampaikan Pemberitaan Media Sosial {$sumberText}, ");
+        $textRun->addText("{$tanggalStr} oleh BBVF Pusvetma", array('bold' => true));
+        $textRun->addText(" dengan jumlah pegawai {$totalPegawaiAktif} orang.");
+        
+        $section->addTextBreak(1);
+
+        $groupedRekap = $rekap->groupBy('judul')->reverse();
+
+        foreach ($groupedRekap as $judul => $items) {
+            if ($judul) {
+                $section->addText($judul, array('bold' => true));
+            }
+            foreach ($items as $item) {
+                $section->addText($item->link);
+                
+                $likePct = str_replace('.', ',', round(($item->like / $totalPegawaiAktif) * 100, 1));
+                $likeStr = "Like = {$item->like} Orang ({$likePct}%)";
+                $section->addText($likeStr);
+                
+                $commentPct = str_replace('.', ',', round(($item->comment / $totalPegawaiAktif) * 100, 1));
+                $commentStr = "Comment = {$item->comment} Orang ({$commentPct}%)";
+                $section->addText($commentStr);
+                
+                $sharePct = str_replace('.', ',', round(($item->share / $totalPegawaiAktif) * 100, 1));
+                $shareStr = "Share = {$item->share} Orang ({$sharePct}%)";
+                $section->addText($shareStr);
+                
+                $section->addTextBreak(1);
+            }
+        }
+
+        $filename = 'Rekap_Laporan_LCS_' . str_replace(' ', '_', $sumberText) . '_' . date('Y-m-d') . '.docx';
+        
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        
+        $tempFile = tempnam(sys_get_temp_dir(), 'phpword');
+        $objWriter->save($tempFile);
+        
+        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
+    }
+
+    public function exportWa(Request $request)
+    {
+        $rekap = $this->getRekapData($request);
+        
+        $today = \Carbon\Carbon::now()->format('Y-m-d');
+        $totalPegawaiAktif = \App\Models\Pegawai::where(function($q) use ($today) {
+            $q->where('tanggal_pensiun', '>=', $today)
+              ->orWhereNull('tanggal_pensiun');
+        })->count();
+        $totalPegawaiAktif = $totalPegawaiAktif > 0 ? $totalPegawaiAktif : 1;
+
+        $tab = $request->input('tab', 'pkh');
+        $sumberText = 'Kementan';
+        if ($tab == 'pkh') $sumberText = 'Ditjen PKH';
+        elseif ($tab == 'pusvetma') $sumberText = 'Pusvetma';
+
+        $tanggalStr = \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y');
+        if ($request->has('tanggal') && $request->tanggal != '') {
+            $tanggalStr = \Carbon\Carbon::parse($request->tanggal)->locale('id')->translatedFormat('l, d F Y');
+        }
+
+        $text = "*Selamat Pagi Bapak/Ibu*\n";
+        $text .= "Berikut disampaikan Pemberitaan Media Sosial {$sumberText}, *{$tanggalStr} oleh BBVF Pusvetma* dengan jumlah pegawai {$totalPegawaiAktif} orang.\n\n";
+
+        $groupedRekap = $rekap->groupBy('judul')->reverse();
+
+        foreach ($groupedRekap as $judul => $items) {
+            if ($judul) {
+                $text .= "*{$judul}*\n";
+            }
+            foreach ($items as $item) {
+                $text .= "{$item->link}\n";
+                
+                $likePct = str_replace('.', ',', round(($item->like / $totalPegawaiAktif) * 100, 1));
+                $text .= "Like = {$item->like} Orang ({$likePct}%)\n";
+                
+                $commentPct = str_replace('.', ',', round(($item->comment / $totalPegawaiAktif) * 100, 1));
+                $text .= "Comment = {$item->comment} Orang ({$commentPct}%)\n";
+                
+                $sharePct = str_replace('.', ',', round(($item->share / $totalPegawaiAktif) * 100, 1));
+                $text .= "Share = {$item->share} Orang ({$sharePct}%)\n\n";
+            }
+        }
+
+        return response()->json(['text' => $text]);
+    }
 }

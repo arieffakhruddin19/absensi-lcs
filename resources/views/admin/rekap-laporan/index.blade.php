@@ -25,10 +25,20 @@
                         }
                     @endphp
                     <h3 id="dynamic-title" class="text-lg font-medium text-gray-900 dark:text-gray-100">Rekapitulasi LCS Postingan Media Sosial {{ $sumberText }}</h3>
-                    <a id="export-excel-btn" href="{{ route('admin.rekap-laporan.export', request()->query()) }}" class="flex items-center text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-green-500 dark:hover:bg-green-600 focus:outline-none dark:focus:ring-green-800 transition ease-in-out duration-150">
-                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Excel
-                    </a>
+                    <div class="flex gap-2">
+                        <a id="export-word-btn" href="{{ route('admin.rekap-laporan.export-word', request()->query()) }}" class="flex items-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none dark:focus:ring-blue-800 transition ease-in-out duration-150">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Word
+                        </a>
+                        <a id="export-excel-btn" href="{{ route('admin.rekap-laporan.export', request()->query()) }}" class="flex items-center text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:ring-emerald-300 font-medium rounded-md text-xs px-3 py-1.5 dark:bg-emerald-500 dark:hover:bg-emerald-600 focus:outline-none dark:focus:ring-emerald-800 transition ease-in-out duration-150">
+                            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Excel
+                        </a>
+                        <button type="button" id="btn-salin-teks" data-url="{{ route('admin.rekap-laporan.export-wa', request()->query()) }}" style="display: inline-flex; align-items: center; background-color: #0d9488; color: white; font-weight: 500; font-size: 0.75rem; padding: 0.375rem 0.75rem; border-radius: 0.375rem; border: none; cursor: pointer;" onmouseover="this.style.backgroundColor='#0f766e'" onmouseout="this.style.backgroundColor='#0d9488'">
+                            <svg style="width: 14px; height: 14px; margin-right: 6px;" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            Copy WA
+                        </button>
+                    </div>
                 </div>
 
                 <style>
@@ -47,7 +57,7 @@
                     }
                 </style>
                 <div class="mb-4 flex justify-end w-full">
-                    <form method="GET" action="{{ route('admin.rekap-laporan') }}" class="custom-filter-form">
+                    <form id="pencarianForm" method="GET" action="{{ route('admin.rekap-laporan') }}" class="custom-filter-form">
                         
                         <div class="custom-filter-perpage">
                             <select id="filter-perpage" name="per_page" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -161,7 +171,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="8" class="px-6 py-4 text-center">Belum ada data rekap laporan.</td>
+                                <td colspan="9" class="px-6 py-4 text-center">Belum ada data rekap laporan.</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -251,6 +261,7 @@
                     url.searchParams.delete('page');
                 }
                 
+                const queryParams = new URLSearchParams(url.search);
                 window.history.pushState({}, '', url);
                 
                 const exportUrl = new URL('{{ route("admin.rekap-laporan.export") }}', window.location.origin);
@@ -258,6 +269,18 @@
                 const exportBtn = document.getElementById('export-excel-btn');
                 if (exportBtn) {
                     exportBtn.href = exportUrl.href;
+                }
+                
+                const exportWordUrl = new URL('{{ route("admin.rekap-laporan.export-word") }}', window.location.origin);
+                exportWordUrl.search = url.search;
+                const exportWordBtn = document.getElementById('export-word-btn');
+                if (exportWordBtn) {
+                    exportWordBtn.href = exportWordUrl.href;
+                }
+
+                const copyWaBtn = document.getElementById('btn-salin-teks');
+                if (copyWaBtn) {
+                    copyWaBtn.dataset.url = "{{ route('admin.rekap-laporan.export-wa') }}" + '?' + queryParams.toString();
                 }
                 
                 const publicUrl = new URL('{{ route("public.rekap-laporan") }}', window.location.origin);
@@ -326,6 +349,38 @@
             if (filterPerPage) {
                 filterPerPage.addEventListener('change', triggerSearch);
             }
+            
+            document.getElementById('pencarianForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                triggerSearch();
+            });
+
+            document.getElementById('btn-salin-teks').addEventListener('click', function() {
+                const btn = this;
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<span class="animate-pulse">Menyalin...</span>';
+                btn.disabled = true;
+
+                fetch(btn.dataset.url)
+                    .then(response => response.json())
+                    .then(data => {
+                        navigator.clipboard.writeText(data.text).then(() => {
+                            btn.innerHTML = '<span>Tersalin!</span>';
+                            setTimeout(() => {
+                                btn.innerHTML = originalHtml;
+                                btn.disabled = false;
+                            }, 2000);
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy WA text:', err);
+                        btn.innerHTML = '<span>Gagal</span>';
+                        setTimeout(() => {
+                            btn.innerHTML = originalHtml;
+                            btn.disabled = false;
+                        }, 2000);
+                    });
+            });
             
             // Intercept Pagination Clicks
             document.addEventListener('click', function(e) {
