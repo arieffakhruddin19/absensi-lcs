@@ -226,8 +226,12 @@ class RekapLaporanController extends Controller
             foreach ($items as $item) {
                 $section->addText($item->link);
                 
-                $likePct = str_replace('.', ',', round(($item->like / $totalPegawaiAktif) * 100, 1));
-                $likeStr = "Like = {$item->like} Orang ({$likePct}%)";
+                $likeValue = $item->like;
+                if (in_array($item->jenis_medsos, ['Instagram', 'Facebook'])) {
+                    $likeValue = $totalPegawaiAktif;
+                }
+                $likePct = str_replace('.', ',', round(($likeValue / $totalPegawaiAktif) * 100, 1));
+                $likeStr = "Like = {$likeValue} Orang ({$likePct}%)";
                 $section->addText($likeStr);
                 
                 $commentPct = str_replace('.', ',', round(($item->comment / $totalPegawaiAktif) * 100, 1));
@@ -241,6 +245,8 @@ class RekapLaporanController extends Controller
                 $section->addTextBreak(1);
             }
         }
+
+        $section->addText('Terima kasih');
 
         $filename = 'Rekap_Laporan_LCS_' . str_replace(' ', '_', $sumberText) . '_' . date('Y-m-d') . '.docx';
         
@@ -285,8 +291,12 @@ class RekapLaporanController extends Controller
             foreach ($items as $item) {
                 $text .= "{$item->link}\n";
                 
-                $likePct = str_replace('.', ',', round(($item->like / $totalPegawaiAktif) * 100, 1));
-                $text .= "Like = {$item->like} Orang ({$likePct}%)\n";
+                $likeValue = $item->like;
+                if (in_array($item->jenis_medsos, ['Instagram', 'Facebook'])) {
+                    $likeValue = $totalPegawaiAktif;
+                }
+                $likePct = str_replace('.', ',', round(($likeValue / $totalPegawaiAktif) * 100, 1));
+                $text .= "Like = {$likeValue} Orang ({$likePct}%)\n";
                 
                 $commentPct = str_replace('.', ',', round(($item->comment / $totalPegawaiAktif) * 100, 1));
                 $text .= "Comment = {$item->comment} Orang ({$commentPct}%)\n";
@@ -295,6 +305,8 @@ class RekapLaporanController extends Controller
                 $text .= "Share = {$item->share} Orang ({$sharePct}%)\n\n";
             }
         }
+
+        $text .= "Terima kasih";
 
         return response()->json(['text' => $text]);
     }
